@@ -406,21 +406,21 @@ public class NETEASEView implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File(".\\imageView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\imageView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File(".\\imageView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\imageView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File(".\\imageView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\imageView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File(".\\imageView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\imageView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
