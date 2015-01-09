@@ -61,7 +61,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		else 
 			downloadTime += date ;
 		
-		DBName = "NETEASECOMMENT";
+		DBName = "NETEASENEWCOMMENT";
 		DBTable = "sh";
 		ENCODE = "gb2312";
 		

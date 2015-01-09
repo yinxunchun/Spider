@@ -432,7 +432,7 @@ public class NETEASEWar implements NETEASE{
 				imageNameTime += date;
 		}
 		//处理存放条图片的文件夹
-    	File f = new File("imageWar");
+    	File f = new File("NETEASEWar");
     	if(!f.exists()){
     		f.mkdir();
     	}

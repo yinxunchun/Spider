@@ -65,7 +65,7 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "NETEASECOMMENT";   //数据库名称
+		DBName = "NETEASENEWCOMMENT";   //数据库名称
 		DBTable = "war";   //表名
 		
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; 

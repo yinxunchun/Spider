@@ -64,7 +64,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		else 
 			downloadTime += date ;
 		//数据库以及编码
-		DBName = "NETEASECOMMENT";
+		DBName = "NETEASENEWCOMMENT";
 		DBTable = "gn";
 		ENCODE = "gb2312";
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; // "国内" "网易新闻-国内新闻-http://news.163.com/domestic/"

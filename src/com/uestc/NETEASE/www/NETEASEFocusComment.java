@@ -66,7 +66,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 			else 
 				downloadTime += date ;
 			//数据库以及编码
-			DBName = "NETEASECOMMENT";
+			DBName = "NETEASENEWCOMMENT";
 			DBTable = "focus";
 			ENCODE = "gb2312";
 			String[] label = new String[]{"class","path"} ; // 属性标签

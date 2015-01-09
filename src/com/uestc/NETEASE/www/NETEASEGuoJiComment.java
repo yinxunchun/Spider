@@ -61,7 +61,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 			downloadTime += "0" + date;
 		else 
 			downloadTime += date ;
-		DBName = "NETEASECOMMENT";
+		DBName = "NETEASENEWCOMMENT";
 		DBTable = "gj";
 		ENCODE = "gb2312";
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; //  Ù–‘
