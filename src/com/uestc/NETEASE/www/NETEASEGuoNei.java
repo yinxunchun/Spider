@@ -365,6 +365,7 @@ public class NETEASEGuoNei implements NETEASE{
 		if(contentBuf.contains("(NTES);")){
 			contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
 		}
+		contentBuf = contentBuf.replaceAll("\\s+", "\n");
 		return contentBuf;
 	}
 	//处理图片，使用时间label
@@ -379,7 +380,10 @@ public class NETEASEGuoNei implements NETEASE{
 		else 
 			return null;
 		//获取图片时间，为命名服务
-		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+		if(imageNameTime != null && imageNameTime != "")
+			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+		else
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("NETEASEGuoNei");
     	if(!f.exists()){
@@ -405,21 +409,21 @@ public class NETEASEGuoNei implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
@@ -434,7 +438,7 @@ public class NETEASEGuoNei implements NETEASE{
 				fo.close();  
 //          	  System.out.println(imageName + "下载完成"); 
 			}catch(Exception e){
-				System.out.println("亲，图片下载失败！！");
+				System.out.println("亲，图片下载失败！！"+e);
 				System.out.println("请检查网络是否正常！");
 			}
 			i ++;
@@ -545,31 +549,31 @@ public class NETEASEGuoNei implements NETEASE{
 	}
 }
 
-class TaskThreadPoolForNETEASE implements Runnable{
+//class TaskThreadPoolForNETEASE implements Runnable{
+//	
+//	public String dbtable1;
+//	public TaskThreadPoolForNETEASE(String dbtable1){
+//		this.dbtable1 = dbtable1;
+//	}
+//	
+//	@Override
+//	public void run() {
+////		// TODO Auto-generated method stub
+////		NETEASE threadNETEASE = new NETEASEGuoNei(dbtable1);
+////		if(dbtable1.equals("guonei"))
+////			threadNETEASE.getGuoNeiNews();
+////		else if(dbtable1.equals("guoji"))
+////			threadNETEASE.getGuoJiNews();
+////		else if(dbtable1.equals("shehui"))
+////			threadNETEASE.getSheHuiNews();
+////		else if(dbtable1.equals("focus"))
+////			threadNETEASE.getFocusNews();
+////		else if(dbtable1.equals("war"))
+////			threadNETEASE.getWarNews();
+////		else if(dbtable1.equals("view"))
+////			threadNETEASE.getViewNews();
+////		else;
+////		threadNETEASE = null;
+//	}
 	
-	public String dbtable1;
-	public TaskThreadPoolForNETEASE(String dbtable1){
-		this.dbtable1 = dbtable1;
-	}
-	
-	@Override
-	public void run() {
-//		// TODO Auto-generated method stub
-//		NETEASE threadNETEASE = new NETEASEGuoNei(dbtable1);
-//		if(dbtable1.equals("guonei"))
-//			threadNETEASE.getGuoNeiNews();
-//		else if(dbtable1.equals("guoji"))
-//			threadNETEASE.getGuoJiNews();
-//		else if(dbtable1.equals("shehui"))
-//			threadNETEASE.getSheHuiNews();
-//		else if(dbtable1.equals("focus"))
-//			threadNETEASE.getFocusNews();
-//		else if(dbtable1.equals("war"))
-//			threadNETEASE.getWarNews();
-//		else if(dbtable1.equals("view"))
-//			threadNETEASE.getViewNews();
-//		else;
-//		threadNETEASE = null;
-	}
-	
-}
+//}

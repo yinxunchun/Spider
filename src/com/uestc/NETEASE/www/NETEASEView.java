@@ -344,6 +344,7 @@ public class NETEASEView implements NETEASE{
 		if(contentBuf.contains("NTES_createVideo")){
 			contentBuf = contentBuf.replaceAll("NTES_createVideo([\\s\\S]*?);", "");
 		}
+		contentBuf = contentBuf.replaceAll("\\s+", "\n");
 		return contentBuf;
 	}
 	@Override
@@ -406,21 +407,21 @@ public class NETEASEView implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\NETEASEView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\NETEASEView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\NETEASEView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\NETEASEView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

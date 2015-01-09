@@ -355,6 +355,7 @@ public class NETEASESheHui implements NETEASE{
 		if(contentBuf.contains("(NTES);")){
 			contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
 		}
+		contentBuf = contentBuf.replaceAll("\\s+", "\n");
 		return contentBuf;
 	}
 	@Override
@@ -368,7 +369,10 @@ public class NETEASESheHui implements NETEASE{
 			else 
 				return null;
 			//获取图片时间，为命名服务
-			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+			if(imageNameTime != null && imageNameTime != "")
+				imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+			else
+				return null;
 			//处理存放条图片的文件夹
 		    File f = new File("NETEASESheHui");
 		   	if(!f.exists()){
@@ -394,21 +398,21 @@ public class NETEASESheHui implements NETEASE{
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
 					if(imageNumber < 9){
-						fileBuf = new File("\\NETEASESheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getAbsolutePath());
 					}else if(imageNumber < 99){
-						fileBuf = new File("\\NETEASESheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 		            
 					}else if(imageNumber < 999){
-						fileBuf = new File("\\NETEASESheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 		  
 					}else{
-						fileBuf = new File("\\NETEASESheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 					}
