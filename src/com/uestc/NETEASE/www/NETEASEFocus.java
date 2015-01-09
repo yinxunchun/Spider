@@ -56,7 +56,7 @@ public class NETEASEFocus implements NETEASE{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "IAMNETEASENEWS";   //数据库名称
+		DBName = "NETEASENEW";   //数据库名称
 		DBTable = "focus";   //表名
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 title or id=h1title
 		String[] newsContentLabel = new String[]{"id" ,"endText"};  //新闻内容标签 "id","endText"
@@ -351,7 +351,7 @@ public class NETEASEFocus implements NETEASE{
 		//获取图片时间，为命名服务
 		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
 		//处理存放条图片的文件夹
-    	File f = new File("imageFocus");
+    	File f = new File("NETEASEFocus");
     	if(!f.exists()){
     		f.mkdir();
     	}
@@ -375,21 +375,21 @@ public class NETEASEFocus implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\imageFocus",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEFocus",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\imageFocus",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEFocus",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\imageFocus",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEFocus",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\imageFocus",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEFocus",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

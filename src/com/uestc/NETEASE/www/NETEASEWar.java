@@ -56,7 +56,7 @@ public class NETEASEWar implements NETEASE{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "IAMNETEASENEWS";   //数据库名称
+		DBName = "NETEASENEW";   //数据库名称
 		DBTable = "war";   //表名
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 title or id=h1title
 		String[] newsContentLabel = new String[]{"id" ,"endText"};  //新闻内容标签 "id","endText"
@@ -455,21 +455,21 @@ public class NETEASEWar implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\imageWar",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEWar",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\imageWar",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEWar",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\imageWar",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEWar",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\imageWar",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEWar",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

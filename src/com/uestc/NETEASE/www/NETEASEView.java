@@ -56,7 +56,7 @@ public class NETEASEView implements NETEASE{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "IAMNETEASENEWS";   //数据库名称
+		DBName = "NETEASENEW";   //数据库名称
 		DBTable = "view";   //表名
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 title or id=h1title
 		String[] newsContentLabel = new String[]{"class" ,"feed-text"};  //新闻内容标签 class="feed-text"
@@ -382,7 +382,7 @@ public class NETEASEView implements NETEASE{
 				imageNameTime += date;
 		}
 		//处理存放条图片的文件夹
-    	File f = new File("imageView");
+    	File f = new File("NETEASEView");
     	if(!f.exists()){
     		f.mkdir();
     	}
@@ -406,21 +406,21 @@ public class NETEASEView implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\imageView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\imageView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\imageView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\imageView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

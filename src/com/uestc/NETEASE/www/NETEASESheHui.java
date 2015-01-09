@@ -51,7 +51,7 @@ public class NETEASESheHui implements NETEASE{
 	}
 	
 	public void getNETEASESheHuiNews(){
-		DBName = "IAMNETEASENEWS";
+		DBName = "NETEASENEW";
 		DBTable = "sh";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
@@ -370,7 +370,7 @@ public class NETEASESheHui implements NETEASE{
 			//获取图片时间，为命名服务
 			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
 			//处理存放条图片的文件夹
-		    File f = new File("imageSheHui");
+		    File f = new File("NETEASESheHui");
 		   	if(!f.exists()){
 		    	f.mkdir();
 		   	}
@@ -394,21 +394,21 @@ public class NETEASESheHui implements NETEASE{
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
 					if(imageNumber < 9){
-						fileBuf = new File("\\imageSheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("\\NETEASESheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getAbsolutePath());
 					}else if(imageNumber < 99){
-						fileBuf = new File("\\imageSheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("\\NETEASESheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 		            
 					}else if(imageNumber < 999){
-						fileBuf = new File("\\imageSheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("\\NETEASESheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 		  
 					}else{
-						fileBuf = new File("\\imageSheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("\\NETEASESheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getAbsolutePath());
 					}

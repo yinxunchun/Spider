@@ -52,7 +52,7 @@ public class NETEASEGuoJi implements NETEASE{
 	}
 	
 	public void getNETEASEGuoJiNews(){
-		DBName = "IAMNETEASENEWS";
+		DBName = "NETEASENEW";
 		DBTable = "gj";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
@@ -346,7 +346,7 @@ public class NETEASEGuoJi implements NETEASE{
 		//获取图片时间，为命名服务
 		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
 		//处理存放条图片的文件夹
-    	File f = new File("imageGuoJi");
+    	File f = new File("NETEASEGuoJi");
     	if(!f.exists()){
     		f.mkdir();
     	}
@@ -370,21 +370,21 @@ public class NETEASEGuoJi implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\imageGuoJi",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoJi",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\imageGuoJi",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoJi",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\imageGuoJi",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoJi",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\imageGuoJi",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoJi",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

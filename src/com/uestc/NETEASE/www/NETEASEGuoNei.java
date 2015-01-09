@@ -63,7 +63,7 @@ public class NETEASEGuoNei implements NETEASE{
 	}
 	
 	public void getNETEASEGuoNeiNews(){
-		DBName = "IAMNETEASENEWS";
+		DBName = "NETEASENEW";
 		DBTable = "gn";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
@@ -381,7 +381,7 @@ public class NETEASEGuoNei implements NETEASE{
 		//获取图片时间，为命名服务
 		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
 		//处理存放条图片的文件夹
-    	File f = new File("imageGuoNei");
+    	File f = new File("NETEASEGuoNei");
     	if(!f.exists()){
     		f.mkdir();
     	}
@@ -405,21 +405,21 @@ public class NETEASEGuoNei implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\imageGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\imageGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\imageGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\imageGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\NETEASEGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
@@ -532,16 +532,16 @@ public class NETEASEGuoNei implements NETEASE{
 	public static void main(String[] args){
 		NETEASEGuoNei test = new NETEASEGuoNei();
 		test.getNETEASEGuoNeiNews();
-//		NETEASEGuoJi test1 = new NETEASEGuoJi();
-//		test1.getNETEASEGuoJiNews();
-//		NETEASESheHui test2 = new NETEASESheHui();
-//		test2.getNETEASESheHuiNews();
-//		NETEASEView test3 = new NETEASEView();
-//		test3.getNETEASEViewNews();
-//		NETEASEWar test4 = new NETEASEWar();
-//		test4.getNETEASEWarNews();
-//		NETEASEFocus test5 = new NETEASEFocus();
-//		test5.getNETEASEFocusNews();
+		NETEASEGuoJi test1 = new NETEASEGuoJi();
+		test1.getNETEASEGuoJiNews();
+		NETEASESheHui test2 = new NETEASESheHui();
+		test2.getNETEASESheHuiNews();
+		NETEASEView test3 = new NETEASEView();
+		test3.getNETEASEViewNews();
+		NETEASEWar test4 = new NETEASEWar();
+		test4.getNETEASEWarNews();
+		NETEASEFocus test5 = new NETEASEFocus();
+		test5.getNETEASEFocusNews();
 	}
 }
 
