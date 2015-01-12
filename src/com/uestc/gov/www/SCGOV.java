@@ -299,7 +299,9 @@ public class SCGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
+		
 		contentBuf = contentBuf.replaceAll("&#160;", "");
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 

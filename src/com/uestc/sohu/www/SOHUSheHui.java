@@ -258,7 +258,7 @@ public class SOHUSheHui implements SOHU {
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -282,7 +282,7 @@ public class SOHUSheHui implements SOHU {
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -328,7 +328,7 @@ public class SOHUSheHui implements SOHU {
 			contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
 		}
 		contentBuf = contentBuf.replaceAll("&#160;", "");
-		
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 	@Override

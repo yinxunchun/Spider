@@ -239,7 +239,7 @@ public class IFENGGuoNei implements IFENG{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -263,7 +263,7 @@ public class IFENGGuoNei implements IFENG{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){

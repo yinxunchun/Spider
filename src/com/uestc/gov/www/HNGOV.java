@@ -52,7 +52,7 @@ public class HNGOV implements GOV{
 		CRUT crut =  new CRUT(DBName,DBTable);
 		
 		String[] newsTitleLabel = new String[]{"class","title"};     //新闻标题标签 t
-		String[] newsContentLabel = new String[]{"id" ,"Zoom"};  //新闻内容标签 "id","endText"
+		String[] newsContentLabel = new String[]{"class" ,"content"};  //新闻内容标签 "id","endText"
 		String[] newsTimeLabel = new String[]{"bgcolor","#E7E7E7"};   //新闻时间"class","ep-time-soure cDGray"  
 		String[] newsSourceLabel =new String[]{"bgcolor","#E7E7E7","河南人民政府门户网站"}; //（3个参数）新闻来源 同新闻时间"class","ep-time-soure cDGray" 再加上一个"网易新闻-国内新闻"
 		String[] newsCategroyLabel = new String[]{"width","593"} ; //
@@ -233,7 +233,7 @@ public class HNGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -256,7 +256,7 @@ public class HNGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -273,6 +273,8 @@ public class HNGOV implements GOV{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
+		
+		titleBuf = titleBuf.replaceAll("\n\n", "");
 		return titleBuf;
 	}
 
@@ -284,6 +286,7 @@ public class HNGOV implements GOV{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
+		titleBuf = titleBuf.replaceAll("\n\n", "");
 		return titleBuf;
 	}
 
@@ -295,7 +298,9 @@ public class HNGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
+		contentBuf = contentBuf.replaceAll("\n\n", "\n");
 		contentBuf = contentBuf.replaceAll("&#160;", "");
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 
@@ -416,9 +421,15 @@ public class HNGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("(\n&gt;\n)|(\n)", "-");
+		
+		categroyBuf = categroyBuf.replaceAll("&gt;", "");
+
 		if(categroyBuf.contains("您当前的位置 ："))
 			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("您当前的位置 ：")+8, categroyBuf.length());
+		if(categroyBuf.contains("-正文"))
+			categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("-正文"));
+		
+		categroyBuf = categroyBuf.replaceAll("\\s+", "-");
 		return categroyBuf;
 	}
 
@@ -431,7 +442,7 @@ public class HNGOV implements GOV{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
 		categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		categroyBuf = categroyBuf.replace("\\s+", "-");
+		categroyBuf = categroyBuf.replaceAll("\\s+", "-");
 		return categroyBuf;
 	}
 

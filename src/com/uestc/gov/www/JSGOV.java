@@ -229,7 +229,7 @@ public class JSGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -252,7 +252,7 @@ public class JSGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -292,6 +292,7 @@ public class JSGOV implements GOV{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		contentBuf = contentBuf.replaceAll("&#160;", "");
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 

@@ -227,7 +227,7 @@ public class XZGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -250,7 +250,7 @@ public class XZGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -295,6 +295,7 @@ public class XZGOV implements GOV{
 		}
 		contentBuf = contentBuf.replaceAll("&ldquo;", "¡°");
 		contentBuf = contentBuf.replaceAll("&rdquo;", "¡±");
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 

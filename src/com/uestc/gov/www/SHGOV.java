@@ -228,7 +228,7 @@ public class SHGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -251,7 +251,7 @@ public class SHGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -295,6 +295,7 @@ public class SHGOV implements GOV{
 		contentBuf = contentBuf.replaceAll("&rdquo;", "¡±");
 		contentBuf = contentBuf.replaceAll("&lsquo;", "¡±");
 		contentBuf = contentBuf.replaceAll("&rsquo;", "¡±");
+		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 

@@ -179,7 +179,7 @@ public class CDSB implements Runnable {
 	                Node textnode1 = (Node) nodes.elementAt(i);
 	                buf += textnode1.toPlainTextString();
 	                if(buf.contains("&nbsp;"))
-	                	buf = buf.replaceAll("&nbsp;", "\n");
+	                	buf = buf.replaceAll("&nbsp;", " ");
 	            }
 	        }
 		   }catch(Exception e){
@@ -204,7 +204,7 @@ public class CDSB implements Runnable {
 	                Node textnode1 = (Node) nodes.elementAt(i);
 	                buf += textnode1.toPlainTextString();
 	                if(buf.contains("&nbsp;"))
-	                	buf = buf.replaceAll("&nbsp;", "\n");
+	                	buf = buf.replaceAll("&nbsp;", " ");
 	            }
 	        }
 		   }catch(Exception e){
@@ -276,7 +276,8 @@ public class CDSB implements Runnable {
 		   content = content.replaceAll("<P>|<p>|</p>|</P>", "");
 		   content = content.replaceAll("&nbsp;","\n");
 	   };
-//	   content = content.replaceAll("\\n", "");
+	   content = content.replaceAll("\\s+", "");
+	   content = content.replaceFirst("\\s+", "");
 //	   System.out.println(content);
 	   return content;
    }
