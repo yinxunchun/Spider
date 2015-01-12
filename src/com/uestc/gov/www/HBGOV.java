@@ -85,7 +85,7 @@ public class HBGOV implements GOV{
 		//领导首页link
 		themeLinks.offer("http://www.hebei.gov.cn/hebei/11937442/10756074/10758847/11019442/index.html");
 		// 内容link 正则http://www.hebei.gov.cn/hebei/11937442/10761139/12425295/index.html
-		newsContentLinksReg = "/hebei/([0-9]{8}/[0-9]{8}/[0-9]{8}){3,5}/index.html";
+		newsContentLinksReg = "/hebei/(([0-9]{8}/[0-9]{8}/[0-9]{8})|([0-9]{8}/[0-9]{8}/[0-9]{8}/[0-9]{8})|([0-9]{8}/[0-9]{8}/[0-9]{8}/[0-9]{8}/[0-9]{8}))/index.html";
 	
 		//内容links
 		Queue<String> contentLinks = new LinkedList<String>();
@@ -97,11 +97,13 @@ public class HBGOV implements GOV{
 			System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
-			i++;
 //			System.out.println(findNewsComment(url));
 //			System.out.println("\n");
-//			crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
-//					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
+			if(getNewsTime(html,newsTimeLabel)!= null && getNewsTime(html,newsTimeLabel).equals(downloadTime)){
+				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
+					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
+				i++ ;
+			}
 		}
 		System.out.println(i);
 		
@@ -115,6 +117,7 @@ public class HBGOV implements GOV{
 
 	@Override
 	public Queue<String> getContentLinks(Queue<String> themeLink,String ContentLinkReg) {
+		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
@@ -123,9 +126,11 @@ public class HBGOV implements GOV{
 			System.out.println(buf);
 			String html = getContentHtml(buf);
 			html = html.substring(html.indexOf("id=\"wuhang\""),html.indexOf("<div class=\"fen_page\">"));
+//			System.out.println(html);
 			Matcher MatcherUrl = newsContent.matcher(html);
 			while(MatcherUrl.find()){
 				String contentUrlString = MatcherUrl.group();
+//				System.out.println(contentUrlString);
 				contentUrlString = "http://www.hebei.gov.cn" + contentUrlString;
 				contentlinks.offer(contentUrlString);
 			}
@@ -202,7 +207,7 @@ public class HBGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -225,7 +230,7 @@ public class HBGOV implements GOV{
 					Node textnode1 = (Node) nodes.elementAt(i);
 					buf += textnode1.toPlainTextString();
 					if(buf.contains("&nbsp;"))
-						buf = buf.replaceAll("&nbsp;", "\n");
+						buf = buf.replaceAll("&nbsp;", " ");
 				}
 			}
 		}catch(Exception e){
@@ -273,7 +278,7 @@ public class HBGOV implements GOV{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		contentBuf = contentBuf.replaceFirst("\\s+", "");
-		contentBuf = contentBuf.replaceAll("&#160;", "");
+		contentBuf = contentBuf.replaceAll("\\s+", "\n");
 		return contentBuf;
 	}
 
@@ -284,21 +289,21 @@ public class HBGOV implements GOV{
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
 		//处理存放条图片的文件夹
-    	File f = new File("CHINAGOV");
+    	File f = new File("HBGOV");
     	if(!f.exists()){
     		f.mkdir();
     	}
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "../../site1/"+imageNameTime+"/(.*?).jpg";
+		String imageReg = "/hebei/[0-9]{8}/[0-9]{8}/[0-9]{8}/"+imageNameTime+"[0-9]{11}.jpg";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			bufUrl = bufUrl.replaceAll("../../", "http://www.gov.cn/xinwen/");
+			bufUrl = "http://www.hebei.gov.cn" + bufUrl;
 			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
@@ -309,21 +314,21 @@ public class HBGOV implements GOV{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("CHINAGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("HBGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("CHINAGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("HBGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("CHINAGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("HBGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("CHINAGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("HBGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
@@ -394,9 +399,11 @@ public class HBGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
+
+		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页")+2, categroyBuf.length());
+		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		categroyBuf = categroyBuf.replaceAll("&gt;", "-");
 		
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻")+2, categroyBuf.length());
 		return categroyBuf;
 	}
 
@@ -408,7 +415,9 @@ public class HBGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
+		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("您当前所在位置：")+8, categroyBuf.length());
+		categroyBuf = categroyBuf.replaceAll("&gt;", "-");
+		categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}
 

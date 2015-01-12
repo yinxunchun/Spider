@@ -25,9 +25,7 @@ import org.htmlparser.util.ParserException;
 
 import com.uestc.spider.www.CRUT;
 
-//新疆
-public class XJGOV implements GOV{
-
+public class AHGOV implements GOV{
 	private String DBName ;   //sql name
 	private String DBTable ;  // collections name
 	private String ENCODE ;   //html encode gb2312
@@ -47,16 +45,16 @@ public class XJGOV implements GOV{
 	//图片计数
 	private int imageNumber = 1 ;
 	
-	public void getCHINAGOVNews(){
+	public void getAHGOVNews(){
 		DBName = "GOV";
-		DBTable = "CHINAGOV";
+		DBTable = "AHGOV";
 		CRUT crut =  new CRUT(DBName,DBTable);
 		
-		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
-		String[] newsContentLabel = new String[]{"id" ,"printContent"};  //新闻内容标签 "id","endText"
-		String[] newsTimeLabel = new String[]{"class","pages-date"};   //新闻时间"class","ep-time-soure cDGray"  
-		String[] newsSourceLabel =new String[]{"class","font","中央政府门户网站"}; //（3个参数）新闻来源 同新闻时间"class","ep-time-soure cDGray" 再加上一个"网易新闻-国内新闻"
-		String[] newsCategroyLabel = new String[]{"class","BreadcrumbNav"} ; //
+		String[] newsTitleLabel = new String[]{"class","wztit"};     //新闻标题标签 t
+		String[] newsContentLabel = new String[]{"class" ,"wzcon"};  //新闻内容标签 "id","endText"
+		String[] newsTimeLabel = new String[]{"class","wzbjxx"};   //新闻时间"class","ep-time-soure cDGray"  
+		String[] newsSourceLabel =new String[]{"class","wzbjxx","中央政府门户网站"}; //（3个参数）新闻来源 同新闻时间"class","ep-time-soure cDGray" 再加上一个"网易新闻-国内新闻"
+		String[] newsCategroyLabel = new String[]{"class","dqwztit"} ; //
 		
 		String monthBuf ;
 		String dateBuf ;
@@ -76,21 +74,19 @@ public class XJGOV implements GOV{
   			dateBuf = "" + date;
   		}
 		
-		ENCODE = "utf-8";
+		ENCODE = "gb2312";
 		//首页links
 		Queue<String> themeLinks = new LinkedList<String>();
 		//要闻首页link 
-		themeLinks.offer("http://www.gov.cn/xinwen/xw_yw.htm");
-		//热点首页 link
-		themeLinks.offer("http://www.gov.cn/xinwen/xw_rd.htm");
-		//部门首页link
-		themeLinks.offer("http://www.gov.cn/xinwen/xw_bmxw.htm");
-		//地方首页link
-		themeLinks.offer("http://www.gov.cn/xinwen/xw_dfbd.htm");
-		//执法首页link
-		themeLinks.offer("http://www.gov.cn/xinwen/xw_zfjg.htm");
-		// 内容link 正则http://www.gov.cn/xinwen/2014-12/29/content_2797860.htm
-		newsContentLinksReg = "http://www.gov.cn/xinwen/"+year+"-"+monthBuf+"/"+dateBuf+"/"+"content_[0-9]{6,8}.htm";
+		themeLinks.offer("http://www.ah.gov.cn/UserData/SortHtml/1/549213957.html");
+		//江淮资讯首页 link
+		themeLinks.offer("http://www.ah.gov.cn/UserData/SortHtml/1/797587369.html");
+		//政策动态首页link
+		themeLinks.offer("http://www.ah.gov.cn/UserData/SortHtml/1/672247098.html");
+		//媒体聚焦首页link
+		themeLinks.offer("http://www.ah.gov.cn/UserData/SortHtml/1/37683846130.html");
+		// 内容link 正则http://www.ah.gov.cn/UserData/DocHtml/1/2015/1/12/5704587652655.html
+		newsContentLinksReg = "http://www.ah.gov.cn/UserData/DocHtml/[0-9]{1}/"+year+"/"+month+"/"+date+"/[0-9]{13}.html";
 	
 		//内容links
 		Queue<String> contentLinks = new LinkedList<String>();
@@ -275,13 +271,6 @@ public class XJGOV implements GOV{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
 		
-		if(titleBuf.contains("_地方报道_新闻_中国政府网")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_地方报道_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_部门新闻_新闻_中国政府网")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_部门新闻_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_要闻_新闻_中国政府网")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_要闻_新闻_中国政府网")) ;
-		}
 		return titleBuf;
 	}
 
@@ -304,7 +293,6 @@ public class XJGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&#160;", "");
 		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
@@ -316,21 +304,21 @@ public class XJGOV implements GOV{
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
 		//处理存放条图片的文件夹
-    	File f = new File("CHINAGOV");
+    	File f = new File("AHGOV");
     	if(!f.exists()){
     		f.mkdir();
     	}
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "../../site1/"+imageNameTime+"/(.*?).jpg";
+		String imageReg = "/userdata/UploadFile/image/"+imageNameTime+"/"+imageNameTime+"[0-9]{12}.jpg";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			bufUrl = bufUrl.replaceAll("../../", "http://www.gov.cn/xinwen/");
+			bufUrl = "http://www.ah.gov.cn/" + bufUrl;
 			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
@@ -341,21 +329,21 @@ public class XJGOV implements GOV{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\CHINAGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("AHGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\CHINAGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("AHGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\CHINAGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("AHGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\CHINAGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("AHGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
@@ -390,11 +378,21 @@ public class XJGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf != null && timeBuf.contains("编辑日期：") && timeBuf.contains("来源")){
+			timeBuf = timeBuf.substring(timeBuf.indexOf("编辑日期："), timeBuf.indexOf("来源"));
+		}
+		timeBuf = timeBuf.replaceAll("\\s+", "");
+//		System.out.println(timeBuf);
+		String yearBufString = timeBuf.substring(timeBuf.indexOf("编辑日期：")+5,timeBuf.indexOf("-"));
+		String monthBufString = timeBuf.substring(timeBuf.indexOf("-")+1,timeBuf.lastIndexOf("-"));
+		if(monthBufString.length() < 2){
+			monthBufString = "0" + monthBufString;
+		}
+		String dateBufString = timeBuf.substring(timeBuf.lastIndexOf("-")+1, timeBuf.indexOf("】"));
+		if(dateBufString.length() < 2){
+			dateBufString = "0" + dateBufString;
+		}
+		timeBuf = yearBufString + monthBufString + dateBufString ;
 		return timeBuf;
 	}
 
@@ -414,7 +412,9 @@ public class XJGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
+
+		sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源：") + 3, sourceBuf.indexOf("【 关 闭")); 
+		sourceBuf = sourceBuf.replaceAll("(\\s+)|(】)", "");
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -427,8 +427,9 @@ public class XJGOV implements GOV{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
 		categroyBuf = categroyBuf.replaceAll("&#62;", "");
-		
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻")+2, categroyBuf.length());
+		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页栏目")+5, categroyBuf.length());
+		categroyBuf = categroyBuf.replaceAll(">", "-");
 		return categroyBuf;
 	}
 
@@ -446,7 +447,7 @@ public class XJGOV implements GOV{
 
 	public static void main(String[] args){
 		
-		CHINAGOV test = new CHINAGOV();
-		test.getCHINAGOVNews();
+		AHGOV test = new AHGOV();
+		test.getAHGOVNews();
 	}
 }
