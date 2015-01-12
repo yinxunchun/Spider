@@ -1,4 +1,4 @@
-package com.uestc.sohu.www;
+package com.uestc.gov.www;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,26 +25,18 @@ import org.htmlparser.util.ParserException;
 
 import com.uestc.spider.www.CRUT;
 
-/*
- *获取搜狐国内新闻
- *url:http://news.sohu.com/guoneixinwen.shtml
- *每日更新最新新闻 
- * */
-public class SOHUGuoNei implements SOHU{
+//新疆
+public class XJGOV implements GOV{
 
 	private String DBName ;   //sql name
 	private String DBTable ;  // collections name
-	private String ENCODE ;   //html encode gb2312	
-	//新闻主题links的正则表达式
-	private String newsThemeLinksReg ; 
-			
-	//新闻内容links的正则表达式
-	private String newsContentLinksReg ; 
+	private String ENCODE ;   //html encode gb2312
 	
-	//已经访问过的url
-	Vector<String> visitedUrl = new Vector<String>();
-		
-	//新闻主题link
+	//新闻主题links的正则表达式
+	private String newsThemeLinksReg ; 		
+	//新闻内容links的正则表达式
+	private String newsContentLinksReg ; 		
+	//新闻主题link 保留
 	private String theme ;
 	//downloadTime
 	private String downloadTime;
@@ -56,103 +47,85 @@ public class SOHUGuoNei implements SOHU{
 	//图片计数
 	private int imageNumber = 1 ;
 	
-	public void getSOHUGuoNeiNews(){
-		DBName = "SOHU";
-		DBTable = "GNnew";
-		ENCODE = "gb2312";
+	public void getCHINAGOVNews(){
+		DBName = "GOV";
+		DBTable = "CHINAGOV";
+		CRUT crut =  new CRUT(DBName,DBTable);
+		
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
-		String[] newsContentLabel = new String[]{"id" ,"contentText"};  //新闻内容标签 "id","endText"
-		String[] newsTimeLabel = new String[]{"class","time"};   //新闻时间"class","ep-time-soure cDGray"  
-		String[] newsSourceLabel =new String[]{"class","source","搜狐新闻-国内新闻"}; //（3个参数）新闻来源 同新闻时间
-		String[] newsCategroyLabel = new String[]{"class","navigation"} ; // 属性
-		CRUT crut = new CRUT(DBName ,DBTable);
-		//国内新闻 首页链接
-		theme = "http://news.sohu.com/guoneixinwen.shtml";
+		String[] newsContentLabel = new String[]{"id" ,"printContent"};  //新闻内容标签 "id","endText"
+		String[] newsTimeLabel = new String[]{"class","pages-date"};   //新闻时间"class","ep-time-soure cDGray"  
+		String[] newsSourceLabel =new String[]{"class","font","中央政府门户网站"}; //（3个参数）新闻来源 同新闻时间"class","ep-time-soure cDGray" 再加上一个"网易新闻-国内新闻"
+		String[] newsCategroyLabel = new String[]{"class","BreadcrumbNav"} ; //
 		
-		//新闻主题links的正则表达式（待定）
-		newsThemeLinksReg = "";
+		String monthBuf ;
+		String dateBuf ;
+      //计算获取新闻的时间
+  		if( month < 10){
+  			downloadTime = year+"0"+month;
+  			monthBuf = "0" + month;
+  		}else{ 
+  			downloadTime = year+""+month;
+  			monthBuf = "" + month ;
+  		}
+  		if(date < 10){
+  			downloadTime += "0" + date;
+  			dateBuf = "0" + date ;
+  		}else{ 
+  			downloadTime += date ;
+  			dateBuf = "" + date;
+  		}
 		
-		//新闻内容links的正则表达式 
-		newsContentLinksReg = "http://news.sohu.com/[0-9]{4}[0-9]{2}[0-9]{2}/n[0-9]{9}.shtml";
-		
-		//保存社会新闻主题links
-		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
-		guoNeiNewsTheme = findThemeLinks(theme,newsThemeLinksReg);
-//		System.out.println(guoNeiNewsTheme);
-		
-		//获取社会新闻内容links
-		Queue<String>guoNeiNewsContent = new LinkedList<String>();
-		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
-//		System.out.println(guoNeiNewsContent);
-		//获取每个新闻网页的html
-		//计算获取新闻的时间
-		if( month < 10)
-			downloadTime = year+"0"+month;
-		else 
-			downloadTime = year+""+month;
-		if(date < 10)
-			downloadTime += "0" + date;
-		else 
-			downloadTime += date ;
-		int i = 0;
-		while(!guoNeiNewsContent.isEmpty()){
-			String url = guoNeiNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
+		ENCODE = "utf-8";
+		//首页links
+		Queue<String> themeLinks = new LinkedList<String>();
+		//要闻首页link 
+		themeLinks.offer("http://www.gov.cn/xinwen/xw_yw.htm");
+		//热点首页 link
+		themeLinks.offer("http://www.gov.cn/xinwen/xw_rd.htm");
+		//部门首页link
+		themeLinks.offer("http://www.gov.cn/xinwen/xw_bmxw.htm");
+		//地方首页link
+		themeLinks.offer("http://www.gov.cn/xinwen/xw_dfbd.htm");
+		//执法首页link
+		themeLinks.offer("http://www.gov.cn/xinwen/xw_zfjg.htm");
+		// 内容link 正则http://www.gov.cn/xinwen/2014-12/29/content_2797860.htm
+		newsContentLinksReg = "http://www.gov.cn/xinwen/"+year+"-"+monthBuf+"/"+dateBuf+"/"+"content_[0-9]{6,8}.htm";
+	
+		//内容links
+		Queue<String> contentLinks = new LinkedList<String>();
+		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
+		int i = 1 ;
+		while(!contentLinks.isEmpty()){
+			String url = contentLinks.poll();
+			String html = getContentHtml(url);  //获取新闻的html
 			System.out.println(url);
+//			System.out.println(getNewsTitle(html,newsTitleLabel,""));
+//			System.out.println(getNewsContent(html,newsContentLabel));
 			i++;
-//			System.out.println(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"));
-//			System.out.println(findNewsTime(html,newsTitleLabel));
+//			System.out.println(findNewsComment(url));
 //			System.out.println("\n");
-			if(!visitedUrl.contains(url)){
-				crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
-			}
-			
-			visitedUrl.add(url);
+			crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
+					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
 		}
-		visitedUrl = null ;
 		System.out.println(i);
-	
-	
+		
 	}
 	
 	@Override
-	public Queue<String> findThemeLinks(String themeLink ,String themeLinkReg) {
-		
-		Queue<String> themelinks = new LinkedList<String>();
-		String html = findContentHtml(themeLink);
-		html = html.replaceAll("\\s+", "");
-		String commentReg = "maxPage=(.*?);var";
-		
-		Pattern newPage = Pattern.compile(commentReg);
-		
-		Matcher themeMatcher = newPage.matcher(html);
-		String mm = "";
-		while(themeMatcher.find()){
-			mm = themeMatcher.group();
-			mm = mm.substring(8, mm.indexOf(";var"));
-		}
-		
-		String s1 = "http://news.sohu.com/guoneixinwen_";
-		String s2 = ".shtml";
-		themelinks.offer(themeLink);
-		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 99 ;
-		for(int i = number ; i > number1 ; i--){
-			themelinks.offer(s1+i+s2);
-		}
-		return themelinks ;
+	public Queue<String> getThemeLinks(String themeLink, String themeLinkReg) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
-		// TODO Auto-generated method stub
+	@Override
+	public Queue<String> getContentLinks(Queue<String> themeLink,String ContentLinkReg) {
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
-		Pattern newsContent = Pattern.compile(contentLinkReg);
+		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-		
+			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -182,24 +155,19 @@ public class SOHUGuoNei implements SOHU{
 					}
 				}
 			}catch(ParserException e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
-					return contentlinks;
+				System.out.println(".1");
+				return null;
 			}catch(Exception e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
-					return contentlinks;
+				System.out.println(".2");
+				return null;
 			}		
 		}
 //		System.out.println(contentlinks);
 		return contentlinks;
 	}
-	
+
 	@Override
-	public String findContentHtml(String url) {
-		// TODO Auto-generated method stub
+	public String getContentHtml(String url) {
 		String html = null;                 //网页html
 		
 		HttpURLConnection httpUrlConnection;
@@ -252,10 +220,9 @@ public class SOHUGuoNei implements SOHU{
 //        System.out.println(html);
 		return html;
 	}
-	
+
 	@Override
 	public String HandleHtml(String html, String one) {
-		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -276,10 +243,9 @@ public class SOHUGuoNei implements SOHU{
 		}
 		return buf ;
 	}
-	
+
 	@Override
 	public String HandleHtml(String html, String one, String two) {
-		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -299,149 +265,148 @@ public class SOHUGuoNei implements SOHU{
 		}
 		return buf ;
 	}
-	//news title
-	public String findNewsTitle(String html , String[] label,String buf) {
-		String titleBuf ;
-		if(label[1].equals("")){
-			titleBuf = HandleHtml(html,label[0]);
-		}else{
-			titleBuf = HandleHtml(html,label[0],label[1]);
-		}
-		if(titleBuf.contains(buf))
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
-		return titleBuf;
-	}
-	//news 未处理标题
-	public String findNewsOriginalTitle(String html , String[] label,String buf) {
-		// TODO Auto-generated method stub
-		String titleBuf ;
-		if(label[1].equals("")){
-			titleBuf = HandleHtml(html,label[0]);
-		}else{
-			titleBuf = HandleHtml(html,label[0],label[1]);
-		}
-		if(titleBuf.contains(buf))
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
-		return titleBuf;
-	}
+
 	@Override
-	public String findNewsContent(String html , String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsTitle(String html, String[] label, String buf) {
+		String titleBuf ;
+		if(label[1].equals("")){
+			titleBuf = HandleHtml(html,label[0]);
+		}else{
+			titleBuf = HandleHtml(html,label[0],label[1]);
+		}
+		
+		if(titleBuf.contains("_地方报道_新闻_中国政府网")){
+			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_地方报道_新闻_中国政府网")) ;
+		}else if(titleBuf.contains("_部门新闻_新闻_中国政府网")){
+			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_部门新闻_新闻_中国政府网")) ;
+		}else if(titleBuf.contains("_要闻_新闻_中国政府网")){
+			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_要闻_新闻_中国政府网")) ;
+		}
+		return titleBuf;
+	}
+
+	@Override
+	public String getNewsOriginalTitle(String html, String[] label, String buf) {
+		String titleBuf ;
+		if(label[1].equals("")){
+			titleBuf = HandleHtml(html,label[0]);
+		}else{
+			titleBuf = HandleHtml(html,label[0],label[1]);
+		}
+		return titleBuf;
+	}
+
+	@Override
+	public String getNewsContent(String html, String[] label) {
 		String contentBuf;
 		if(label[1].equals("")){
 			contentBuf = HandleHtml(html,label[0]);
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(!contentBuf.isEmpty()){
-			if(contentBuf.contains("// <![CDATA[")&&contentBuf.contains("_S_b.jpg\";")){
-				contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
-			}
-			contentBuf = contentBuf.replaceAll("&#160;", "");
-		}
+		contentBuf = contentBuf.replaceAll("&#160;", "");
 		return contentBuf;
 	}
+
 	@Override
-	public String findNewsImages(String html , String[] label) {
-		String bufHtml = "";        //辅助
+	public String getNewsImages(String html, String[] label) {
+		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
-//		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
-		if(html == null)
-			return null;
-		if(html.contains("<!-- 正文 -->")&&html.contains("<!-- 分享 -->"))
-			bufHtml = html.substring(html.indexOf("<!-- 正文 -->"), html.indexOf("<!-- 分享 -->"));
-		else 
-			return null;
 		//获取图片时间，为命名服务
-		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+		imageNameTime = getNewsTime(html,label);
 		//处理存放条图片的文件夹
-	    File f = new File("SOHUGuoNei");
-	   	if(!f.exists()){
-	    	f.mkdir();
-	   	}
-	   	//保存图片文件的位置信息
-	   	Queue<String> imageLocation = new LinkedList<String>();
-	   	//图片正则表达式
-		String imageReg = "http://photocdn.sohu.com/[0-9]{4}[0-9]{2}[0-9]{2}/Img[0-9]{9}.jpg";
+    	File f = new File("CHINAGOV");
+    	if(!f.exists()){
+    		f.mkdir();
+    	}
+    	//保存图片文件的位置信息
+    	Queue<String> imageLocation = new LinkedList<String>();
+    	//图片正则表达式
+		String imageReg = "../../site1/"+imageNameTime+"/(.*?).jpg";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
+			bufUrl = bufUrl.replaceAll("../../", "http://www.gov.cn/xinwen/");
 			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
 			try{
 				URL uri = new URL(bufUrl);  
-				
+			
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("SOHUGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\CHINAGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("SOHUGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\CHINAGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
-	            
+            
 				}else if(imageNumber < 999){
-					fileBuf = new File("SOHUGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\CHINAGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
-	  
+  
 				}else{
-					fileBuf = new File("SOHUGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("\\CHINAGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
-	           
+            
 				byte[] buf = new byte[1024];  
 				int length = 0;  
-//	          	 System.out.println("开始下载:" + url);  
+//           	 System.out.println("开始下载:" + url);  
 				while ((length = in.read(buf, 0, buf.length)) != -1) {  
 					fo.write(buf, 0, length);  
 				}  
 				in.close();  
 				fo.close();  
-//	            System.out.println(imageName + "下载完成"); 
+//          	  System.out.println(imageName + "下载完成"); 
 			}catch(Exception e){
 				System.out.println("亲，图片下载失败！！");
 				System.out.println("请检查网络是否正常！");
 			}
 			i ++;
-				
-	       }  
+			
+        }  
 		//如果该条新闻没有图片则图片的编号不再增加
 		if(!imageLocation.isEmpty())
 			imageNumber ++;
 		return imageLocation.toString();
 	}
-	//新闻时间
+
 	@Override
-	public String findNewsTime(String html , String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsTime(String html, String[] label) {
 		String timeBuf ="";
 		if(label[1].equals("")){
 			timeBuf = HandleHtml(html , label[0]);
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
+		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf.length() >= 8)
+			timeBuf = timeBuf.substring(0, 8);
+		else
+			timeBuf = null;
 		return timeBuf;
 	}
+
 	@Override
-	public String findNewsSource(String html ,String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsSource(String html, String[] label) {
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2];
 		else
 			return null;
 	}
+
 	@Override
-	public String findNewsOriginalSource(String html ,String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsOriginalSource(String html, String[] label) {
 		String sourceBuf;
 		if(label[1].equals("")){
 			sourceBuf = HandleHtml(html , label[0]);
@@ -449,41 +414,38 @@ public class SOHUGuoNei implements SOHU{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
 		
-		sourceBuf = sourceBuf.replaceAll("\\s+", "");
-		sourceBuf = label[2] +" - "+ sourceBuf;
-		return sourceBuf;
+		return label[2]+"-"+sourceBuf;
 	}
+
 	@Override
-	public String findNewsCategroy(String html , String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsCategroy(String html, String[] label) {
 		String categroyBuf ="";
 		if(label[1].equals("")){
 			categroyBuf = HandleHtml(html , label[0]);
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
-			categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		}
+		categroyBuf = categroyBuf.replaceAll("&#62;", "");
+		
+		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻")+2, categroyBuf.length());
 		return categroyBuf;
 	}
+
 	@Override
-	public String findNewsOriginalCategroy(String html , String[] label) {
-		// TODO Auto-generated method stub
+	public String getNewsOriginalCategroy(String html, String[] label) {
 		String categroyBuf ="";
 		if(label[1].equals("")){
 			categroyBuf = HandleHtml(html , label[0]);
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
-			categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		}
+		categroyBuf = categroyBuf.replaceAll("&#62;", "");
 		return categroyBuf;
 	}
-	
+
 	public static void main(String[] args){
-		SOHUGuoNei test  = new SOHUGuoNei();
-		test.getSOHUGuoNeiNews();
+		
+		CHINAGOV test = new CHINAGOV();
+		test.getCHINAGOVNews();
 	}
 }

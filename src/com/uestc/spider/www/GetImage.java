@@ -127,22 +127,22 @@ public class GetImage {
 //                System.out.println("tttttt");
                 if(imageNum < 9){
 //                	System.out.println("sssssssss");
-                	fo = new FileOutputStream(new File("\\image",fileName+"000"+imageNum+"000"+(i+1)+imageName)); 
+                	fo = new FileOutputStream(new File("image",fileName+"000"+imageNum+"000"+(i+1)+imageName)); 
                 	name.add(fileName+"000"+imageNum+"000"+(i+1)+""+imageName);
                 	
 //                	System.out.println("11111");)
                 }else if(imageNum < 99){
                 	
-                	fo = new FileOutputStream(new File("\\image",fileName+"00"+imageNum+"000"+(i+1)+imageName));
+                	fo = new FileOutputStream(new File("image",fileName+"00"+imageNum+"000"+(i+1)+imageName));
                 	name.add(fileName+"00"+imageNum+"000"+(i+1)+""+imageName);
 //                	System.out.println("222222");
                 }else if(imageNum < 999){
                 	
-                	fo = new FileOutputStream(new File("\\image",fileName+"0"+imageNum+"000"+(i+1)+imageName));
+                	fo = new FileOutputStream(new File("image",fileName+"0"+imageNum+"000"+(i+1)+imageName));
                 	name.add(fileName+"0"+imageNum+"000"+(i+1)+""+imageName);
 //                	System.out.println("33333333");
                 }else{
-                	fo = new FileOutputStream(new File("\\image",fileName+imageNum+"000"+(i+1)+imageName));
+                	fo = new FileOutputStream(new File("image",fileName+imageNum+"000"+(i+1)+imageName));
                 	name.add(fileName+imageNum+"000"+(i+1)+""+imageName);
 //                	System.out.println("4444444");
                 }
