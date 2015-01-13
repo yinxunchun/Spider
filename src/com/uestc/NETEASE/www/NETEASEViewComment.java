@@ -429,5 +429,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		test3.getNETEASEGuoNeiComment();
 		NETEASEGuoJiComment test4 = new NETEASEGuoJiComment();
 		test4.getNETEASEGuoJiComment();
+		NETEASEFocusComment test5 = new NETEASEFocusComment();
+		test5.getNETEASEFocusComment();
 	}
 }
