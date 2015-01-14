@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -63,7 +64,7 @@ public class NETEASEGuoNei implements NETEASE{
 	}
 	
 	public void getNETEASEGuoNeiNews(){
-		DBName = "NETEASENEW";
+		DBName = "NETEASE";
 		DBTable = "gn";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
@@ -77,7 +78,7 @@ public class NETEASEGuoNei implements NETEASE{
 		theme = "http://news.163.com/domestic/";
 		
 		//新闻主题links的正则表达式
-		newsThemeLinksReg = "http://news.163.com/special/0001124J/guoneinews_[0-9]{1,2}.html#headList";
+		String theme1 = "http://news.163.com/special/0001124J/guoneinews_02.html#headList";
 		
 		//新闻内容links的正则表达式 (http://view.163.com/14/1119/10/ABDHAKC500012Q9L.html#f=dlist)
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html#f=dlist";
@@ -102,7 +103,8 @@ public class NETEASEGuoNei implements NETEASE{
 		}
 		//保存国内新闻主题links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
-		guoNeiNewsTheme = findThemeLinks(theme,newsThemeLinksReg);
+		guoNeiNewsTheme.offer(theme);
+		guoNeiNewsTheme.offer(theme1);
 //		System.out.println(guoNeiNewsTheme);
 		
 		//获取国内新闻内容links
@@ -122,19 +124,23 @@ public class NETEASEGuoNei implements NETEASE{
 		int i = 0;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-//			System.out.println(findNewsImages(html,newsTimeLabel));
-//			System.out.println(html);
-			i++;
-//			System.out.println(findNewsComment(url));
-//			System.out.println("\n");
-			crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-					findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+				i++;
+				System.out.println("download:"+downloadTime);
+				System.out.println(findNewsTime(html,newsTimeLabel));
+				if(findNewsTime(html,newsTimeLabel)!= null && findNewsTime(html,newsTimeLabel).equals(downloadTime)){
+					crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+		
+				}
+			}
+			System.out.println(i);
 		}
-		System.out.println(i);
 	
-	
+		imageNumber = 1 ;
 	}
 	
 	@Override
@@ -382,7 +388,7 @@ public class NETEASEGuoNei implements NETEASE{
 			return null;
 		//获取图片时间，为命名服务
 		if(imageNameTime != null && imageNameTime != "")
-			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+			imageNameTime = findNewsTime(html,label) ;
 		else
 			return null;
 		//处理存放条图片的文件夹
@@ -393,7 +399,7 @@ public class NETEASEGuoNei implements NETEASE{
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
+		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
@@ -467,6 +473,11 @@ public class NETEASEGuoNei implements NETEASE{
 			timeBuf = timeBuf.substring(0,19);
 		}else
 			timeBuf = timeBuf.substring(9, 28);  //根据不同新闻 不同处理
+		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf.length() >= 8)
+			timeBuf = timeBuf.substring(0, 8);
+		else
+			timeBuf = null;
 		return timeBuf;
 	}
 	@Override

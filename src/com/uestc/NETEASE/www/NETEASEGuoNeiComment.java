@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -64,7 +65,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		else 
 			downloadTime += date ;
 		//数据库以及编码
-		DBName = "NETEASENEWCOMMENT";
+		DBName = "NETEASECOMMENT";
 		DBTable = "gn";
 		ENCODE = "gb2312";
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; // "国内" "网易新闻-国内新闻-http://news.163.com/domestic/"
@@ -74,7 +75,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		theme = "http://news.163.com/domestic/";
 		
 		//新闻主题links的正则表达式
-		newsThemeLinksReg = "http://news.163.com/special/0001124J/guoneinews_[0-9]{1,2}.html#headList";
+		String theme1 = "http://news.163.com/special/0001124J/guoneinews_02.html#headList";
 		
 		//新闻内容links的正则表达式 (http://view.163.com/14/1119/10/ABDHAKC500012Q9L.html#f=dlist)
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html#f=dlist";
@@ -100,7 +101,8 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		}
 		//保存国内新闻主题links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
-		guoNeiNewsTheme = findThemeLinks(theme,newsThemeLinksReg);
+		guoNeiNewsTheme.offer(theme);
+		guoNeiNewsTheme.offer(theme1);
 //		System.out.println(guoNeiNewsTheme);
 		
 		//获取国内新闻内容links
@@ -111,11 +113,14 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		int i = 0;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-			Queue<String> buf = findNewsComment(url,html,label);
-			crut.add(url, commentUrl, buf,downloadTime);
-			commentUrl = null;
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.add(url, commentUrl, buf,downloadTime,date);
+				commentUrl = null;
+			}
 		}
 		System.out.println(i);
 	}

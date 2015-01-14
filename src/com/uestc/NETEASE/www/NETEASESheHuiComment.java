@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -61,7 +62,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		else 
 			downloadTime += date ;
 		
-		DBName = "NETEASENEWCOMMENT";
+		DBName = "NETEASECOMMENT";
 		DBTable = "sh";
 		ENCODE = "gb2312";
 		
@@ -72,7 +73,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		theme = "http://news.163.com/shehui/";
 		
 		//新闻主题links的正则表达式
-		newsThemeLinksReg = "http://news.163.com/special/00011229/shehuinews_[0-9]{1,2}.html#headList";
+		String theme1 = "http://news.163.com/special/00011229/shehuinews_02.html#headList";
 		
 		//新闻内容links的正则表达式 
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html#f=s((list)|(focus))";
@@ -97,7 +98,8 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		}
 		//保存社会新闻主题links
 		Queue<String> sheHuiNewsTheme = new LinkedList<String>();
-		sheHuiNewsTheme = findThemeLinks(theme,newsThemeLinksReg);
+		sheHuiNewsTheme.offer(theme);
+		sheHuiNewsTheme.offer(theme1);
 //		System.out.println(guoNeiNewsTheme);
 		
 		//获取社会新闻内容links
@@ -108,13 +110,16 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		int i = 0;
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-//			System.out.println(html);
-			i++;
-			Queue<String> buf = findNewsComment(url,html,label);
-			crut.add(url, commentUrl, buf,downloadTime);
-			commentUrl = null;
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+//				System.out.println(html);
+				i++;
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.add(url, commentUrl, buf,downloadTime,date);
+				commentUrl = null;
+			}
 		}
 		System.out.println(i);
 	}

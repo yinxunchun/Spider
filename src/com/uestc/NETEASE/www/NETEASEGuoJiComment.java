@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -61,7 +62,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 			downloadTime += "0" + date;
 		else 
 			downloadTime += date ;
-		DBName = "NETEASENEWCOMMENT";
+		DBName = "NETEASECOMMENT";
 		DBTable = "gj";
 		ENCODE = "gb2312";
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; // 属性
@@ -83,13 +84,16 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
-        	String html = findContentHtml(url);
-        	System.out.println(url);
-        	Queue<String> buf = findNewsComment(url,html,label);
-//        	System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
-//        	System.out.println(findNewsContent(html,newsContentLabel));
-        	crut.add(url,commentUrl, buf, downloadTime);
-			commentUrl = null;
+        	if(!crut.query("Url", url)){
+        		Date date = new Date();
+        		String html = findContentHtml(url);
+        		System.out.println(url);
+        		Queue<String> buf = findNewsComment(url,html,label);
+//        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
+//        		System.out.println(findNewsContent(html,newsContentLabel));
+        		crut.add(url,commentUrl, buf, downloadTime,date);
+        		commentUrl = null;
+        	}
         }
         System.out.println(i);
 	}

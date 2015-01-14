@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -56,7 +57,7 @@ public class NETEASEView implements NETEASE{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "NETEASENEW";   //数据库名称
+		DBName = "NETEASE";   //数据库名称
 		DBTable = "view";   //表名
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 title or id=h1title
 		String[] newsContentLabel = new String[]{"class" ,"feed-text"};  //新闻内容标签 class="feed-text"
@@ -89,20 +90,26 @@ public class NETEASEView implements NETEASE{
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
-        	if(!visitedLinks.contains(url)){
-        		String html = findContentHtml(url);
-        		System.out.println(url);
-//        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
-//        		System.out.println(findNewsContent(html,newsContentLabel));
-        		crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-        				findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
+        	if(!crut.query("Url", url)){
+        		if(!visitedLinks.contains(url)){
+        			Date date = new Date();
+        			String html = findContentHtml(url);
+        			System.out.println(url);
+
+        			System.out.println("download:"+downloadTime);
+        			System.out.println(findNewsTime(html,newsTimeLabel));
+        			if(findNewsTime(html,newsTimeLabel)!= null && findNewsTime(html,newsTimeLabel).equals(downloadTime)){
+        				crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+        						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+        			}
         		visitedLinks.add(url);
+        		}
         	}
         	
         }
         System.out.println(i);
 	
-	
+        imageNumber = 1 ;
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink ,String themeLinkReg) {
@@ -365,8 +372,8 @@ public class NETEASEView implements NETEASE{
 		}else
 			bufHtml = html;
 		//获取图片时间，为命名服务
-		if(imageNameTime.length() >= 10){
-			imageNameTime = imageNameTime.substring(0, 10).replaceAll("-", "") ;
+		if(imageNameTime.length() >= 8){
+			imageNameTime = imageNameTime;
 	
 		}else{
 			Calendar now = Calendar.getInstance();
@@ -391,7 +398,7 @@ public class NETEASEView implements NETEASE{
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{2}/[0-9]{1,2}/(.*?).((jpg)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(jpeg)))";
+		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
@@ -465,6 +472,11 @@ public class NETEASEView implements NETEASE{
 			timeBuf = timeBuf.substring(0,19);
 		}else
 			timeBuf = timeBuf.substring(9, 28);  //根据不同新闻 不同处理
+		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf.length() >= 8)
+			timeBuf = timeBuf.substring(0, 8);
+		else
+			timeBuf = null;
 		return timeBuf;
 	}
 	@Override

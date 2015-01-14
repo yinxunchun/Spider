@@ -1,15 +1,12 @@
-package com.uestc.timeTask.www;
+package com.uestc.NETEASE.www;
 
+import java.util.Date;
+import java.util.Timer;
 import java.util.TimerTask;
 
-import com.uestc.NETEASE.www.NETEASEFocus;
-import com.uestc.NETEASE.www.NETEASEGuoJi;
-import com.uestc.NETEASE.www.NETEASEGuoNei;
-import com.uestc.NETEASE.www.NETEASESheHui;
-import com.uestc.NETEASE.www.NETEASEView;
-import com.uestc.NETEASE.www.NETEASEWar;
+import com.uestc.spider.www.CRUT;
 
-public class TimeTask extends TimerTask{
+public class NETEASETimeTask extends TimerTask{
 
 	@Override
 	public void run() {
@@ -27,5 +24,11 @@ public class TimeTask extends TimerTask{
 		NETEASEFocus test5 = new NETEASEFocus();
 		test5.getNETEASEFocusNews();
 	}
+	public static void main(String[] args){
 
+		Timer timer = new Timer();
+		timer.schedule(new NETEASETimeTask(), 0,10*60*1000);
+
+	}
+	
 }

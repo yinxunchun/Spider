@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -61,7 +62,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "NETEASENEWCOMMENT";   //数据库名称
+		DBName = "NETEASECOMMENT";   //数据库名称
 		DBTable = "view";   //表名
 		String[] label = new String[]{"class","path"} ;
 		CRUT crut = new CRUT(DBName,DBTable);
@@ -81,14 +82,17 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
-        	if(!visitedLinks.contains(url)){
-        		String html = findContentHtml(url);
-        		System.out.println(url);
-        		i++;
-    			Queue<String> buf = findNewsComment(url,html,label);
-    			crut.add(url, commentUrl, buf,downloadTime);
-    			commentUrl = null;
-        		visitedLinks.add(url);
+        	if(!crut.query("Url", url)){
+        		if(!visitedLinks.contains(url)){
+        			Date date = new Date();
+        			String html = findContentHtml(url);
+        			System.out.println(url);
+        			i++;
+        			Queue<String> buf = findNewsComment(url,html,label);
+        			crut.add(url, commentUrl, buf,downloadTime,date);
+        			commentUrl = null;
+        			visitedLinks.add(url);
+        		}
         	}
         	
         }

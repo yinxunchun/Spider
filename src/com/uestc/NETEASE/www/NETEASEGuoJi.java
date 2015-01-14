@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -52,7 +53,7 @@ public class NETEASEGuoJi implements NETEASE{
 	}
 	
 	public void getNETEASEGuoJiNews(){
-		DBName = "NETEASENEW";
+		DBName = "NETEASE";
 		DBTable = "gj";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
@@ -87,17 +88,22 @@ public class NETEASEGuoJi implements NETEASE{
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
-        	String html = findContentHtml(url);
-        	System.out.println(url);
-//        	System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
-//        	System.out.println(findNewsContent(html,newsContentLabel));
-        	crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel) , findNewsSource(html,newsSourceLabel),
-					findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
-        	
+        	if(!crut.query("Url", url)){
+        		Date date = new Date();
+        		String html = findContentHtml(url);
+        		System.out.println(url);
+        		System.out.println("download:"+downloadTime);
+        		System.out.println(findNewsTime(html,newsTimeLabel));
+        		if(findNewsTime(html,newsTimeLabel)!=null && findNewsTime(html,newsTimeLabel).equals(downloadTime)){
+        			System.out.println("..............................");
+        			crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel) , findNewsSource(html,newsSourceLabel),
+        					findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+        		}
+        	}
         }
         System.out.println(i);
 	
-	
+        imageNumber = 1;
 	}
 	
 	@Override
@@ -347,7 +353,7 @@ public class NETEASEGuoJi implements NETEASE{
 			return null;
 		//获取图片时间，为命名服务
 		if(imageNameTime != null && imageNameTime != "")
-			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+			imageNameTime = findNewsTime(html,label);
 		else
 			return null;
 		//处理存放条图片的文件夹
@@ -358,7 +364,7 @@ public class NETEASEGuoJi implements NETEASE{
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
+		String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
@@ -425,13 +431,18 @@ public class NETEASEGuoJi implements NETEASE{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf == ""){
-			timeBuf = HandleHtml(html,"id","ptime");
+		if(timeBuf == ""||timeBuf == null){
+			timeBuf = HandleHtml(html,"class","ep-info cDGray");
 //			return timeBuf;
 		}else if(label[0].equals("style")&&label[1].equals("float:left;")){
 			timeBuf = timeBuf.substring(0,19);
 		}else
 			timeBuf = timeBuf.substring(9, 28);  //根据不同新闻 不同处理
+		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf.length() >= 8)
+			timeBuf = timeBuf.substring(0, 8);
+		else
+			timeBuf = null;
 		return timeBuf;
 	}
 	@Override
@@ -451,7 +462,9 @@ public class NETEASEGuoJi implements NETEASE{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
+		if(sourceBuf.equals("")||sourceBuf== null){
+			sourceBuf = HandleHtml(html,"class","ep-info cDGray");
+		}
 		if(sourceBuf.length() >29)
 			sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
 		if(label.length == 3 && (!label[2].equals("")))

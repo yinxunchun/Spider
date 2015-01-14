@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -65,7 +66,7 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		 * 
 		 * */
 		ENCODE = "GB2312";
-		DBName = "NETEASENEWCOMMENT";   //数据库名称
+		DBName = "NETEASECOMMENT";   //数据库名称
 		DBTable = "war";   //表名
 		
 		String[] label = new String[]{"class","ep-crumb JS_NTES_LOG_FE"} ; 
@@ -89,44 +90,53 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 //		
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-			Queue<String> buf = findNewsComment(url,html,label);
-			crut.add(url, commentUrl, buf,downloadTime);
-			commentUrl = null;
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.add(url, commentUrl, buf,downloadTime,date);
+				commentUrl = null;
+			}
 		}
 		
 		//详细分类模块
 		theme  = "http://war.163.com/special/millatestnews/";
-		newsThemeLinksReg = "http://war.163.com/special/millatestnews(_[0-9]{2})*/";  //主题正则表达式
+//		newsThemeLinksReg = "http://war.163.com/special/millatestnews(_[0-9]{2})*/";  //主题正则表达式
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
-		warNewsThemeLinks = findThemeLinks(theme,newsThemeLinksReg);
+		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int k = 1;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-			Queue<String> buf = findNewsComment(url,html,label);
-			crut.add(url, commentUrl, buf,downloadTime);
-			commentUrl = null;
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.add(url, commentUrl, buf,downloadTime,date);
+				commentUrl = null;
+			}
 		}
 //		System.out.println(k);
 		
 		//军事历史
 		theme = "http://war.163.com/special/historyread/";
-		newsThemeLinksReg = "http://war.163.com/special/historyread(_[0-9]{2})*/";  //主题正则表达式
+//		newsThemeLinksReg = "http://war.163.com/special/historyread(_[0-9]{2})*/";  //主题正则表达式
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
-		warNewsThemeLinks = findThemeLinks(theme,newsThemeLinksReg);
+		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int j = 1 ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-			Queue<String> buf = findNewsComment(url,html,label);
-			crut.add(url, commentUrl, buf,downloadTime);
-			commentUrl = null;
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.add(url, commentUrl, buf,downloadTime,date);
+				commentUrl = null;
+			}
 		}
 //		System.out.println(j);
 	}

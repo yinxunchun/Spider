@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -66,7 +67,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 			else 
 				downloadTime += date ;
 			//数据库以及编码
-			DBName = "NETEASENEWCOMMENT";
+			DBName = "NETEASECOMMENT";
 			DBTable = "focus";
 			ENCODE = "gb2312";
 			String[] label = new String[]{"class","path"} ; // 属性标签
@@ -111,18 +112,20 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        while(themeMatcher.find()){
 	        	i++;
 	        	String url = themeMatcher.group();
-	        	if(!visitedLinks.contains(url)){
-	        		String html = findContentHtml(url);
-	        		System.out.println(url);
-//	        		System.out.println(findNewsOriginalSource(html,newsSourceLabel));
-//	        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
-//	        		System.out.println(findNewsTime(html,newsTimeLabel));
-	        		Queue<String> buf = findNewsComment(url,html,label);
-	        		crut.add(url,commentUrl, buf,downloadTime );
-	        		visitedLinks.add(url);
-	        		commentUrl = null;
+	        	if(!crut.query("Url", url)){
+	        		if(!visitedLinks.contains(url)){
+	        			Date date = new Date();
+	        			String html = findContentHtml(url);
+	        			System.out.println(url);
+//	        			System.out.println(findNewsOriginalSource(html,newsSourceLabel));
+//	        			System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
+//	        			System.out.println(findNewsTime(html,newsTimeLabel));
+	        			Queue<String> buf = findNewsComment(url,html,label);
+	        			crut.add(url,commentUrl, buf,downloadTime,date );
+	        			visitedLinks.add(url);
+	        			commentUrl = null;
+	        		}
 	        	}
-	        	
 	        }
 	        System.out.println(i);
 		}
