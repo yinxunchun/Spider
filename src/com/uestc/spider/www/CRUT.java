@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Queue;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.Bytes;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -89,6 +90,7 @@ public class CRUT {
 		user.put("image",image);
 
 		users.insert(user);
+		users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 		
 	}
@@ -121,6 +123,7 @@ public class CRUT {
 		user.put("downloadTime",downloadtime);
 
 		users.insert(user);
+		users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 		
 	}
@@ -154,6 +157,7 @@ public class CRUT {
 			user.put("Date", date);
 
 			users.insert(user);
+			users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 			
 		}
@@ -179,6 +183,7 @@ public class CRUT {
 			user.put("Comment", comment);
 
 	     users.insert(user);
+	     users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 	}
 	//重载add 增加download time
@@ -196,6 +201,7 @@ public class CRUT {
 			user.put("Comment", comment);
 		user.put("DownloadTime", downloadTime);
 	    users.insert(user);
+	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 	}
 	//重载add 增加download time
@@ -214,6 +220,7 @@ public class CRUT {
 		user.put("DownloadTime", downloadTime);
 		user.put("Date", date);
 	    users.insert(user);
+	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 	}
 	//查询可以查新闻题目，新闻内容，新闻发布时间，报社名称等
@@ -222,6 +229,7 @@ public class CRUT {
 		if(users.findOne(new BasicDBObject(key, value)) != null){
 			buf = true ;
 		}
+		users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 		return buf;
 		
 	}

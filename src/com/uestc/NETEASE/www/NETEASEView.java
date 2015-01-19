@@ -367,8 +367,8 @@ public class NETEASEView implements NETEASE{
 //			return null;
 		if(html == null || html == "")
 			return null;
-		if(html.contains("分享到网易微博")){
-			bufHtml = html.substring(0,html.indexOf("分享到网易微博"));
+		if(html.contains("分享到网易微博")&&html.contains("class=\"feed-text\">")){
+			bufHtml = html.substring(html.indexOf("class=\"feed-text\">"),html.indexOf("分享到网易微博"));
 		}else
 			bufHtml = html;
 		//获取图片时间，为命名服务
