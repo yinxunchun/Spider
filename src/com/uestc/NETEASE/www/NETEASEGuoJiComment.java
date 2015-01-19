@@ -32,6 +32,7 @@ import com.uestc.spider.www.CRUT;
 public class NETEASEGuoJiComment implements NETEASECOMMENT{
 	
 	private String downloadTime;
+    Date dateTime = new Date();
 	Calendar today = Calendar.getInstance();
 	private int year = today.get(Calendar.YEAR);
 	private int month = today.get(Calendar.MONTH)+1;
@@ -82,18 +83,26 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         Matcher themeMatcher = newPage.matcher(guoJiHtml);
         int i = 0;
         while(themeMatcher.find()){
-        	i++;
+        	
         	String url = themeMatcher.group();
         	if(!crut.query("Url", url)){
-        		Date date = new Date();
+        		i++;
         		String html = findContentHtml(url);
         		System.out.println(url);
         		Queue<String> buf = findNewsComment(url,html,label);
 //        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
 //        		System.out.println(findNewsContent(html,newsContentLabel));
-        		crut.add(url,commentUrl, buf, downloadTime,date);
+        		crut.add(url,commentUrl, buf,dateTime);
         		commentUrl = null;
-        	}
+        	}else {
+        		String html = findContentHtml(url);
+        		System.out.println(url);
+        		Queue<String> buf = findNewsComment(url,html,label);
+//        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
+//        		System.out.println(findNewsContent(html,newsContentLabel));
+        		crut.update(url,commentUrl, buf,dateTime);
+        		commentUrl = null;
+			}
         }
         System.out.println(i);
 	}
@@ -411,7 +420,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 			mm = mm.replaceAll("发表", "");
 			mm = mm.replaceAll("顶", "");
 		//	        	System.out.println(mm);
-			result.offer(mm+"--"+downloadTime) ;
+			result.offer(mm+"--"+dateTime) ;
 		    mm = null;
 		}
 		commentReg = null ;

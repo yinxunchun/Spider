@@ -34,6 +34,7 @@ import com.uestc.spider.www.CRUT;
 public class NETEASEFocusComment implements NETEASECOMMENT{
 	
 		private String downloadTime;
+        Date dateTime = new Date();
 		Calendar today = Calendar.getInstance();
 		private int year = today.get(Calendar.YEAR);
 		private int month = today.get(Calendar.MONTH)+1;
@@ -108,20 +109,31 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 			Pattern newPage = Pattern.compile(newsContentLinksReg);
 	        
 	        Matcher themeMatcher = newPage.matcher(focusHtml);
+
 	        int i = 0;
 	        while(themeMatcher.find()){
 	        	i++;
 	        	String url = themeMatcher.group();
 	        	if(!crut.query("Url", url)){
 	        		if(!visitedLinks.contains(url)){
-	        			Date date = new Date();
+	        			
 	        			String html = findContentHtml(url);
 	        			System.out.println(url);
 //	        			System.out.println(findNewsOriginalSource(html,newsSourceLabel));
 //	        			System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
 //	        			System.out.println(findNewsTime(html,newsTimeLabel));
 	        			Queue<String> buf = findNewsComment(url,html,label);
-	        			crut.add(url,commentUrl, buf,downloadTime,date );
+	        			crut.add(url,commentUrl, buf,dateTime );
+	        			visitedLinks.add(url);
+	        			commentUrl = null;
+	        		}
+	        	}else{
+	        			if(!visitedLinks.contains(url)){
+	        			
+	        			String html = findContentHtml(url);
+	        			System.out.println(url);
+	        			Queue<String> buf = findNewsComment(url,html,label);
+	        			crut.update(url,commentUrl, buf,dateTime );
 	        			visitedLinks.add(url);
 	        			commentUrl = null;
 	        		}
@@ -444,7 +456,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 				mm = mm.replaceAll("发表", "");
 				mm = mm.replaceAll("顶", "");
 			//	        	System.out.println(mm);
-				result.offer(  mm +"--"+ downloadTime );
+				result.offer(  mm +"--"+ dateTime );
 			    mm = null;
 			}
 			commentReg = null ;

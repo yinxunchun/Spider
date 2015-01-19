@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Queue;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Bytes;
 import com.mongodb.DB;
@@ -223,6 +225,19 @@ public class CRUT {
 	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 
 	}
+	//重载新闻评论 删除downloadTime
+	public void add(String url , String commentUrl,Queue<String> comment , Date date){
+		DBObject user = new BasicDBObject();
+		user.put("Url", url);
+		user.put("CommentUrl",commentUrl);
+		if(comment == null)
+			user.put("Comment", "无评论！");
+		else
+			user.put("Comment", comment);
+		user.put("Date", date);
+	    users.insert(user);
+	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
+	}
 	//查询可以查新闻题目，新闻内容，新闻发布时间，报社名称等
 	public boolean query(String key,String value){
 		boolean buf = false ;
@@ -233,7 +248,30 @@ public class CRUT {
 		return buf;
 		
 	}
-	
+	//更新数据 有点麻烦，后面可能要对评论是否重复进行再次处理
+	@SuppressWarnings("unused")
+	public void update(String url ,String commentUrl ,Queue<String> newComment,Date date){
+		DBObject buf  = users.findOne(new BasicDBObject("Url", url));
+		BasicDBList commentQueue = (BasicDBList) buf.get("Comment");
+		Queue<String> bufQueue = new LinkedList<String>();
+		for(int i = 0 ; i < commentQueue.size();i ++){
+			bufQueue.offer(commentQueue.get(i).toString());
+		}
+		while (!newComment.isEmpty()) {
+			bufQueue.offer(newComment.poll());		
+		}
+		users.remove(buf);
+		DBObject user = new BasicDBObject();
+		user.put("Url", url);
+		user.put("CommentUrl",commentUrl);
+		if(bufQueue == null)
+			user.put("Comment", "无评论！");
+		else
+			user.put("Comment", bufQueue);
+		user.put("Date", date);
+	    users.insert(user);
+	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
+	}
 	//查看数据库中所有数据
     @SuppressWarnings("unused")
 	private void queryAll() {

@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class NETEASECOMMENTTimeTask extends TimerTask{
-
+	private int i = 0 ;
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -20,11 +20,13 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 		test4.getNETEASEGuoJiComment();
 		NETEASEFocusComment test5 = new NETEASEFocusComment();
 		test5.getNETEASEFocusComment();
+		System.out.println("‘À––"+i+ "¥Œ");
+		i++;
 	}
 	
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new NETEASECOMMENTTimeTask(), 0,10*60*1000);
+		timer.schedule(new NETEASECOMMENTTimeTask(), 0,6*60*60*1000);
 	}
 
 }

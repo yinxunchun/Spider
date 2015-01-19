@@ -352,9 +352,8 @@ public class NETEASEGuoJi implements NETEASE{
 		else 
 			return null;
 		//获取图片时间，为命名服务
-		if(imageNameTime != null && imageNameTime != "")
-			imageNameTime = findNewsTime(html,label);
-		else
+		imageNameTime = findNewsTime(html,label);
+		if(imageNameTime == null || imageNameTime.equals(""))
 			return null;
 		//处理存放条图片的文件夹
     	File f = new File("NETEASEGuoJi");

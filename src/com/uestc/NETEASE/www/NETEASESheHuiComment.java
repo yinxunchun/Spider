@@ -32,6 +32,7 @@ import com.uestc.spider.www.CRUT;
 public class NETEASESheHuiComment implements NETEASECOMMENT{
 	
 	private String downloadTime;
+	Date dateTime = new Date();
 	Calendar today = Calendar.getInstance();
 	private int year = today.get(Calendar.YEAR);
 	private int month = today.get(Calendar.MONTH)+1;
@@ -111,13 +112,20 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
 			if(!crut.query("Url", url)){
-				Date date = new Date();
+
 				String html = findContentHtml(url);  //获取新闻的html
 				System.out.println(url);
 //				System.out.println(html);
 				i++;
 				Queue<String> buf = findNewsComment(url,html,label);
-				crut.add(url, commentUrl, buf,downloadTime,date);
+				crut.add(url, commentUrl, buf,dateTime);
+				commentUrl = null;
+			}else{
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+//				System.out.println(html);
+				Queue<String> buf = findNewsComment(url,html,label);
+				crut.update(url, commentUrl, buf,dateTime);
 				commentUrl = null;
 			}
 		}
@@ -437,7 +445,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 			mm = mm.replaceAll("发表", "");
 			mm = mm.replaceAll("顶", "");
 		//	        	System.out.println(mm);
-			result.offer(mm+"--"+downloadTime); 
+			result.offer(mm+"--"+dateTime); 
 		    mm = null;
 		}
 		commentReg = null ;

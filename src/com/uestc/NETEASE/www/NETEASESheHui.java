@@ -374,14 +374,18 @@ public class NETEASESheHui implements NETEASE{
 			String bufHtml = "";        //辅助
 			String imageNameTime  = "";
 //			Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
-			if(html.contains("<div id=\"endText\">")&&html.contains("<!-- 分页 -->"))
+			if(html.contains("<div id=\"endText\">")&&html.contains("<!-- 分页 -->")){
+				
 				bufHtml = html.substring(html.indexOf("<div id=\"endText\">"), html.indexOf("<!-- 分页 -->"));
-			else 
+				System.out.println("ssss");
+			}else {
+				System.out.println("ttt");
 				return null;
+				
+			}
 			//获取图片时间，为命名服务
-			if(imageNameTime != null && imageNameTime != "")
-				imageNameTime = findNewsTime(html,label);
-			else
+			imageNameTime = findNewsTime(html,label);
+			if(imageNameTime == null || imageNameTime.equals(""))
 				return null;
 			//处理存放条图片的文件夹
 		    File f = new File("NETEASESheHui");
@@ -439,6 +443,7 @@ public class NETEASESheHui implements NETEASE{
 				}catch(Exception e){
 					System.out.println("亲，图片下载失败！！");
 					System.out.println("请检查网络是否正常！");
+					System.out.println(e);
 				}
 				i ++;
 					

@@ -32,6 +32,7 @@ import com.uestc.spider.www.CRUT;
 public class NETEASEViewComment implements NETEASECOMMENT{
  	
 	private String downloadTime;
+	Date dateTime = new Date();
 	Calendar today = Calendar.getInstance();
 	private int year = today.get(Calendar.YEAR);
 	private int month = today.get(Calendar.MONTH)+1;
@@ -84,15 +85,23 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         	String url = themeMatcher.group();
         	if(!crut.query("Url", url)){
         		if(!visitedLinks.contains(url)){
-        			Date date = new Date();
+
         			String html = findContentHtml(url);
         			System.out.println(url);
         			i++;
         			Queue<String> buf = findNewsComment(url,html,label);
-        			crut.add(url, commentUrl, buf,downloadTime,date);
+        			crut.add(url, commentUrl, buf,dateTime);
         			commentUrl = null;
         			visitedLinks.add(url);
         		}
+        	}else{
+        		String html = findContentHtml(url);
+    			System.out.println(url);
+    			i++;
+    			Queue<String> buf = findNewsComment(url,html,label);
+    			crut.update(url, commentUrl, buf,dateTime);
+    			commentUrl = null;
+    			visitedLinks.add(url);
         	}
         	
         }
@@ -414,7 +423,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 			mm = mm.replaceAll("·¢±í", "");
 			mm = mm.replaceAll("¶¥", "");
 		//	        	System.out.println(mm);
-			result.offer(mm+"--"+downloadTime);
+			result.offer(mm+"--"+dateTime);
 		    mm = null;
 		}
 		commentReg = null ;

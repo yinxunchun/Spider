@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import com.uestc.spider.www.CRUT;
 
 public class NETEASETimeTask extends TimerTask{
-
+	private int i  = 0 ;
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -23,6 +23,9 @@ public class NETEASETimeTask extends TimerTask{
 		test4.getNETEASEWarNews();
 		NETEASEFocus test5 = new NETEASEFocus();
 		test5.getNETEASEFocusNews();
+		System.out.println("运行第"+i+"次");
+		i++;
+		
 	}
 	public static void main(String[] args){
 
