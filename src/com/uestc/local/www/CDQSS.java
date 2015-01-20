@@ -352,7 +352,7 @@ public class CDQSS {
 		contentBuf= contentBuf.replaceAll("(<font color=\"teal\">)|(<p style=\"COLOR: teal\">)|(</font)>", "");
 		contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
 		contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
-		
+		contentBuf = contentBuf.replaceAll("<(.*?)>", "");
 		return contentBuf;
 	}
 	//处理图片，使用时间label
