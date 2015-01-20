@@ -26,7 +26,7 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 	
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new NETEASECOMMENTTimeTask(), 0,6*60*60*1000);
+		timer.schedule(new NETEASECOMMENTTimeTask(), 0,30*60*1000);
 	}
 
 }

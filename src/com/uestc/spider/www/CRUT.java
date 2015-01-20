@@ -231,7 +231,7 @@ public class CRUT {
 		user.put("Url", url);
 		user.put("CommentUrl",commentUrl);
 		if(comment == null)
-			user.put("Comment", "无评论！");
+			user.put("Comment", null);
 		else
 			user.put("Comment", comment);
 		user.put("Date", date);
@@ -252,20 +252,38 @@ public class CRUT {
 	@SuppressWarnings("unused")
 	public void update(String url ,String commentUrl ,Queue<String> newComment,Date date){
 		DBObject buf  = users.findOne(new BasicDBObject("Url", url));
-		BasicDBList commentQueue = (BasicDBList) buf.get("Comment");
+		BasicDBList commentQueue = null;
 		Queue<String> bufQueue = new LinkedList<String>();
-		for(int i = 0 ; i < commentQueue.size();i ++){
-			bufQueue.offer(commentQueue.get(i).toString());
+		if(buf.get("Comment") != null){
+			commentQueue = (BasicDBList) buf.get("Comment");
+			for(int i = 0 ; i < commentQueue.size();i ++){
+				bufQueue.offer(commentQueue.get(i).toString());
+			}
+		}else{
+			bufQueue = null;
 		}
-		while (!newComment.isEmpty()) {
-			bufQueue.offer(newComment.poll());		
+		
+
+		if(bufQueue != null){
+			
+			if(newComment != null){
+				while (!newComment.isEmpty()) {
+			
+					bufQueue.offer(newComment.poll());		
+				}
+			}
+				
+			
+		}else{
+			bufQueue = newComment ;
 		}
+		
 		users.remove(buf);
 		DBObject user = new BasicDBObject();
 		user.put("Url", url);
 		user.put("CommentUrl",commentUrl);
 		if(bufQueue == null)
-			user.put("Comment", "无评论！");
+			user.put("Comment", null);
 		else
 			user.put("Comment", bufQueue);
 		user.put("Date", date);
