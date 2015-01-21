@@ -129,6 +129,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 				commentUrl = null;
 			}
 		}
+		
 		System.out.println(i);
 	}
 	

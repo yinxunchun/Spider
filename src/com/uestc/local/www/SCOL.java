@@ -113,7 +113,7 @@ public class SCOL {
 			}
 			System.out.println(i);
 		}
-	
+		crut.destory();
 		imageNumber = 1 ;
 	}
 	

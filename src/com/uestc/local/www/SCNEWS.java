@@ -119,7 +119,7 @@ public class SCNEWS {
 			}
 			System.out.println(i);
 		}
-	
+		crut.destory();
 		imageNumber = 1 ;
 	}
 	

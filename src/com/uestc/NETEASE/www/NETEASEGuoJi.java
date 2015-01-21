@@ -102,7 +102,7 @@ public class NETEASEGuoJi implements NETEASE{
         	}
         }
         System.out.println(i);
-	
+        crut.destory();
         imageNumber = 1;
 	}
 	

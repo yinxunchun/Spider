@@ -154,6 +154,7 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 				commentUrl = null;
 			}
 		}
+		
 //		System.out.println(j);
 	}
 	@Override

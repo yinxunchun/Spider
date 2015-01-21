@@ -113,7 +113,7 @@ public class CDQSS {
 			}
 			System.out.println(i);
 		}
-	
+		crut.destory();
 		imageNumber = 1 ;
 	}
 	

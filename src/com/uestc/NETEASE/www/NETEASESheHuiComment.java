@@ -129,6 +129,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 				commentUrl = null;
 			}
 		}
+		
 		System.out.println(i);
 	}
 	@Override

@@ -153,7 +153,7 @@ public class NETEASEWar implements NETEASE{
 				}
 			}
 		}
-	
+		crut.destory();
 		imageNumber = 1 ;
 	}
 	@Override

@@ -30,7 +30,7 @@ public class NETEASETimeTask extends TimerTask{
 	public static void main(String[] args){
 
 		Timer timer = new Timer();
-		timer.schedule(new NETEASETimeTask(), 0,10*60*1000);
+		timer.schedule(new NETEASETimeTask(), 0,20*60*1000);
 
 	}
 	

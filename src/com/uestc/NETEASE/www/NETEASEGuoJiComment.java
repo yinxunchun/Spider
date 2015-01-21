@@ -104,6 +104,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         		commentUrl = null;
 			}
         }
+        
         System.out.println(i);
 	}
 	@Override
