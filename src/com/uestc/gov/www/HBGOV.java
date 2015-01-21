@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -93,19 +94,23 @@ public class HBGOV implements GOV{
 		int i = 1 ;
 		while(!contentLinks.isEmpty()){
 			String url = contentLinks.poll();
-			String html = getContentHtml(url);  //获取新闻的html
-			System.out.println(url);
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = getContentHtml(url);  //获取新闻的html
+				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 //			System.out.println(findNewsComment(url));
 //			System.out.println("\n");
-			if(getNewsTime(html,newsTimeLabel)!= null && getNewsTime(html,newsTimeLabel).equals(downloadTime)){
-				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
-					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
-				i++ ;
+				if(getNewsTime(html,newsTimeLabel)!= null && getNewsTime(html,newsTimeLabel).equals(downloadTime)){
+					crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
+							getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
+					i++ ;
+				}
 			}
 		}
 		System.out.println(i);
+		crut.destory();
 		
 	}
 	

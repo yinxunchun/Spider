@@ -251,6 +251,7 @@ public class CRUT {
 	//更新数据 有点麻烦，后面可能要对评论是否重复进行再次处理
 	@SuppressWarnings("unused")
 	public void update(String url ,String commentUrl ,Queue<String> newComment,Date date){
+		users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 		DBObject buf  = users.findOne(new BasicDBObject("Url", url));
 		BasicDBList commentQueue = null;
 		Queue<String> bufQueue = new LinkedList<String>();
@@ -288,7 +289,7 @@ public class CRUT {
 			user.put("Comment", bufQueue);
 		user.put("Date", date);
 	    users.insert(user);
-	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
+//	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 	}
 	//查看数据库中所有数据
     @SuppressWarnings("unused")

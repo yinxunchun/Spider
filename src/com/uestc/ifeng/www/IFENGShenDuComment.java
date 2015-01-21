@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -35,6 +36,7 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 		
 	//新闻主题link
 	private String theme ;
+	Date dateBufDate = new Date();
 	//downloadTime
 	private String downloadTime;
 	Calendar today = Calendar.getInstance();
@@ -45,7 +47,7 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 	private int imageNumber = 1 ;
 	
 	public void getIFENGShenDuComment(){
-		DBName = "IFENGCOMMENT1";
+		DBName = "IFENGCOMMENT";
 		DBTable = "SD";
 		ENCODE = "utf-8";
 		String[] label = new String[]{"class","textDet"};     //新闻标题标签 t
@@ -86,15 +88,24 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 		while(!shenDuNewsContent.isEmpty()){
 			String url = shenDuNewsContent.poll();
 //			System.out.println(url);
-			String commentUrl = handleCommentUrl(url);
-			System.out.println(commentUrl);
-			String commentHtml = findCommentHtml(commentUrl);
-			handleComment(commentHtml,label);
-			crut.add(url, commentUrl, handleComment(commentHtml,label),downloadTime);
-//			System.out.println(html);
-			i++;
+			if(!crut.query("Url", url)){
+				String commentUrl = handleCommentUrl(url);
+				System.out.println(commentUrl);
+				String commentHtml = findCommentHtml(commentUrl);
+				handleComment(commentHtml,label);
+				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
+//				System.out.println(html);
+				i++;
+			}else {
+				String commentUrl = handleCommentUrl(url);
+				System.out.println(commentUrl);
+				String commentHtml = findCommentHtml(commentUrl);
+				handleComment(commentHtml,label);
+				crut.update(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
+			}
 		}
 		System.out.println(i);
+		crut.destory();
 	
 	
 	}
@@ -279,7 +290,7 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 		Pattern tt = Pattern.compile(bufReg);
 		Matcher bufMatcher = tt.matcher(comment);
 		while(bufMatcher.find()){
-			result.offer(bufMatcher.group()+"--"+downloadTime);
+			result.offer(bufMatcher.group()+"--"+dateBufDate);
 		}
 		return result;
 	}

@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -109,31 +110,40 @@ public class CQGOV implements GOV{
 		while(!contentLinks.isEmpty()){
 			String url = contentLinks.poll();
 			url = "http://www.cq.gov.cn" + url;
-			String html = getContentHtml(url);  //获取新闻的html
-			System.out.println(url);
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = getContentHtml(url);  //获取新闻的html
+				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
-			i++;
+				i++;
 //			System.out.println(findNewsComment(url));
 //			System.out.println("\n");
-			crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
-					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
+				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
+						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
+		
+			}
 		}
 		
 		if(date > 1){
 			Queue<String> contentLinks1 = new LinkedList<String>();
 			contentLinks1 = getContentLinks(themeLinks1,"/((zwgk/zfxx/)|(today/news/))"+year+"/"+month+"/"+ date+ "/[0-9]{7}.shtml");
 			while(!contentLinks1.isEmpty()){
+				
 				String url = contentLinks1.poll();
 				url = "http://www.cq.gov.cn" + url;
-				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
-				i++;
-				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
-						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime);
+				if(!crut.query("Url", url)){
+					Date date = new Date();
+					String html = getContentHtml(url);  //获取新闻的html
+					System.out.println(url);
+					i++;
+					crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
+							getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
+				}
 			}
 		}
 		System.out.println(i);
+		crut.destory();
 		
 	}
 	

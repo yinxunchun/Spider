@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -97,16 +98,20 @@ public class IFENGOpinion implements IFENG{
 		int i = 0;
 		while(!OpinionNewsContent.isEmpty()){
 			String url = OpinionNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-//			System.out.println(html);
-			i++;
-//			System.out.println(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"));
-//			System.out.println(findNewsTime(html,newsTimeLabel));
-//			System.out.println("\n");
-			crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰评论"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰评论"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰评论"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-					findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+//				System.out.println(html);
+				i++;
+//				System.out.println(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"));
+//				System.out.println(findNewsTime(html,newsTimeLabel));
+//				System.out.println("\n");
+				crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰评论"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰评论"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰评论"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+			}
 		}
+		crut.destory();
 		System.out.println(i);
 	
 	
