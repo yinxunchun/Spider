@@ -139,6 +139,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        		}
 	        	}
 	        }
+	        crut.destory();
 	        System.out.println(i);
 		}
 		

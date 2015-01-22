@@ -105,7 +105,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         	}
         	
         }
-        
+        crut.destory();
         System.out.println(i);
 	
 	

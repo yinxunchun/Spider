@@ -129,7 +129,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 				commentUrl = null;
 			}
 		}
-		
+		crut.destory();
 		System.out.println(i);
 	}
 	
@@ -447,7 +447,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			mm = mm.replaceAll("·¢±í", "");
 			mm = mm.replaceAll("¶¥", "");
 		//	        	System.out.println(mm);
-			result.offer(mm+"--"+downloadTime); 
+			result.offer(mm+"--"+dateTime); 
 		    mm = null;
 		}
 		commentReg = null ;
