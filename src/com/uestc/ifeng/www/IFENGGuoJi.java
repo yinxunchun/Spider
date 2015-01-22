@@ -229,6 +229,8 @@ public class IFENGGuoJi implements IFENG{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null)
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
@@ -253,6 +255,8 @@ public class IFENGGuoJi implements IFENG{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null)
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
@@ -333,7 +337,7 @@ public class IFENGGuoJi implements IFENG{
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
-			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).jpg";
+			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).((jpg)|(png))";
 			Pattern newsImage = Pattern.compile(imageReg);
 			Matcher imageMatcher = newsImage.matcher(bufHtml);
 			//处理图片
@@ -446,7 +450,7 @@ public class IFENGGuoJi implements IFENG{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			categroyBuf = categroyBuf.replaceAll("\\n", "");
 			categroyBuf = categroyBuf.replaceAll("                        ", "");
@@ -462,7 +466,7 @@ public class IFENGGuoJi implements IFENG{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			categroyBuf = categroyBuf.replaceAll("\\n", "");
 			categroyBuf = categroyBuf.replaceAll("                        ", "");

@@ -87,7 +87,7 @@ public class IFENGSheHuiComment implements IFENGCOMMENT{
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
 //			System.out.println(url);
-			if(crut.query("Url", url)){
+			if(!crut.query("Url", url)){
 				String commentUrl = handleCommentUrl(url);
 				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);

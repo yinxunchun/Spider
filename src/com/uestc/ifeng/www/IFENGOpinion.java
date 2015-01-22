@@ -332,7 +332,7 @@ public class IFENGOpinion implements IFENG{
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
-			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).jpg";
+			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).((jpg)|(png))";
 			Pattern newsImage = Pattern.compile(imageReg);
 			Matcher imageMatcher = newsImage.matcher(bufHtml);
 			//处理图片
@@ -419,7 +419,8 @@ public class IFENGOpinion implements IFENG{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源"), sourceBuf.length()-10);
+		if(sourceBuf!=null&&!sourceBuf.equals("")&&sourceBuf.contains("来源")&&sourceBuf.length()>10)
+			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源"), sourceBuf.length()-10);
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2]+"-"+sourceBuf;
 		else
@@ -434,7 +435,8 @@ public class IFENGOpinion implements IFENG{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("来源"));
+		if(categroyBuf != null && categroyBuf.equals("")&&categroyBuf.contains("来源"))
+			categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("来源"));
 		categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}

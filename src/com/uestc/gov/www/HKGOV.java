@@ -218,6 +218,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -241,6 +243,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -263,6 +267,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsTitle(String html, String[] label, String buf) {
+		if(html ==null)
+			return null;
 		String titleBuf ;
 		if(label[1].equals("")){
 			titleBuf = HandleHtml(html,label[0]);
@@ -274,6 +280,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsOriginalTitle(String html, String[] label, String buf) {
+		if(html ==null)
+			return null;
 		String titleBuf ;
 		if(label[1].equals("")){
 			titleBuf = HandleHtml(html,label[0]);
@@ -285,6 +293,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsContent(String html, String[] label) {
+		if(html ==null)
+			return null;
 		String contentBuf;
 		if(label[1].equals("")){
 			contentBuf = HandleHtml(html,label[0]);
@@ -298,6 +308,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html ==null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
@@ -370,6 +382,7 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsTime(String html, String[] label) {
+		
 	//新闻中无法获取
 	//只能老夫手动来搞了
 		return downloadTime;
@@ -377,6 +390,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsSource(String html, String[] label) {
+		if(html ==null)
+			return null;
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2];
 		else
@@ -385,6 +400,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsOriginalSource(String html, String[] label) {
+		if(html ==null)
+			return null;
 //		String sourceBuf;
 //		if(label[1].equals("")){
 //			sourceBuf = HandleHtml(html , label[0]);
@@ -397,6 +414,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsCategroy(String html, String[] label) {
+		if(html ==null)
+			return null;
 		//无法获取
 		//自己定义啦
 		return "即日新闻";
@@ -404,6 +423,8 @@ public class HKGOV implements GOV{
 
 	@Override
 	public String getNewsOriginalCategroy(String html, String[] label) {
+		if(html ==null)
+			return null;
 
 		return "新闻公报-即日新闻";
 	}

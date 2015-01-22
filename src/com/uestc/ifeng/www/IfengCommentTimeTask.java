@@ -24,6 +24,6 @@ public class IfengCommentTimeTask extends TimerTask{
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new IfengCommentTimeTask(), 0,60*60*1000);
+		timer.schedule(new IfengCommentTimeTask(), 0,4*60*60*1000);
 	}
 }

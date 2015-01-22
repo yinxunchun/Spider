@@ -96,7 +96,7 @@ public class IFENGGuoJiComment implements IFENGCOMMENT{
 				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
-				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBuf);
+				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 //				System.out.println(html);
 				i++;
 			}else{

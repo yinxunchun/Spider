@@ -228,6 +228,8 @@ public class IFENGShenDu implements IFENG{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null)
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
@@ -252,6 +254,8 @@ public class IFENGShenDu implements IFENG{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null)
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
@@ -335,7 +339,7 @@ public class IFENGShenDu implements IFENG{
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
-			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).jpg";
+			String imageReg = "http://y[0-9]{1}.ifengimg.com/(.*?).((jpg)|(png))";
 			Pattern newsImage = Pattern.compile(imageReg);
 			Matcher imageMatcher = newsImage.matcher(bufHtml);
 			//处理图片
@@ -452,12 +456,12 @@ public class IFENGShenDu implements IFENG{
 			categroyBuf = HandleHtml(html,"class","theCurrent cDGray");
 			
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			categroyBuf = categroyBuf.replaceAll("\\n", "");
 			categroyBuf = categroyBuf.replaceAll("                        ", "");
 		}
-		if(categroyBuf.contains("深度")&&categroyBuf.contains("正文"))
+		if(categroyBuf!=null&&categroyBuf.contains("深度")&&categroyBuf.contains("正文"))
 			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("深度")+3, categroyBuf.indexOf("正文")-1);
 		return categroyBuf;
 	}
@@ -476,7 +480,7 @@ public class IFENGShenDu implements IFENG{
 			
 		}
 		
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			categroyBuf = categroyBuf.replaceAll("\\n", "");
 			categroyBuf = categroyBuf.replaceAll("                        ", "");

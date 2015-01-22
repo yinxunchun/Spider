@@ -219,6 +219,8 @@ public class ZJGOV implements GOV{
 
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -242,6 +244,8 @@ public class ZJGOV implements GOV{
 
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
