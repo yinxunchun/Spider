@@ -33,13 +33,16 @@ public class GOVTimeTask extends TimerTask{
 		test10.getXZGOVNews();
 		ZJGOV test11 = new ZJGOV();
 		test11.getZJGOVNews();
+		SHGOV test12 = new SHGOV();
+		test12.getSHGOVNews();
+			
 		System.out.println("政府网站程序运行第"+i+"次");
 		i++;
 	}
 
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new GOVTimeTask(), 0,40*60*1000);
+		timer.schedule(new GOVTimeTask(), 0,30*60*1000);
 		
 	}
 }

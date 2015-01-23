@@ -302,6 +302,8 @@ public class NETEASEWar implements NETEASE{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null )
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
@@ -327,6 +329,8 @@ public class NETEASEWar implements NETEASE{
 	@Override
 	public String HandleHtml(String html, String one, String two) {
 		// TODO Auto-generated method stub
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -354,13 +358,15 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf)){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
-		}else if (titleBuf.contains("_网易军事")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_网易军事"))	;
-		}else if(titleBuf.contains("_精兵堂")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_精兵堂"))	;
-		}else;
+		if(titleBuf!=null){
+			if(titleBuf.contains(buf)){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
+			}else if (titleBuf.contains("_网易军事")){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf("_网易军事"))	;
+			}else if(titleBuf.contains("_精兵堂")){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf("_精兵堂"))	;
+			}else;
+		}
 		return titleBuf;
 	}
 	//news 未处理标题
@@ -372,13 +378,15 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf)){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
-		}else if (titleBuf.contains("_网易军事")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_网易军事")+5)	;
-		}else if(titleBuf.contains("_精兵堂")){
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_精兵堂")+4)	;
-		}else;
+		if(titleBuf!=null){
+			if(titleBuf.contains(buf)){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
+			}else if (titleBuf.contains("_网易军事")){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf("_网易军事")+5)	;
+			}else if(titleBuf.contains("_精兵堂")){
+				titleBuf = titleBuf.substring(0, titleBuf.indexOf("_精兵堂")+4)	;
+			}else;
+		}
 		return titleBuf;
 	}
 	@Override
@@ -390,21 +398,25 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(contentBuf == ""){
+		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = HandleHtml(html ,"class","feed-text");
 			System.out.println(contentBuf);
 		}
-		if(contentBuf.contains("(NTES);")){
-			contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
+		if(contentBuf!=null){
+			if(contentBuf.contains("(NTES);")){
+				contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
+			}
+			contentBuf = contentBuf.replaceAll("\\s+", "\n");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		}
-		contentBuf = contentBuf.replaceAll("\\s+", "\n");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 	@SuppressWarnings("unused")
 	@Override
 	public String findNewsImages(String html , String[] label) {
 		// TODO Auto-generated method stub
+		if(html==null)
+			return null;
 		String bufHtml = "";        //辅助
 		String imageNameTime  = findNewsTime(html,label);
 //		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
@@ -514,19 +526,20 @@ public class NETEASEWar implements NETEASE{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
 //		System.out.println(timeBuf+"lllllllllll");
-		if(timeBuf == ""||timeBuf == null){
+		if(timeBuf == null||timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"class","ep-info cDGray");
 //			return timeBuf;
 		}else if(label[0].equals("style")&&label[1].equals("float:left;")){
 			timeBuf = timeBuf.substring(0,19);
 		}else
 			timeBuf = timeBuf.substring(9, 28);  //根据不同新闻 不同处理
-		
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!=null){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 	@Override
@@ -546,14 +559,16 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(sourceBuf.equals("")||sourceBuf==null){
+		if(sourceBuf==null||sourceBuf.equals("")){
 			sourceBuf = HandleHtml(html,"class","ep-info cDGray");
 		}
-		if(sourceBuf.contains("来源: ")){
-			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源: ")+4, sourceBuf.length());
+		if(sourceBuf!=null){
+			if(sourceBuf.contains("来源: ")){
+				sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源: ")+4, sourceBuf.length());
+			}
+			if(sourceBuf.length() >29)
+				sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
 		}
-		if(sourceBuf.length() >29)
-			sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2]+"-"+sourceBuf;
 		else
@@ -568,7 +583,7 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			categroyBuf = categroyBuf.replaceAll("\\s+", "");
 			if(categroyBuf.contains("新闻中心")){
@@ -592,7 +607,7 @@ public class NETEASEWar implements NETEASE{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;

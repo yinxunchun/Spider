@@ -20,7 +20,7 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 		test4.getNETEASEGuoJiComment();
 		NETEASEFocusComment test5 = new NETEASEFocusComment();
 		test5.getNETEASEFocusComment();
-		System.out.println("运行"+i+ "次");
+		System.out.println("网易评论程序运行第"+i+ "次");
 		i++;
 	}
 	

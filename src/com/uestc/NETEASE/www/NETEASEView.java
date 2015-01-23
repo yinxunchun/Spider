@@ -257,6 +257,8 @@ public class NETEASEView implements NETEASE{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
+		if(html == null)
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
@@ -281,6 +283,8 @@ public class NETEASEView implements NETEASE{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null )
+			return null;
 		// TODO Auto-generated method stub
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
@@ -309,7 +313,7 @@ public class NETEASEView implements NETEASE{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
@@ -322,10 +326,11 @@ public class NETEASEView implements NETEASE{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		return titleBuf;
 	}
+	@SuppressWarnings("null")
 	@Override
 	public String findNewsContent(String html , String[] label) {
 		// TODO Auto-generated method stub
@@ -335,29 +340,32 @@ public class NETEASEView implements NETEASE{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(contentBuf == ""){
+		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = HandleHtml(html ,"class","feed-text");
 			System.out.println(contentBuf);
 		}
 
-		if(contentBuf.contains("(NTES);")){
+		if(contentBuf!=null&&contentBuf.contains("(NTES);")){
 			contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
 		}
 		
-		if(contentBuf == ""){
+		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = HandleHtml(html,"class","area-main");
 		}
-		
-		if(contentBuf.contains("NTES_createVideo")){
-			contentBuf = contentBuf.replaceAll("NTES_createVideo([\\s\\S]*?);", "");
+		if(contentBuf!=null){
+			if(contentBuf.contains("NTES_createVideo")){
+				contentBuf = contentBuf.replaceAll("NTES_createVideo([\\s\\S]*?);", "");
+			}
+			contentBuf = contentBuf.replaceAll("\\s+", "\n");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		}
-		contentBuf = contentBuf.replaceAll("\\s+", "\n");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 	@Override
 	public String findNewsImages(String html , String[] label) {
 		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		String bufHtml = "";        //辅助
 		String imageNameTime  = "";
 //		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
@@ -465,18 +473,20 @@ public class NETEASEView implements NETEASE{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf == ""){
+		if(timeBuf==null||timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"id","ptime");
 //			return timeBuf;
 		}else if(label[0].equals("style")&&label[1].equals("float:left;")){
 			timeBuf = timeBuf.substring(0,19);
 		}else
 			timeBuf = timeBuf.substring(9, 28);  //根据不同新闻 不同处理
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!=null){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 	@Override
@@ -496,9 +506,10 @@ public class NETEASEView implements NETEASE{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		if(sourceBuf.length() >29)
-			sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
+		if(sourceBuf!=null){
+			if(sourceBuf.length() >29)
+				sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
+		}
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2]+"-"+sourceBuf;
 		else
@@ -513,7 +524,7 @@ public class NETEASEView implements NETEASE{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			if(categroyBuf.contains("新闻中心")){
 				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻中心")+5, categroyBuf.indexOf("正文")-1);
@@ -536,7 +547,7 @@ public class NETEASEView implements NETEASE{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;

@@ -250,7 +250,8 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 
 	@Override
 	public String HandleHtml(String html, String one) {
-		
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -274,6 +275,8 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 
 	@Override
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -305,6 +308,8 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
+		if(categroyBuf == null )
+			return null;
 		if(categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 			if(categroyBuf.contains("新闻中心")){
