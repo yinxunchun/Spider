@@ -301,84 +301,87 @@ public class HKGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&#160;", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
-//		if(html ==null)
-//			return null;
-//		String bufHtml = html;        //辅助
-//		String imageNameTime  = "";
-//		//获取图片时间，为命名服务
-//		imageNameTime = getNewsTime(html,label);
-//		//处理存放条图片的文件夹
-//    	File f = new File("HKGOV");
-//    	if(!f.exists()){
-//    		f.mkdir();
-//    	}
-//    	//保存图片文件的位置信息
-//    	Queue<String> imageLocation = new LinkedList<String>();
-//    	//图片正则表达式http://gia.info.gov.hk/general/201501/09/P201501080616_photo_1078944t.JPG
-//		String imageReg = "http://gia.info.gov.hk/general/"+imageNameTime.substring(0, 6)+"/"+imageNameTime.substring(6, 8)+"/P[0-9]{12}_photo_(.*?).JPG";
-//		Pattern newsImage = Pattern.compile(imageReg);
-//		Matcher imageMatcher = newsImage.matcher(bufHtml);
-//		//处理图片
-//		int i = 1 ;      //本条新闻图片的个数
-//		while(imageMatcher.find()){
-//			String bufUrl = imageMatcher.group();
-//			System.out.println(bufUrl);
-//			File fileBuf;
-////			imageMatcher.group();
-//			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
-//			try{
-//				URL uri = new URL(bufUrl);  
-//			
-//				InputStream in = uri.openStream();
-//				FileOutputStream fo;
-//				if(imageNumber < 9){
-//					fileBuf = new File("HKGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
-//					fo = new FileOutputStream(fileBuf); 
-//					imageLocation.offer(fileBuf.getAbsolutePath());
-//				}else if(imageNumber < 99){
-//					fileBuf = new File("HKGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
-//					fo = new FileOutputStream(fileBuf);
-//					imageLocation.offer(fileBuf.getAbsolutePath());
-//            
-//				}else if(imageNumber < 999){
-//					fileBuf = new File("HKGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
-//					fo = new FileOutputStream(fileBuf);
-//					imageLocation.offer(fileBuf.getAbsolutePath());
-//  
-//				}else{
-//					fileBuf = new File("HKGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
-//					fo = new FileOutputStream(fileBuf);
-//					imageLocation.offer(fileBuf.getAbsolutePath());
-//				}
-//            
-//				byte[] buf = new byte[1024];  
-//				int length = 0;  
-////           	 System.out.println("开始下载:" + url);  
-//				while ((length = in.read(buf, 0, buf.length)) != -1) {  
-//					fo.write(buf, 0, length);  
-//				}  
-//				in.close();  
-//				fo.close();  
-////          	  System.out.println(imageName + "下载完成"); 
-//			}catch(Exception e){
-//				System.out.println("亲，图片下载失败！！");
-//				System.out.println("请检查网络是否正常！");
-//			}
-//			i ++;
-//			
-//        }  
-//		//如果该条新闻没有图片则图片的编号不再增加
-//		if(!imageLocation.isEmpty())
-//			imageNumber ++;
-//		return imageLocation.toString();
-		return null;
+		if(html ==null)
+			return null;
+		String bufHtml = html;        //辅助
+		String imageNameTime  = "";
+		//获取图片时间，为命名服务
+		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime == null)
+			return null;
+		//处理存放条图片的文件夹
+    	File f = new File("HKGOV");
+    	if(!f.exists()){
+    		f.mkdir();
+    	}
+    	//保存图片文件的位置信息
+    	Queue<String> imageLocation = new LinkedList<String>();
+    	//图片正则表达式http://gia.info.gov.hk/general/201501/09/P201501080616_photo_1078944t.JPG
+		String imageReg = "http://gia.info.gov.hk/general/"+imageNameTime.substring(0, 6)+"/"+imageNameTime.substring(6, 8)+"/P[0-9]{12}_photo_(.*?).JPG";
+		Pattern newsImage = Pattern.compile(imageReg);
+		Matcher imageMatcher = newsImage.matcher(bufHtml);
+		//处理图片
+		int i = 1 ;      //本条新闻图片的个数
+		while(imageMatcher.find()){
+			String bufUrl = imageMatcher.group();
+			System.out.println(bufUrl);
+			File fileBuf;
+//			imageMatcher.group();
+			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
+			try{
+				URL uri = new URL(bufUrl);  
+			
+				InputStream in = uri.openStream();
+				FileOutputStream fo;
+				if(imageNumber < 9){
+					fileBuf = new File("HKGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fo = new FileOutputStream(fileBuf); 
+					imageLocation.offer(fileBuf.getAbsolutePath());
+				}else if(imageNumber < 99){
+					fileBuf = new File("HKGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fo = new FileOutputStream(fileBuf);
+					imageLocation.offer(fileBuf.getAbsolutePath());
+            
+				}else if(imageNumber < 999){
+					fileBuf = new File("HKGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fo = new FileOutputStream(fileBuf);
+					imageLocation.offer(fileBuf.getAbsolutePath());
+  
+				}else{
+					fileBuf = new File("HKGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fo = new FileOutputStream(fileBuf);
+					imageLocation.offer(fileBuf.getAbsolutePath());
+				}
+            
+				byte[] buf = new byte[1024];  
+				int length = 0;  
+//           	 System.out.println("开始下载:" + url);  
+				while ((length = in.read(buf, 0, buf.length)) != -1) {  
+					fo.write(buf, 0, length);  
+				}  
+				in.close();  
+				fo.close();  
+//          	  System.out.println(imageName + "下载完成"); 
+			}catch(Exception e){
+				System.out.println("亲，图片下载失败！！");
+				System.out.println("请检查网络是否正常！");
+			}
+			i ++;
+			
+        }  
+		//如果该条新闻没有图片则图片的编号不再增加
+		if(!imageLocation.isEmpty())
+			imageNumber ++;
+		return imageLocation.toString();
 	}
 
 	@Override

@@ -257,11 +257,11 @@ public class HBGOV implements GOV{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
 		
-		if(titleBuf.contains("_地方报道_新闻_中国政府网")){
+		if(titleBuf!=null&&titleBuf.contains("_地方报道_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_地方报道_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_部门新闻_新闻_中国政府网")){
+		}else if(titleBuf!=null&&titleBuf.contains("_部门新闻_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_部门新闻_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_要闻_新闻_中国政府网")){
+		}else if(titleBuf!=null&&titleBuf.contains("_要闻_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_要闻_新闻_中国政府网")) ;
 		}
 		return titleBuf;
@@ -286,17 +286,23 @@ public class HBGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
-		contentBuf = contentBuf.replaceAll("\\s+", "\n");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			contentBuf = contentBuf.replaceAll("\\s+", "\n");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html==null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime == null)
+			return null ;
 		//处理存放条图片的文件夹
     	File f = new File("HBGOV");
     	if(!f.exists()){
@@ -372,8 +378,9 @@ public class HBGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
+		if(timeBuf!=null)
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf!=null && timeBuf.length() >= 8)
 			timeBuf = timeBuf.substring(0, 8);
 		else
 			timeBuf = null;
@@ -396,8 +403,11 @@ public class HBGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		return label[2]+"-"+sourceBuf;
+		if(sourceBuf!=null )
+			return label[2]+"-"+sourceBuf;
+		else {
+			return label[2];
+		}
 	}
 
 	@Override
@@ -408,10 +418,11 @@ public class HBGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页")+2, categroyBuf.length());
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.replaceAll("&gt;", "-");
+		if(categroyBuf!=null && categroyBuf.contains("首页")){
+			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页")+2, categroyBuf.length());
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll("&gt;", "-");
+		}
 		
 		return categroyBuf;
 	}
@@ -424,9 +435,11 @@ public class HBGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("您当前所在位置：")+8, categroyBuf.length());
-		categroyBuf = categroyBuf.replaceAll("&gt;", "-");
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		if(categroyBuf!=null && categroyBuf.contains("您当前所在位置：")){
+			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("您当前所在位置：")+8, categroyBuf.length());
+			categroyBuf = categroyBuf.replaceAll("&gt;", "-");
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		}
 		return categroyBuf;
 	}
 

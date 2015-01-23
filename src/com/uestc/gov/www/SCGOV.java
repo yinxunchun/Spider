@@ -279,7 +279,7 @@ public class SCGOV implements GOV{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
 		
-		if(titleBuf.contains(" - 四川省人民政府网站")){
+		if(titleBuf!=null && titleBuf.contains(" - 四川省人民政府网站")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(" - 四川省人民政府网站")) ;
 			
 		}
@@ -294,7 +294,7 @@ public class SCGOV implements GOV{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(" - 四川省人民政府网站")){
+		if(titleBuf!= null && titleBuf.contains(" - 四川省人民政府网站")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(" - 四川省人民政府网站")+12) ;	
 		}
 		return titleBuf;
@@ -308,18 +308,23 @@ public class SCGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		
-		contentBuf = contentBuf.replaceAll("&#160;", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html== null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime!=null)
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("SCGOV");
     	if(!f.exists()){
@@ -422,8 +427,11 @@ public class SCGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		sourceBuf = sourceBuf.replaceAll("\\s+", "");
-		sourceBuf = sourceBuf.substring(0, sourceBuf.indexOf("【字体"));
+		if(sourceBuf!=null){
+			sourceBuf = sourceBuf.replaceAll("\\s+", "");
+			if(sourceBuf.contains("【字体"))
+				sourceBuf = sourceBuf.substring(0, sourceBuf.indexOf("【字体"));
+		}
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -435,8 +443,10 @@ public class SCGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("【字体"));
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("【字体"));
+		}
 		return categroyBuf;
 	}
 
@@ -448,8 +458,10 @@ public class SCGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("【字体"));
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("【字体"));
+		}
 		return categroyBuf;
 	}
 

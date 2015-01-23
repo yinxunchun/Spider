@@ -302,16 +302,21 @@ public class AHGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null)
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html==null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime==null || imageNameTime.equals(""))
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("AHGOV");
     	if(!f.exists()){
@@ -389,19 +394,26 @@ public class AHGOV implements GOV{
 		}
 		if(timeBuf != null && timeBuf.contains("编辑日期：") && timeBuf.contains("来源")){
 			timeBuf = timeBuf.substring(timeBuf.indexOf("编辑日期："), timeBuf.indexOf("来源"));
+		}else {
+			return null;
 		}
-		timeBuf = timeBuf.replaceAll("\\s+", "");
+		if(timeBuf != null)
+			timeBuf = timeBuf.replaceAll("\\s+", "");
 //		System.out.println(timeBuf);
-		String yearBufString = timeBuf.substring(timeBuf.indexOf("编辑日期：")+5,timeBuf.indexOf("-"));
-		String monthBufString = timeBuf.substring(timeBuf.indexOf("-")+1,timeBuf.lastIndexOf("-"));
-		if(monthBufString.length() < 2){
-			monthBufString = "0" + monthBufString;
+		if(timeBuf!=null&&timeBuf.contains("编辑日期：")&&timeBuf.contains("-")&&timeBuf.contains("】")){
+			String yearBufString = timeBuf.substring(timeBuf.indexOf("编辑日期：")+5,timeBuf.indexOf("-"));
+			String monthBufString = timeBuf.substring(timeBuf.indexOf("-")+1,timeBuf.lastIndexOf("-"));
+			if(monthBufString.length() < 2){
+				monthBufString = "0" + monthBufString;
+			}
+			String dateBufString = timeBuf.substring(timeBuf.lastIndexOf("-")+1, timeBuf.indexOf("】"));
+			if(dateBufString.length() < 2){
+				dateBufString = "0" + dateBufString;
+			}
+			timeBuf = yearBufString + monthBufString + dateBufString ;
+		}else {
+			return null;
 		}
-		String dateBufString = timeBuf.substring(timeBuf.lastIndexOf("-")+1, timeBuf.indexOf("】"));
-		if(dateBufString.length() < 2){
-			dateBufString = "0" + dateBufString;
-		}
-		timeBuf = yearBufString + monthBufString + dateBufString ;
 		return timeBuf;
 	}
 
@@ -421,9 +433,10 @@ public class AHGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-
-		sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源：") + 3, sourceBuf.indexOf("【 关 闭")); 
-		sourceBuf = sourceBuf.replaceAll("(\\s+)|(】)", "");
+		if(sourceBuf!=null&&sourceBuf.contains("来源：")&&sourceBuf.contains("【 关 闭")){
+			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源：") + 3, sourceBuf.indexOf("【 关 闭")); 
+			sourceBuf = sourceBuf.replaceAll("(\\s+)|(】)", "");
+		}
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -435,10 +448,12 @@ public class AHGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页栏目")+5, categroyBuf.length());
-		categroyBuf = categroyBuf.replaceAll(">", "-");
+		if(categroyBuf!=null&&categroyBuf.contains("首页栏目")){
+			categroyBuf = categroyBuf.replaceAll("&#62;", "");
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("首页栏目")+5, categroyBuf.length());
+			categroyBuf = categroyBuf.replaceAll(">", "-");
+		}
 		return categroyBuf;
 	}
 
@@ -450,7 +465,8 @@ public class AHGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("&#62;", "");
 		return categroyBuf;
 	}
 

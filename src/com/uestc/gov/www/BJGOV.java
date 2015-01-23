@@ -277,7 +277,7 @@ public class BJGOV implements GOV{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
 		
-		if(titleBuf.contains("-首都之窗-北京市政务门户网站")){
+		if(titleBuf!=null&&titleBuf.contains("-首都之窗-北京市政务门户网站")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("-首都之窗-北京市政务门户网站")) ;
 			titleBuf = titleBuf.substring(0, titleBuf.lastIndexOf("-"));
 		}
@@ -292,7 +292,7 @@ public class BJGOV implements GOV{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains("-首都之窗-北京市政务门户网站")){
+		if(titleBuf!=null&&titleBuf.contains("-首都之窗-北京市政务门户网站")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("-首都之窗-北京市政务门户网站")+15) ;
 		}
 //		else if(titleBuf.contains("-公告公示-首都之窗-北京市政务门户网站")){
@@ -315,14 +315,18 @@ public class BJGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\n                    　　", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\n                    　　", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	//注意这里的label为三个参数 前两个为确定时间 最后一个为辅助url,帮助计算图片的url
 	public String getNewsImages(String html, String[] label) {
+		if(html==null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		if(label.length < 3)
@@ -407,7 +411,8 @@ public class BJGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf!=null)
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
 		if(timeBuf.length() >= 8)
 			timeBuf = timeBuf.substring(0, 8);
 		else
@@ -431,7 +436,8 @@ public class BJGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		sourceBuf = sourceBuf.substring(0, sourceBuf.indexOf("日期"));
+		if(sourceBuf!=null&&sourceBuf.contains("日期"))
+			sourceBuf = sourceBuf.substring(0, sourceBuf.indexOf("日期"));
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -443,8 +449,10 @@ public class BJGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("首页", "");
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("首页", "");
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		}
 		return categroyBuf;
 	}
 
@@ -456,7 +464,8 @@ public class BJGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}
 

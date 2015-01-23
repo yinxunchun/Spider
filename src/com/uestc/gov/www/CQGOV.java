@@ -334,17 +334,21 @@ public class CQGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null)
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html == null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
-		System.out.println(imageNameTime);
+		if(imageNameTime == null)
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("CQGOV");
     	if(!f.exists()){
@@ -420,8 +424,9 @@ public class CQGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
+		if(timeBuf!=null)
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf!=null && timeBuf.length() >= 8)
 			timeBuf = timeBuf.substring(0, 8);
 		else
 			timeBuf = null;
@@ -444,8 +449,8 @@ public class CQGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源:"), sourceBuf.length());
+		if(sourceBuf!=null && sourceBuf.contains("来源:"))
+			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源:"), sourceBuf.length());
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -457,7 +462,8 @@ public class CQGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}
 
@@ -469,7 +475,8 @@ public class CQGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}
 

@@ -300,11 +300,13 @@ public class SHGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&ldquo;", "“");
-		contentBuf = contentBuf.replaceAll("&rdquo;", "”");
-		contentBuf = contentBuf.replaceAll("&lsquo;", "”");
-		contentBuf = contentBuf.replaceAll("&rsquo;", "”");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&ldquo;", "“");
+			contentBuf = contentBuf.replaceAll("&rdquo;", "”");
+			contentBuf = contentBuf.replaceAll("&lsquo;", "”");
+			contentBuf = contentBuf.replaceAll("&rsquo;", "”");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
@@ -386,22 +388,25 @@ public class SHGOV implements GOV{
 	@Override
 	public String getNewsTime(String html, String[] label) {
 		String timeBuf ="";
-		String yearBuf;
-		String monthBuf;
-		String dateBuf;
+		String yearBuf = null;
+		String monthBuf = null;
+		String dateBuf = null;
 		if(label[1].equals("")){
 			timeBuf = HandleHtml(html , label[0]);
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf.contains("年")&&timeBuf.contains("月")&&timeBuf.contains("日")){
-			yearBuf = timeBuf.substring(timeBuf.indexOf("( ")+2, timeBuf.indexOf("年"));
-			monthBuf = timeBuf.substring(timeBuf.indexOf("年")+1, timeBuf.indexOf("月"));
+		if(timeBuf!=null && timeBuf.contains("年")&&timeBuf.contains("月")&&timeBuf.contains("日")){
+			if(timeBuf.contains("(")&&timeBuf.contains("年"))
+				yearBuf = timeBuf.substring(timeBuf.indexOf("( ")+2, timeBuf.indexOf("年"));
+			if(timeBuf.contains("年")&&timeBuf.contains("月"))
+				monthBuf = timeBuf.substring(timeBuf.indexOf("年")+1, timeBuf.indexOf("月"));
 			int i = Integer.parseInt(monthBuf);
 			if( i < 10){
 				monthBuf = "0" + monthBuf;
 			}
-			dateBuf = timeBuf.substring(timeBuf.indexOf("月")+1, timeBuf.indexOf("日"));
+			if(timeBuf.contains("月")&&timeBuf.contains("日"))
+				dateBuf = timeBuf.substring(timeBuf.indexOf("月")+1, timeBuf.indexOf("日"));
 			int j = Integer.parseInt(dateBuf);
 			if(j < 10){
 				dateBuf = "0" + dateBuf;
@@ -428,11 +433,16 @@ public class SHGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		sourceBuf = sourceBuf.replaceAll("您所在的位置 :", "");
-		sourceBuf = sourceBuf.replaceAll("&gt;&gt;", "");
-		sourceBuf = sourceBuf.replaceAll("\\s+", "-") ;
-		
-		return label[2]+"-"+sourceBuf;
+		if(sourceBuf!=null){
+			sourceBuf = sourceBuf.replaceAll("您所在的位置 :", "");
+			sourceBuf = sourceBuf.replaceAll("&gt;&gt;", "");
+			sourceBuf = sourceBuf.replaceAll("\\s+", "-") ;
+		}
+		if(sourceBuf!=null)
+			return label[2]+"-"+sourceBuf;
+		else {
+			return label[2];
+		}
 	}
 
 	@Override
@@ -443,10 +453,12 @@ public class SHGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		categroyBuf = categroyBuf.replaceAll("您所在的位置 :", "");
-//		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.replaceAll("首页","");
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("&gt;", "");
+			categroyBuf = categroyBuf.replaceAll("您所在的位置 :", "");
+//		    categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll("首页","");
+		}
 		return categroyBuf;
 	}
 
@@ -458,7 +470,8 @@ public class SHGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&gt;", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 //		categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		return categroyBuf;
 	}

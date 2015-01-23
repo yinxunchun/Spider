@@ -300,8 +300,10 @@ public class JSGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&#160;", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
@@ -319,12 +321,14 @@ public class JSGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("\\s+", "");
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!=null){
+			timeBuf = timeBuf.replaceAll("\\s+", "");
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 
@@ -378,8 +382,10 @@ public class JSGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.replaceAll(">", "-");
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll(">", "-");
+		}
 		return categroyBuf;
 	}
 

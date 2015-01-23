@@ -23,6 +23,7 @@ import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
+import org.w3c.dom.ls.LSException;
 
 import com.uestc.spider.www.CRUT;
 
@@ -330,13 +331,17 @@ public class GDGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&#160;", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html == null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		if(label.length < 3)
@@ -421,7 +426,11 @@ public class GDGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf!=null)
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		else {
+			return null;
+		}
 		if(timeBuf.length() >= 8)
 			timeBuf = timeBuf.substring(0, 8);
 		else
@@ -445,8 +454,11 @@ public class GDGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		return label[2]+"-"+sourceBuf;
+		if(sourceBuf!=null)
+			return label[2]+"-"+sourceBuf;
+		else {
+			return label[2];
+		}
 	}
 
 	@Override
@@ -457,11 +469,14 @@ public class GDGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		if(categroyBuf == null || categroyBuf == "")
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("&gt;", "");
+		if(categroyBuf == null || categroyBuf.equals(""))
 			return null ;
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("广东省人民政府首页")+9, categroyBuf.length());
-		categroyBuf = categroyBuf.replaceAll("(\\s+)", "-");
+		if(categroyBuf!=null && categroyBuf.contains("广东省人民政府首页")){
+			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("广东省人民政府首页")+9, categroyBuf.length());
+			categroyBuf = categroyBuf.replaceAll("(\\s+)", "-");
+		}
 		return categroyBuf;
 	}
 
@@ -473,8 +488,10 @@ public class GDGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&gt;", "");
-		categroyBuf = categroyBuf.replaceAll("\n", "-");
+		if(categroyBuf != null ){
+			categroyBuf = categroyBuf.replaceAll("&gt;", "");
+			categroyBuf = categroyBuf.replaceAll("\n", "-");
+		}
 		return categroyBuf;
 	}
 

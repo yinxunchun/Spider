@@ -297,19 +297,25 @@ public class ZJGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&ldquo;", "“");
-		contentBuf = contentBuf.replaceAll("&rdquo;", "”");
-		contentBuf = contentBuf.replaceAll("&hellip;", "…");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&ldquo;", "“");
+			contentBuf = contentBuf.replaceAll("&rdquo;", "”");
+			contentBuf = contentBuf.replaceAll("&hellip;", "…");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html == null) 
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime == null )
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("ZJGOV");
     	if(!f.exists()){
@@ -336,21 +342,21 @@ public class ZJGOV implements GOV{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 9){
-					fileBuf = new File("\\ZJGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 99){
-					fileBuf = new File("\\ZJGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 999){
-					fileBuf = new File("\\ZJGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("\\ZJGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}

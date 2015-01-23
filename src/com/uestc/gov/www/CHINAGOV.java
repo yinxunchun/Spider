@@ -284,11 +284,11 @@ public class CHINAGOV implements GOV{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
 		
-		if(titleBuf.contains("_地方报道_新闻_中国政府网")){
+		if(titleBuf!=null&&titleBuf.contains("_地方报道_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_地方报道_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_部门新闻_新闻_中国政府网")){
+		}else if(titleBuf!=null&&titleBuf.contains("_部门新闻_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_部门新闻_新闻_中国政府网")) ;
-		}else if(titleBuf.contains("_要闻_新闻_中国政府网")){
+		}else if(titleBuf!=null&&titleBuf.contains("_要闻_新闻_中国政府网")){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf("_要闻_新闻_中国政府网")) ;
 		}
 		return titleBuf;
@@ -313,16 +313,21 @@ public class CHINAGOV implements GOV{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null)
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html==null)
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
+		if(imageNameTime == null)
+			return null;
 		//处理存放条图片的文件夹
     	File f = new File("CHINAGOV");
     	if(!f.exists()){
@@ -398,8 +403,9 @@ public class CHINAGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
+		if(timeBuf!=null)
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+		if(timeBuf!=null && timeBuf.length() >= 8)
 			timeBuf = timeBuf.substring(0, 8);
 		else
 			timeBuf = null;
@@ -422,8 +428,11 @@ public class CHINAGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		return label[2]+"-"+sourceBuf;
+		if(sourceBuf!=null)
+			return label[2]+"-"+sourceBuf;
+		else {
+			return label[2];
+		}
 	}
 
 	@Override
@@ -434,9 +443,10 @@ public class CHINAGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
-		
-		categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻")+2, categroyBuf.length());
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("&#62;", "");
+		if(categroyBuf!=null &&categroyBuf.contains("新闻"))
+			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻")+2, categroyBuf.length());
 		return categroyBuf;
 	}
 
@@ -448,7 +458,8 @@ public class CHINAGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("&#62;", "");
+		if(categroyBuf!=null)
+			categroyBuf = categroyBuf.replaceAll("&#62;", "");
 		return categroyBuf;
 	}
 

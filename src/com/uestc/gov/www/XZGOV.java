@@ -302,9 +302,11 @@ public class XZGOV implements GOV{
 		if(contentBuf == null || contentBuf ==  ""){
 			contentBuf = HandleHtml(html,"class","content-word");
 		}
-		contentBuf = contentBuf.replaceAll("&ldquo;", "“");
-		contentBuf = contentBuf.replaceAll("&rdquo;", "”");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&ldquo;", "“");
+			contentBuf = contentBuf.replaceAll("&rdquo;", "”");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 
@@ -322,12 +324,14 @@ public class XZGOV implements GOV{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.substring(timeBuf.indexOf("发文日期:"), timeBuf.length());
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!=null && timeBuf.contains("发文日期:")){
+			timeBuf = timeBuf.substring(timeBuf.indexOf("发文日期:"), timeBuf.length());
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 	@Override
@@ -346,10 +350,11 @@ public class XZGOV implements GOV{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(sourceBuf.contains("发布机构:  ")&&sourceBuf.contains("发文日期:")){
+		if(sourceBuf!=null && sourceBuf.contains("发布机构:  ")&&sourceBuf.contains("发文日期:")){
 			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("发布机构:  ")+7, sourceBuf.indexOf("发文日期:"));
+			sourceBuf = sourceBuf.replaceAll("&nbsp;", "");
 		}
-		sourceBuf = sourceBuf.replaceAll("&nbsp;", "");
+		
 		return label[2]+"-"+sourceBuf;
 	}
 
@@ -361,6 +366,8 @@ public class XZGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
+		if(categroyBuf==null)
+			return null;
 		categroyBuf = categroyBuf.replaceAll(" &raquo; ", "-");
 		if(categroyBuf.contains("新闻中心"))
 			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻中心")+5, categroyBuf.length());
@@ -379,7 +386,8 @@ public class XZGOV implements GOV{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll(" &raquo; ", "-");
+		if(categroyBuf != null)
+			categroyBuf = categroyBuf.replaceAll(" &raquo; ", "-");
 		return categroyBuf;
 	}
 
