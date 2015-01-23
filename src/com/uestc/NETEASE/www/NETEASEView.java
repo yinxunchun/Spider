@@ -87,6 +87,8 @@ public class NETEASEView implements NETEASE{
   		else 
   			downloadTime += date ;
         int i = 0;
+        if(themeMatcher == null)
+        	return ;
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();

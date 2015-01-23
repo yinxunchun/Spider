@@ -16,6 +16,8 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.rmi.CORBA.Tie;
+
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
@@ -97,6 +99,8 @@ public class SCOL {
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		int i = 0;
+		if(guoNeiNewsContent == null )
+			return ;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
@@ -258,7 +262,8 @@ public class SCOL {
 	}
 	
 	public String HandleHtml(String html, String one) {
-
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -281,6 +286,8 @@ public class SCOL {
 	}
 	
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -308,7 +315,7 @@ public class SCOL {
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		
 		return titleBuf;
@@ -322,7 +329,7 @@ public class SCOL {
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf)){
+		if(titleBuf!=null&&titleBuf.contains(buf)){
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		}
 		return titleBuf;
@@ -336,7 +343,7 @@ public class SCOL {
 			contentBuf = HandleHtml(html,label[0]);
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
-			if(contentBuf.equals("")||contentBuf==null){
+			if(contentBuf==null||contentBuf.equals("")){
 				contentBuf = HandleHtml(html,"class","a2");
 			}
 		}
@@ -352,17 +359,17 @@ public class SCOL {
 //			}
 //		}
 //		contentBuf = contentBuf.replaceAll("<(.*?)>", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf!=null)
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 	//处理图片，使用时间label
 	public String findNewsImages(String html , String[] label) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		String bufHtml = "";        //辅助
 		String imageNameTime  = "";
 //		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
-		if(html == null)
-			return null;
 		bufHtml = html;	
 		//获取图片时间，为命名服务
 		imageNameTime = findNewsTime(html,label) ;
@@ -442,11 +449,13 @@ public class SCOL {
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!=null){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 	public String findNewsSource(String html ,String[] label) {
@@ -464,7 +473,7 @@ public class SCOL {
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(label.length == 3 && (!label[2].equals("")))
+		if(label.length == 3 && (!label[2].equals(""))&&sourceBuf!=null)
 			return label[2]+"-"+sourceBuf;
 		else
 			return sourceBuf;
@@ -477,13 +486,14 @@ public class SCOL {
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-			
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.replaceAll(">|(&gt;)", "");
-		if(categroyBuf!=null && categroyBuf.contains("四川新闻"))
-			categroyBuf = categroyBuf.substring(categroyBuf.indexOf("四川新闻")+4, categroyBuf.indexOf("正文"));
-		if(categroyBuf.equals(""))
-			return "四川在线";
+		if(categroyBuf!=null){	
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll(">|(&gt;)", "");
+			if(categroyBuf.contains("四川新闻")&&categroyBuf.contains("正文"))
+				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("四川新闻")+4, categroyBuf.indexOf("正文"));
+			if(categroyBuf.equals(""))
+				return "四川在线";
+		}
 		return categroyBuf;
 	}
 	public String findNewsOriginalCategroy(String html , String[] label) {
@@ -494,8 +504,10 @@ public class SCOL {
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		categroyBuf = categroyBuf.replaceAll("&gt;", "");
+		if(categroyBuf!=null){
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll("&gt;", "");
+		}
 		return categroyBuf;
 	}
 	public static void main(String[] args){

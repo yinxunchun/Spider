@@ -90,7 +90,8 @@ public class NETEASEWar implements NETEASE{
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-//		
+		if(warNewsContentLinks == null)
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
@@ -114,6 +115,8 @@ public class NETEASEWar implements NETEASE{
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int k = 1;
+		if(warNewsContentLinks == null)
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
@@ -138,6 +141,8 @@ public class NETEASEWar implements NETEASE{
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int j = 1 ;
+		if(warNewsContentLinks == null)
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			
@@ -400,7 +405,7 @@ public class NETEASEWar implements NETEASE{
 		}
 		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = HandleHtml(html ,"class","feed-text");
-			System.out.println(contentBuf);
+//			System.out.println(contentBuf);
 		}
 		if(contentBuf!=null){
 			if(contentBuf.contains("(NTES);")){

@@ -87,6 +87,8 @@ public class NETEASEFocus implements NETEASE{
   		else 
   			downloadTime += date ;
         int i = 0;
+        if(themeMatcher == null )
+        	return ;
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
@@ -443,7 +445,7 @@ public class NETEASEFocus implements NETEASE{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf==null){
+		if(timeBuf!=null){
 			if(timeBuf.equals("")){
 				timeBuf = HandleHtml(html,"id","ptime");
 //			return timeBuf;

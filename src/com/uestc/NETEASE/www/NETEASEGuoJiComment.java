@@ -82,6 +82,8 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         
         Matcher themeMatcher = newPage.matcher(guoJiHtml);
         int i = 0;
+        if(themeMatcher == null )
+        	return ;
         while(themeMatcher.find()){
         	
         	String url = themeMatcher.group();

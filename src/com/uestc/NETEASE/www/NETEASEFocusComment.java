@@ -111,6 +111,8 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        Matcher themeMatcher = newPage.matcher(focusHtml);
 
 	        int i = 0;
+	        if(themeMatcher == null )
+	        	return ;
 	        while(themeMatcher.find()){
 	        	i++;
 	        	String url = themeMatcher.group();

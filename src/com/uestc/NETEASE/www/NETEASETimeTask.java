@@ -23,7 +23,7 @@ public class NETEASETimeTask extends TimerTask{
 		test4.getNETEASEWarNews();
 		NETEASEFocus test5 = new NETEASEFocus();
 		test5.getNETEASEFocusNews();
-		System.out.println("运行第"+i+"次");
+		System.out.println("网易新闻程序运行第"+i+"次");
 		i++;
 		
 	}

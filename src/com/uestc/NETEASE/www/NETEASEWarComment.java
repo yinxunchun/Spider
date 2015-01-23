@@ -88,7 +88,8 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-//		
+		if(warNewsContentLinks == null )
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
@@ -113,6 +114,8 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int k = 1;
+		if(warNewsContentLinks == null )
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
@@ -138,6 +141,8 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int j = 1 ;
+		if(warNewsContentLinks == null )
+			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){

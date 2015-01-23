@@ -98,6 +98,8 @@ public class CDQSS {
 
 		//获取每个新闻网页的html
 		int i = 0;
+		if(guoNeiNewsContent == null )
+			return ;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
@@ -262,7 +264,8 @@ public class CDQSS {
 	}
 	
 	public String HandleHtml(String html, String one) {
-
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -285,6 +288,8 @@ public class CDQSS {
 	}
 	
 	public String HandleHtml(String html, String one, String two) {
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -312,7 +317,7 @@ public class CDQSS {
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
@@ -325,7 +330,7 @@ public class CDQSS {
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		return titleBuf;
 	}
@@ -340,24 +345,28 @@ public class CDQSS {
 		if(contentBuf.equals("")){
 			contentBuf = html.substring(html.lastIndexOf("<!--enpcontent-->")+17, html.indexOf("<!--/enpcontent-->"));
 		}
-		if(contentBuf.contains("<font color=\"teal\">")){
-			contentBuf = contentBuf.substring(contentBuf.lastIndexOf("<font color=\"teal\">"), contentBuf.length());
+		if(contentBuf!=null){
+			if(contentBuf.contains("<font color=\"teal\">")){
+				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("<font color=\"teal\">"), contentBuf.length());
+			}
+		
+			if(contentBuf.contains("size=\"1\">")){
+				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("size=\"1\">")+11, contentBuf.length());
+			}
+			if(contentBuf.contains("target=\"_blank\">")){
+				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("target=\"_blank\">")+18, contentBuf.length());
+			}
+			contentBuf= contentBuf.replaceAll("(<font color=\"teal\">)|(<p style=\"COLOR: teal\">)|(</font)>", "");
+			contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
+			contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
+			contentBuf = contentBuf.replaceAll("<(.*?)>", "");
 		}
-		if(contentBuf.contains("size=\"1\">")){
-			contentBuf = contentBuf.substring(contentBuf.lastIndexOf("size=\"1\">")+11, contentBuf.length());
-		}
-		if(contentBuf.contains("target=\"_blank\">")){
-			contentBuf = contentBuf.substring(contentBuf.lastIndexOf("target=\"_blank\">")+18, contentBuf.length());
-		}
-		contentBuf= contentBuf.replaceAll("(<font color=\"teal\">)|(<p style=\"COLOR: teal\">)|(</font)>", "");
-		contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
-		contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
-		contentBuf = contentBuf.replaceAll("<(.*?)>", "");
 		return contentBuf;
 	}
 	//处理图片，使用时间label
 	public String findNewsImages(String html , String[] label) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		String bufHtml = "";        //辅助
 		String imageNameTime  = "";
 //		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
@@ -443,11 +452,13 @@ public class CDQSS {
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() >= 8)
-			timeBuf = timeBuf.substring(0, 8);
-		else
-			timeBuf = null;
+		if(timeBuf!= null ){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+			else
+				timeBuf = null;
+		}
 		return timeBuf;
 	}
 	public String findNewsSource(String html ,String[] label) {
@@ -465,11 +476,13 @@ public class CDQSS {
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(sourceBuf.equals("")||sourceBuf==null)
+		if(sourceBuf==null||sourceBuf.equals(""))
 			return label[2];
-		sourceBuf = sourceBuf.replaceAll("\\s+", "");
-		if(sourceBuf.contains("来源")&&sourceBuf.contains("编辑"))
-			sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源"), sourceBuf.indexOf("编辑"));
+		if(sourceBuf!=null){
+			sourceBuf = sourceBuf.replaceAll("\\s+", "");
+			if(sourceBuf.contains("来源")&&sourceBuf.contains("编辑"))
+				sourceBuf = sourceBuf.substring(sourceBuf.indexOf("来源"), sourceBuf.indexOf("编辑"));
+		}
 		return label[2] + sourceBuf ;
 	}
 	public String findNewsCategroy(String html , String[] label) {
@@ -480,7 +493,7 @@ public class CDQSS {
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&raquo;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&raquo;")){
 			categroyBuf = categroyBuf.replaceAll("&raquo;", "");
 			categroyBuf = categroyBuf.replaceAll("\\s+", "");
 			if(categroyBuf.contains("新闻首页")){
@@ -491,16 +504,17 @@ public class CDQSS {
 				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻首页")+5, categroyBuf.indexOf("正文")-1);
 			}else;
 			
-		}else
-		{
-			categroyBuf = categroyBuf.replaceAll("\\s+", "");
-			if(categroyBuf.contains("新闻首页")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻首页")+4, categroyBuf.indexOf("正文"));
-			}else if(categroyBuf.contains("新闻频道")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻频道")+5, categroyBuf.length());
-			}else if(categroyBuf.contains("新闻首页")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻首页")+5, categroyBuf.indexOf("正文")-1);
-			}else;
+		}else{	
+			if(categroyBuf!=null){
+				categroyBuf = categroyBuf.replaceAll("\\s+", "");
+				if(categroyBuf.contains("新闻首页")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻首页")+4, categroyBuf.indexOf("正文"));
+				}else if(categroyBuf.contains("新闻频道")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻频道")+5, categroyBuf.length());
+				}else if(categroyBuf.contains("新闻首页")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("新闻首页")+5, categroyBuf.indexOf("正文")-1);
+				}else;
+			}
 		}
 		return categroyBuf;
 	}
@@ -512,7 +526,7 @@ public class CDQSS {
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&raquo;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&raquo;")){
 			categroyBuf = categroyBuf.replaceAll("&raquo;", "");
 		}
 		return categroyBuf;

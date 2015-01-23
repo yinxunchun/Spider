@@ -122,6 +122,8 @@ public class NETEASEGuoNei implements NETEASE{
 			downloadTime += date ;
 		//获取每个新闻网页的html
 		int i = 0;
+		if(guoNeiNewsContent==null)
+			return ;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
@@ -473,7 +475,7 @@ public class NETEASEGuoNei implements NETEASE{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf.equals("")||timeBuf == null){
+		if(timeBuf == null||timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"id","ptime");
 //			return timeBuf;
 		}else if(label[0].equals("style")&&label[1].equals("float:left;")){

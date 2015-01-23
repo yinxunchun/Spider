@@ -85,6 +85,8 @@ public class NETEASEGuoJi implements NETEASE{
   		else 
   			downloadTime += date ;
         int i = 0;
+        if(themeMatcher == null)
+        	return ;
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();
@@ -438,7 +440,7 @@ public class NETEASEGuoJi implements NETEASE{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(timeBuf.equals("")||timeBuf == null){
+		if(timeBuf == null||timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"class","ep-info cDGray");
 //			return timeBuf;
 		}else if(label[0].equals("style")&&label[1].equals("float:left;")){
@@ -471,7 +473,7 @@ public class NETEASEGuoJi implements NETEASE{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(sourceBuf.equals("")||sourceBuf== null){
+		if(sourceBuf== null||sourceBuf.equals("")){
 			sourceBuf = HandleHtml(html,"class","ep-info cDGray");
 		}
 		if(sourceBuf!=null){
