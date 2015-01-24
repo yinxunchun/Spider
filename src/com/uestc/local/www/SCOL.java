@@ -54,6 +54,7 @@ public class SCOL {
 	//图片个数
 	private int imageNumber = 1;
 	public void getSCOLNews(){
+		System.out.println("成都在线程序运行中、、、");
 		DBName = "LOCALNEWS";
 		DBTable = "SCOL";
 		ENCODE = "utf-8";
@@ -99,8 +100,10 @@ public class SCOL {
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		int i = 0;
-		if(guoNeiNewsContent == null )
+		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty() ){
+			crut.destory();
 			return ;
+		}
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){

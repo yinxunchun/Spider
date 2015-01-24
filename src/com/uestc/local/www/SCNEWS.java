@@ -56,6 +56,7 @@ public class SCNEWS {
 	//图片个数
 	private int imageNumber = 1;
 	public void getSCXWNews(){
+		System.out.println("成都新闻运行中、、、");
 		DBName = "LOCALNEWS";
 		DBTable = "SCXWW";
 		ENCODE = "gb2312";
@@ -103,8 +104,10 @@ public class SCNEWS {
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		int i = 0;
-		if(guoNeiNewsContent == null)
+		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty()){
+			crut.destory();
 			return ;
+		}
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){

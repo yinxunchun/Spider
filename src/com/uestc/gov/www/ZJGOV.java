@@ -89,8 +89,10 @@ public class ZJGOV implements GOV{
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
 		int i = 1 ;
-		if(contentLinks == null)
+		if(contentLinks == null || contentLinks.isEmpty()){
+			crut.destory();
 			return ;
+		}
 		while(!contentLinks.isEmpty()){
 			String url = contentLinks.poll();
 			if(!crut.query("Url", url)){

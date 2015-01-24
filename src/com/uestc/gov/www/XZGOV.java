@@ -88,8 +88,10 @@ public class XZGOV implements GOV{
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
 		int i = 1 ;
-		if(contentLinks == null)
+		if(contentLinks == null || contentLinks.isEmpty()){
+			crut.destory();
 			return ;
+		}
 		while(!contentLinks.isEmpty()){
 			String url = contentLinks.poll();
 			if(!crut.query("Url", url)){
@@ -101,10 +103,9 @@ public class XZGOV implements GOV{
 				i++;
 //			System.out.println(findNewsComment(url));
 //			System.out.println("\n");
-				if(getNewsTime(html,newsTimeLabel).equals(downloadTime)){
 					crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
-				}
+				
 			}
 		}
 		System.out.println(i);

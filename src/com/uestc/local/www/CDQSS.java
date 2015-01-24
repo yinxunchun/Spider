@@ -49,6 +49,7 @@ public class CDQSS {
 	private int imageNumber = 1;
 	
 	public void getCDQSSNews(){
+		System.out.println("成都全搜索程序运行中、、、");
 		DBName = "LOCALNEWS";
 		DBTable = "CDQSS";
 		ENCODE = "utf-8";
@@ -98,8 +99,10 @@ public class CDQSS {
 
 		//获取每个新闻网页的html
 		int i = 0;
-		if(guoNeiNewsContent == null )
+		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty()){
+			crut.destory();
 			return ;
+		}
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
