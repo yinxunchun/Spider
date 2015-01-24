@@ -107,8 +107,9 @@ public class CQGOV implements GOV{
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
 		int i = 1 ;
-		if(contentLinks == null || contentLinks.isEmpty()){
+		if(contentLinks == null||contentLinks.isEmpty()){
 			crut.destory();
+			System.out.println("CQGOV");
 			return ;
 		}
 		while(!contentLinks.isEmpty()){
