@@ -113,9 +113,9 @@ public class SCOL {
 				i++;
 				System.out.println("download:"+downloadTime);
 				System.out.println(findNewsTime(html,newsTimeLabel));
-				if(findNewsTime(html,newsTimeLabel).equals(downloadTime))
-					crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-								findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+				
+				crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 	
 			}
 			System.out.println(i);

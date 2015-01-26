@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.spec.ECField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -72,6 +73,8 @@ public class NETEASEFocus implements NETEASE{
 		newsContentLinksReg = "http://focus.news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
 		
 		String focusHtml = findContentHtml(theme);
+		if(focusHtml == null)
+			return ;
 		Queue<String> visitedLinks = new LinkedList<String>();
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
@@ -120,7 +123,7 @@ public class NETEASEFocus implements NETEASE{
 		Queue<String> themelinks = new LinkedList<String>();
 		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
 		themelinks.offer(themeLink);
-		
+		Exception bufException = null ;
 		try {
 				Parser parser = new Parser(themeLink);
 				parser.setEncoding(ENCODE);
@@ -147,9 +150,12 @@ public class NETEASEFocus implements NETEASE{
 		        	}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}
 		return themelinks ;
 	}
@@ -157,7 +163,7 @@ public class NETEASEFocus implements NETEASE{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -192,9 +198,12 @@ public class NETEASEFocus implements NETEASE{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException =e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -206,11 +215,11 @@ public class NETEASEFocus implements NETEASE{
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
 		
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
-	    
-		int state;
+	    IOException bufException = null ;
+		int state = 0 ;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -219,13 +228,16 @@ public class NETEASEFocus implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null )
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -237,7 +249,10 @@ public class NETEASEFocus implements NETEASE{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {

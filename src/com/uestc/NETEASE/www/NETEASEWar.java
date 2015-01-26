@@ -168,7 +168,7 @@ public class NETEASEWar implements NETEASE{
 		Queue<String> themelinks = new LinkedList<String>();
 		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
 		themelinks.offer(themeLink);
-		
+		Exception bufException = null;
 		try {
 				Parser parser = new Parser(themeLink);
 				parser.setEncoding(ENCODE);
@@ -195,9 +195,13 @@ public class NETEASEWar implements NETEASE{
 		        	}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException!=null){
+					return null;
+				}
 			}
 		return themelinks ;
 	}
@@ -205,7 +209,7 @@ public class NETEASEWar implements NETEASE{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufeException = null;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -240,9 +244,13 @@ public class NETEASEWar implements NETEASE{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufeException = e ;
 			}catch(Exception e){
-				return null;
+				bufeException = e ;
+			}finally{
+				if(bufeException!= null){
+					return null;
+				}
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -254,11 +262,11 @@ public class NETEASEWar implements NETEASE{
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
 		
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
-	    
-		int state;
+	    Exception bufeException = null;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -267,17 +275,20 @@ public class NETEASEWar implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufeException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufeException = e ;
+      }finally{
+    	  if(bufeException!=null)
+    		  return null;
       }
 		if(state != 200 && state != 201){
 			return null;
 		}
-  
+		Exception bufeException1 = null;
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
@@ -285,7 +296,10 @@ public class NETEASEWar implements NETEASE{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufeException1 = e ;
+        }finally{
+        	if(bufeException1 != null)
+        		return null;
         }
   
         try {

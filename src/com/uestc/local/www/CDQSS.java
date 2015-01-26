@@ -110,11 +110,11 @@ public class CDQSS {
 				String html = findContentHtml(url);  //获取新闻的html
 				System.out.println(url);
 				i++;
-				if(findNewsTime(html,newsTimeLabel)!= null && findNewsTime(html,newsTimeLabel).equals(downloadTime)){
-					crut.add(findNewsTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+				
+				crut.add(findNewsTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
-				}
+				
 			}
 			System.out.println(i);
 		}
@@ -345,7 +345,7 @@ public class CDQSS {
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(contentBuf.equals("")){
+		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = html.substring(html.lastIndexOf("<!--enpcontent-->")+17, html.indexOf("<!--/enpcontent-->"));
 		}
 		if(contentBuf!=null){

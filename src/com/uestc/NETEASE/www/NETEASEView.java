@@ -71,12 +71,15 @@ public class NETEASEView implements NETEASE{
 		//内容正则表达式http://view.163.com/14/1125/11/ABT5R5GF00012Q9L.html
 		newsContentLinksReg = "(http://view.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html)|(http://view.163.com/special/reviews/(.*?).html)"; //内容正则表达式
 		
-		String focusHtml = findContentHtml(theme);
+		String viewHtml = findContentHtml(theme);
+		if(viewHtml == null){
+			return ;
+		}
 		Queue<String> visitedLinks = new LinkedList<String>();
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
         
-        Matcher themeMatcher = newPage.matcher(focusHtml);
+        Matcher themeMatcher = newPage.matcher(viewHtml);
         //计算获取新闻的时间
   		if( month < 10)
   			downloadTime = year+"0"+month;
@@ -209,8 +212,8 @@ public class NETEASEView implements NETEASE{
 		HttpURLConnection httpUrlConnection;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
-	    
-		int state;
+	    IOException bufException = null;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -219,12 +222,17 @@ public class NETEASEView implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
+			
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e;
+      }finally{
+    	  if(bufException!=null){
+    		  return null;
+    	  }
       }
 		if(state != 200 && state != 201){
 			return null;

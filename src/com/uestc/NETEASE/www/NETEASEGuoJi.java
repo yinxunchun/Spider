@@ -20,6 +20,7 @@ import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.HasAttributeFilter;
+import org.htmlparser.tags.Bullet;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
@@ -70,7 +71,8 @@ public class NETEASEGuoJi implements NETEASE{
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		
 		String guoJiHtml = findContentHtml(theme);
-		
+		if(guoJiHtml == null)
+			return ;
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
         
@@ -113,6 +115,7 @@ public class NETEASEGuoJi implements NETEASE{
 		
 		// TODO Auto-generated method stub
 		Queue<String> themelinks = new LinkedList<String>();
+		Exception bufException = null;
 		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
 		themelinks.offer(themeLink);
 		
@@ -142,9 +145,13 @@ public class NETEASEGuoJi implements NETEASE{
 		        	}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null){
+					return null;
+				}
 			}
 		return themelinks ;
 	}
@@ -152,7 +159,7 @@ public class NETEASEGuoJi implements NETEASE{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -187,9 +194,12 @@ public class NETEASEGuoJi implements NETEASE{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException =e ;
+			}finally{
+				if( bufException!= null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -200,12 +210,12 @@ public class NETEASEGuoJi implements NETEASE{
 	public String findContentHtml(String url) {
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		IOException bufeException = null ;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -214,12 +224,15 @@ public class NETEASEGuoJi implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufeException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufeException = e ;
+      }finally{
+    	  if(bufeException != null)
+    		  return null;
       }
 		if(state != 200 && state != 201){
 			return null;
@@ -232,7 +245,10 @@ public class NETEASEGuoJi implements NETEASE{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufeException = e ;
+        }finally{
+        	if(bufeException!= null)
+        		return null ;
         }
   
         try {

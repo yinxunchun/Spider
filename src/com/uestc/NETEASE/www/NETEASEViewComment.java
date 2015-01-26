@@ -74,6 +74,8 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		newsContentLinksReg = "(http://view.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html)|(http://view.163.com/special/reviews/(.*?).html)"; //内容正则表达式
 		
 		String focusHtml = findContentHtml(theme);
+		if(focusHtml == null )
+			return;
 		Queue<String> visitedLinks = new LinkedList<String>();
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
@@ -115,6 +117,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
 		Queue<String> themelinks = new LinkedList<String>();
+		Exception bufException = null ;
 		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
 		themelinks.offer(themeLink);
 		
@@ -144,9 +147,12 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		        	}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}
 		return themelinks ;
 	}
@@ -155,7 +161,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 	public Queue<String> findContentLinks(Queue<String> themeLink,String ContentLinkReg) {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -190,9 +196,12 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 //			System.out.println(contentlinks);
@@ -202,11 +211,11 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 	@Override
 	public String findContentHtml(String url) {
 		String html = null;                 //网页html
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
-	    
-		int state;
+	    Exception bufException = null ;
+		int state = 0 ;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -215,12 +224,16 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		}catch (MalformedURLException e) {
 //	          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //	          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
+      }finally{
+    	  if(bufException != null){
+    		  return null;
+    	  }
       }
 		if(state != 200 && state != 201){
 			return null;
@@ -233,7 +246,10 @@ public class NETEASEViewComment implements NETEASECOMMENT{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null ;
         }
   
         try {

@@ -125,6 +125,7 @@ public class JSGOV implements GOV{
 	@Override
 	public Queue<String> getContentLinks(Queue<String> themeLink,String ContentLinkReg) {
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -160,10 +161,13 @@ public class JSGOV implements GOV{
 				}
 			}catch(ParserException e){
 				System.out.println(".1");
-				return null;
+				bufException = e ;
 			}catch(Exception e){
 				System.out.println(".2");
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -173,12 +177,12 @@ public class JSGOV implements GOV{
 	@Override
 	public String getContentHtml(String url) {
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -187,13 +191,16 @@ public class JSGOV implements GOV{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null)
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -205,7 +212,10 @@ public class JSGOV implements GOV{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {

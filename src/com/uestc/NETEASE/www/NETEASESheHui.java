@@ -70,8 +70,8 @@ public class NETEASESheHui implements NETEASE{
 		
 		//新闻内容links的正则表达式 
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html#f=s((list)|(focus))";
-		
-		int state ;
+		IOException bufException = null;
+		int state = 0 ;
 		try{
 			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(theme).openConnection(); //创建连接
 			state = httpUrlConnection.getResponseCode();
@@ -79,12 +79,15 @@ public class NETEASESheHui implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
-			return;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
-			return ;
+			bufException = e ;
+      }finally{
+    	  if(bufException!=null)
+    		  return ;
       }
 		if(state != 200 && state != 201){
 			return;
@@ -142,7 +145,7 @@ public class NETEASESheHui implements NETEASE{
 		Queue<String> themelinks = new LinkedList<String>();
 		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
 		themelinks.offer(themeLink);
-		
+		Exception bufException = null;
 		try {
 				Parser parser = new Parser(themeLink);
 				parser.setEncoding(ENCODE);
@@ -169,9 +172,13 @@ public class NETEASESheHui implements NETEASE{
 		        	}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null ){
+					return null;
+				}
 			}
 		return themelinks ;
 	}
@@ -179,7 +186,7 @@ public class NETEASESheHui implements NETEASE{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -214,9 +221,13 @@ public class NETEASESheHui implements NETEASE{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null ){
+					return null;
+				}
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -231,8 +242,8 @@ public class NETEASESheHui implements NETEASE{
 		HttpURLConnection httpUrlConnection;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
-	    
-		int state;
+	    IOException bufException =null ;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -241,12 +252,15 @@ public class NETEASESheHui implements NETEASE{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
+      }finally{
+    	  if(bufException!= null)
+    		  return null;
       }
 		if(state != 200 && state != 201){
 			return null;
