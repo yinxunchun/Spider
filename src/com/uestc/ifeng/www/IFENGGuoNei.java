@@ -105,7 +105,7 @@ public class IFENGGuoNei implements IFENG{
 				if(!crut.query("Url", url)){
 					Date date = new Date();
 					String html = findContentHtml(url);  //获取新闻的html
-					System.out.println(url);
+//					System.out.println(url);
 //				System.out.println(html);
 					i++;
 //				System.out.println(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"));
@@ -116,7 +116,7 @@ public class IFENGGuoNei implements IFENG{
 			}
 		}
 		crut.destory();
-		System.out.println(i);
+//		System.out.println(i);
 	
 	
 	}
@@ -130,7 +130,7 @@ public class IFENGGuoNei implements IFENG{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -165,9 +165,12 @@ public class IFENGGuoNei implements IFENG{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -178,12 +181,12 @@ public class IFENGGuoNei implements IFENG{
 	public String findContentHtml(String url) {
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -192,12 +195,12 @@ public class IFENGGuoNei implements IFENG{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
       }
 		if(state != 200 && state != 201){
 			return null;
@@ -210,7 +213,10 @@ public class IFENGGuoNei implements IFENG{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {
@@ -288,7 +294,7 @@ public class IFENGGuoNei implements IFENG{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null && titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
@@ -301,7 +307,7 @@ public class IFENGGuoNei implements IFENG{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf != null && titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		return titleBuf;
 	}
@@ -314,10 +320,12 @@ public class IFENGGuoNei implements IFENG{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("&ldquo;", "“");
-		contentBuf = contentBuf.replaceAll("&rdquo;","”");
-		contentBuf = contentBuf.replaceAll("&middot;", "·");
-		contentBuf = contentBuf.replaceAll("\\n       \\n        ", "");
+		if(contentBuf!=null){
+			contentBuf = contentBuf.replaceAll("&ldquo;", "“");
+			contentBuf = contentBuf.replaceAll("&rdquo;","”");
+			contentBuf = contentBuf.replaceAll("&middot;", "·");
+			contentBuf = contentBuf.replaceAll("\\n       \\n        ", "");
+		}
 		return contentBuf;
 	}
 	@Override
@@ -332,6 +340,8 @@ public class IFENGGuoNei implements IFENG{
 				return null;
 			//获取图片时间，为命名服务
 			imageNameTime = findNewsTime(html,label) ;
+			if(imageNameTime== null || imageNameTime.equals(""))
+				return null;
 			//处理存放条图片的文件夹
 		    File f = new File("IFENGGuoNei");
 		   	if(!f.exists()){
@@ -347,7 +357,7 @@ public class IFENGGuoNei implements IFENG{
 			int i = 1 ;      //本条新闻图片的个数
 			while(imageMatcher.find()){
 				String bufUrl = imageMatcher.group();
-				System.out.println(bufUrl);
+//				System.out.println(bufUrl);
 				File fileBuf;
 //				imageMatcher.group();
 				String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -359,21 +369,21 @@ public class IFENGGuoNei implements IFENG{
 					if(imageNumber < 9){
 						fileBuf = new File("IFENGGuoNei",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 99){
 						fileBuf = new File("IFENGGuoNei",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 999){
 						fileBuf = new File("IFENGGuoNei",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
 						fileBuf = new File("IFENGGuoNei",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}
 		           
 					byte[] buf = new byte[1024];  
@@ -407,13 +417,15 @@ public class IFENGGuoNei implements IFENG{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
-		timeBuf = timeBuf.replaceAll("[^0-9]", "");
-		if(timeBuf.length() > 8)
-			timeBuf = timeBuf.substring(0, 8);
-		if(timeBuf == "" || timeBuf == null){
+		if(timeBuf != null ){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);	
+		}
+		if(timeBuf == null|| timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"h4");
 			timeBuf = timeBuf.replaceAll("[^0-9]", "");
-			if(timeBuf.length() > 8)
+			if(timeBuf.length() >= 8)
 				timeBuf = timeBuf.substring(0,8);
 		}
 		return timeBuf;
@@ -435,10 +447,11 @@ public class IFENGGuoNei implements IFENG{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		if(sourceBuf.length() >29)
-			sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
-		sourceBuf= sourceBuf.replaceAll("\\s+", "");
+		if(sourceBuf!=null){
+			if(sourceBuf.length() >=29)
+				sourceBuf = sourceBuf.substring(29, sourceBuf.length());  //根据不同新闻 不同处理
+			sourceBuf= sourceBuf.replaceAll("\\s+", "");
+		}
 		if(label.length == 3 && (!label[2].equals("")))
 			return label[2]+"-"+sourceBuf;
 		else

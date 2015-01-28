@@ -8,7 +8,7 @@ public class IfengTimeTask extends TimerTask{
 	private int i  = 0 ;
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		System.out.println("凤凰新闻第"+i+"次运行");
 		IFENGGuoJi gj = new IFENGGuoJi();
 		gj.getIFENGGuoJiNews();
 		IFENGGuoNei gn = new IFENGGuoNei();
@@ -21,7 +21,7 @@ public class IfengTimeTask extends TimerTask{
 		sd.getIFENGShenDuNews();
 		IFENGOpinion opinion = new IFENGOpinion();
 		opinion.getIFENGOpinionNews();
-		System.out.println("凤凰新闻运行第"+i+"次...");
+		System.out.println("凤凰新闻结束运行第"+i+"次...");
 		i++;
 		
 	}

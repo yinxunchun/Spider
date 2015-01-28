@@ -97,7 +97,7 @@ public class XZGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 				i++;
@@ -108,7 +108,7 @@ public class XZGOV implements GOV{
 				
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 		
 	}
@@ -127,7 +127,7 @@ public class XZGOV implements GOV{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -208,7 +208,7 @@ public class XZGOV implements GOV{
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+        	System.out.println(url+"该链接访问超时...");
         	bufException = e ;
         }finally{
         	if(bufException != null)

@@ -10,7 +10,7 @@ public class NETEASETimeTask extends TimerTask{
 	private int i  = 0 ;
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		System.out.println("网易新闻运行第"+i+"次开始...");
 		NETEASEGuoNei test = new NETEASEGuoNei();
 		test.getNETEASEGuoNeiNews();
 		NETEASEGuoJi test1 = new NETEASEGuoJi();
@@ -23,7 +23,7 @@ public class NETEASETimeTask extends TimerTask{
 		test4.getNETEASEWarNews();
 		NETEASEFocus test5 = new NETEASEFocus();
 		test5.getNETEASEFocusNews();
-		System.out.println("网易新闻程序运行第"+i+"次");
+		System.out.println("网易新闻程序运行第"+i+"次完成...");
 		i++;
 		
 	}

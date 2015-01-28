@@ -118,7 +118,7 @@ public class CQGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 				i++;
@@ -140,14 +140,14 @@ public class CQGOV implements GOV{
 				if(!crut.query("Url", url)){
 					Date date = new Date();
 					String html = getContentHtml(url);  //获取新闻的html
-					System.out.println(url);
+//					System.out.println(url);
 					i++;
 					crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 							getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 				}
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 		
 	}
@@ -166,7 +166,7 @@ public class CQGOV implements GOV{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -376,7 +376,7 @@ public class CQGOV implements GOV{
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -388,21 +388,21 @@ public class CQGOV implements GOV{
 				if(imageNumber < 9){
 					fileBuf = new File("CQGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("CQGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("CQGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("\\CQGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("CQGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

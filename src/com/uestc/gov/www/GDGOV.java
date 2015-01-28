@@ -92,7 +92,7 @@ public class GDGOV implements GOV{
 
 		// 内容link 正则http://www.gd.gov.cn/tzgd/gdtzdt/201501/t20150105_207103.htm
 		newsContentLinksReg = "http://www.gd.gov.cn/tzgd/gdtzdt/"+year+monthBuf+"/t"+downloadTime+"_[0-9]{6,7}.htm";
-		System.out.println(newsContentLinksReg);
+//		System.out.println(newsContentLinksReg);
 		//内容links
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
@@ -106,7 +106,7 @@ public class GDGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);				
+//				System.out.println(url);				
 				i++;
 				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
@@ -115,14 +115,14 @@ public class GDGOV implements GOV{
 		//今日
 		Queue<String> contentLinks1 = new LinkedList<String>();
 		String newsContentLinksReg1 = "http://www.gd.gov.cn/gdgk/gdyw/"+year+monthBuf+"/t"+downloadTime+"_[0-9]{6,7}.htm";
-		System.out.println(newsContentLinksReg1);
+//		System.out.println(newsContentLinksReg1);
 		contentLinks1 = getContentLinks(themeLinks1,newsContentLinksReg1);
 		while(!contentLinks1.isEmpty()){
 			String url = contentLinks1.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				i++;
 				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
@@ -131,20 +131,20 @@ public class GDGOV implements GOV{
 		//http://www.gd.gov.cn/govpub/zwdt/szfdt/201501/t20150108_207310.htm
 		Queue<String> contentLinks2 = new LinkedList<String>();
 		String newsContentLinksReg2 = "http://www.gd.gov.cn/govpub/zwdt/szfdt/"+year+monthBuf+"/t"+downloadTime+"_[0-9]{6,7}.htm";
-		System.out.println(newsContentLinksReg2);
+//		System.out.println(newsContentLinksReg2);
 		contentLinks2 = getContentLinks(themeLinks2,newsContentLinksReg2);
 		while(!contentLinks2.isEmpty()){
 			String url = contentLinks2.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				i++;
 				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 					getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 	}
 	
@@ -159,11 +159,11 @@ public class GDGOV implements GOV{
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
-		System.out.println("sss");
+//		System.out.println("sss");
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -383,7 +383,7 @@ public class GDGOV implements GOV{
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
 			bufUrl = bufUrl.replaceAll("./", imageUrlBuf);
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -395,21 +395,21 @@ public class GDGOV implements GOV{
 				if(imageNumber < 9){
 					fileBuf = new File("GDGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("GDGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("GDGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("GDGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

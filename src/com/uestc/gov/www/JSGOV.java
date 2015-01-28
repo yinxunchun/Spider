@@ -101,7 +101,7 @@ public class JSGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 				i++;
@@ -111,7 +111,7 @@ public class JSGOV implements GOV{
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 		
 	}
@@ -130,7 +130,7 @@ public class JSGOV implements GOV{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);

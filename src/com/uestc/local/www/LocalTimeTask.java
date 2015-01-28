@@ -9,14 +9,14 @@ public class LocalTimeTask extends TimerTask{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		System.out.println("本地新闻程序开始第"+i+"次运行...");
 		CDQSS cdqss = new CDQSS();
 		cdqss.getCDQSSNews();
 		SCNEWS scnews = new SCNEWS();
 		scnews.getSCXWNews();
 		SCOL scol = new SCOL();
 		scol.getSCOLNews();
-		System.out.println("本地新闻程序运行第"+i+"次");
+		System.out.println("本地新闻程序结束运行第"+i+"次...");
 		i++;
 	}
 	public static void main(String[] args){

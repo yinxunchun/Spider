@@ -99,10 +99,10 @@ public class NETEASEView implements NETEASE{
         		if(!visitedLinks.contains(url)){
         			Date date = new Date();
         			String html = findContentHtml(url);
-        			System.out.println(url);
+//        			System.out.println(url);
 
-        			System.out.println("download:"+downloadTime);
-        			System.out.println(findNewsTime(html,newsTimeLabel));
+//        			System.out.println("download:"+downloadTime);
+//        			System.out.println(findNewsTime(html,newsTimeLabel));
         			if(findNewsTime(html,newsTimeLabel)!= null && findNewsTime(html,newsTimeLabel).equals(downloadTime)){
         				crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
         						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
@@ -112,7 +112,7 @@ public class NETEASEView implements NETEASE{
         	}
         	
         }
-        System.out.println(i);
+//        System.out.println(i);
         crut.destory();
         imageNumber = 1 ;
 	}
@@ -352,7 +352,7 @@ public class NETEASEView implements NETEASE{
 		}
 		if(contentBuf==null||contentBuf.equals("")){
 			contentBuf = HandleHtml(html ,"class","feed-text");
-			System.out.println(contentBuf);
+//			System.out.println(contentBuf);
 		}
 
 		if(contentBuf!=null&&contentBuf.contains("(NTES);")){
@@ -423,7 +423,7 @@ public class NETEASEView implements NETEASE{
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -435,21 +435,21 @@ public class NETEASEView implements NETEASE{
 				if(imageNumber < 9){
 					fileBuf = new File("NETEASEView",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("NETEASEView",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("NETEASEView",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("NETEASEView",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

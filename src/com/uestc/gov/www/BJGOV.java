@@ -101,7 +101,7 @@ public class BJGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 				i++;
@@ -111,7 +111,7 @@ public class BJGOV implements GOV{
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsImageLabel),downloadTime,date);
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 		
 	}
@@ -129,7 +129,7 @@ public class BJGOV implements GOV{
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -366,7 +366,7 @@ public class BJGOV implements GOV{
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
 			bufUrl = bufUrl.replaceAll("./", imageUrlBuf);
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -378,21 +378,21 @@ public class BJGOV implements GOV{
 				if(imageNumber < 9){
 					fileBuf = new File("BJGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("BJGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("BJGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("BJGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

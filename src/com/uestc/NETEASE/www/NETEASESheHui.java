@@ -120,19 +120,19 @@ public class NETEASESheHui implements NETEASE{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				i++;
-				System.out.println("download:"+downloadTime);
-				System.out.println(findNewsTime(html,newsTimeLabel));
+//				System.out.println("download:"+downloadTime);
+//				System.out.println(findNewsTime(html,newsTimeLabel));
 				if(findNewsTime(html,newsTimeLabel)!= null &&findNewsTime(html,newsTimeLabel).equals(downloadTime)){
 					crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
 				}else {
-					System.out.println(downloadTime+"!="+findNewsTime(html,newsTimeLabel));
+//					System.out.println(downloadTime+"!="+findNewsTime(html,newsTimeLabel));
 				}
 			}
-			System.out.println(i);
+//			System.out.println(i);
 		}
 		crut.destory();
 		imageNumber = 1 ;
@@ -380,7 +380,7 @@ public class NETEASESheHui implements NETEASE{
 		if(contentBuf!=null){
 			if(contentBuf.equals("")){
 				contentBuf = HandleHtml(html ,"class","feed-text");
-				System.out.println(contentBuf);
+//				System.out.println(contentBuf);
 			}
 			if(contentBuf.contains("(NTES);")){
 				contentBuf = contentBuf.substring(contentBuf.indexOf("(NTES);")+7, contentBuf.length());
@@ -401,9 +401,9 @@ public class NETEASESheHui implements NETEASE{
 			if(html.contains("<div id=\"endText\">")&&html.contains("<!-- 分页 -->")){
 				
 				bufHtml = html.substring(html.indexOf("<div id=\"endText\">"), html.indexOf("<!-- 分页 -->"));
-				System.out.println("ssss");
+//				System.out.println("ssss");
 			}else {
-				System.out.println("ttt");
+//				System.out.println("ttt");
 				return null;
 				
 			}
@@ -419,7 +419,7 @@ public class NETEASESheHui implements NETEASE{
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
-			String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)))";
+			String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)|(gif)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)|(gif)))";
 			Pattern newsImage = Pattern.compile(imageReg);
 			Matcher imageMatcher = newsImage.matcher(bufHtml);
 			//处理图片
@@ -438,21 +438,21 @@ public class NETEASESheHui implements NETEASE{
 					if(imageNumber < 9){
 						fileBuf = new File("NETEASESheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 99){
 						fileBuf = new File("NETEASESheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 999){
 						fileBuf = new File("NETEASESheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
 						fileBuf = new File("NETEASESheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}
 		           
 					byte[] buf = new byte[1024];  

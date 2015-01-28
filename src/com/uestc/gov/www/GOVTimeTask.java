@@ -8,7 +8,7 @@ public class GOVTimeTask extends TimerTask{
 	private int i = 0 ;
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		System.out.println("政府网新闻运行第"+i+"次开始...");
 		AHGOV test = new AHGOV();
 		test.getAHGOVNews();
 		BJGOV test1 = new  BJGOV();
@@ -36,7 +36,7 @@ public class GOVTimeTask extends TimerTask{
 		SHGOV test12 = new SHGOV();
 		test12.getSHGOVNews();
 			
-		System.out.println("政府网站程序运行第"+i+"次");
+		System.out.println("政府网站程序运行第"+i+"次结束...");
 		i++;
 	}
 

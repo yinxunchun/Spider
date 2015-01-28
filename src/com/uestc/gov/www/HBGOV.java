@@ -101,7 +101,7 @@ public class HBGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //			System.out.println(getNewsTitle(html,newsTitleLabel,""));
 //			System.out.println(getNewsContent(html,newsContentLabel));
 //			System.out.println(findNewsComment(url));
@@ -113,7 +113,7 @@ public class HBGOV implements GOV{
 				}
 			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
 		crut.destory();
 		
 	}
@@ -132,7 +132,7 @@ public class HBGOV implements GOV{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			String html = getContentHtml(buf);
 			html = html.substring(html.indexOf("id=\"wuhang\""),html.indexOf("<div class=\"fen_page\">"));
 //			System.out.println(html);
@@ -330,7 +330,7 @@ public class HBGOV implements GOV{
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
 			bufUrl = "http://www.hebei.gov.cn" + bufUrl;
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -342,21 +342,21 @@ public class HBGOV implements GOV{
 				if(imageNumber < 9){
 					fileBuf = new File("HBGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("HBGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("HBGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("HBGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

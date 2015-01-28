@@ -81,21 +81,21 @@ public class CDQSS {
 		
 		//新闻主题links的正则表达式
 		String theme1 = "http://news.chengdu.cn/node_583_2.htm";
-		System.out.println(monthBuf + " " + dateBuf);
+//		System.out.println(monthBuf + " " + dateBuf);
 		//新闻内容links的正则表达式http://news.chengdu.cn/content/2015-01/20/content_1670797.htm?node=583
 		newsContentLinksReg = "http://news.chengdu.cn/content/"+year+"-"+monthBuf+"/"+dateBuf+"/content_[0-9]{7}.htm\\?node=583";
-		System.out.println(newsContentLinksReg);
+//		System.out.println(newsContentLinksReg);
 		
 		//保存国内新闻主题links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme.offer(theme);
 		guoNeiNewsTheme.offer(theme1);
-		System.out.println(guoNeiNewsTheme);
+//		System.out.println(guoNeiNewsTheme);
 		
 		//获取国内新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
-		System.out.println(guoNeiNewsContent);
+//		System.out.println(guoNeiNewsContent);
 
 		//获取每个新闻网页的html
 		int i = 0;
@@ -108,7 +108,7 @@ public class CDQSS {
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				i++;
 				
 				crut.add(findNewsTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
@@ -116,7 +116,7 @@ public class CDQSS {
 		
 				
 			}
-			System.out.println(i);
+//			System.out.println(i);
 		}
 		crut.destory();
 		imageNumber = 1 ;
@@ -396,7 +396,7 @@ public class CDQSS {
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -408,21 +408,21 @@ public class CDQSS {
 				if(imageNumber < 9){
 					fileBuf = new File("LOCALCDQSS",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("LOCALCDQSS",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("LOCALCDQSS",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("LOCALCDQSS",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  

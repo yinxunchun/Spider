@@ -109,16 +109,16 @@ public class SCOL {
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				i++;
-				System.out.println("download:"+downloadTime);
-				System.out.println(findNewsTime(html,newsTimeLabel));
+//				System.out.println("download:"+downloadTime);
+//				System.out.println(findNewsTime(html,newsTimeLabel));
 				
 				crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 	
 			}
-			System.out.println(i);
+//			System.out.println(i);
 		}
 		crut.destory();
 		imageNumber = 1 ;
@@ -393,7 +393,7 @@ public class SCOL {
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -405,21 +405,21 @@ public class SCOL {
 				if(imageNumber < 9){
 					fileBuf = new File("SCOL",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("SCOL",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 999){
 					fileBuf = new File("SCOL",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
   
 				}else{
 					fileBuf = new File("SCOL",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
             
 				byte[] buf = new byte[1024];  
