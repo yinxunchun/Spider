@@ -126,7 +126,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        		if(!visitedLinks.contains(url)){
 	        			
 	        			String html = findContentHtml(url);
-	        			System.out.println(url);
+//	        			System.out.println(url);
 //	        			System.out.println(findNewsOriginalSource(html,newsSourceLabel));
 //	        			System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
 //	        			System.out.println(findNewsTime(html,newsTimeLabel));
@@ -139,7 +139,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        			if(!visitedLinks.contains(url)){
 	        			
 	        			String html = findContentHtml(url);
-	        			System.out.println(url);
+//	        			System.out.println(url);
 	        			Queue<String> buf = findNewsComment(url,html,label);
 	        			crut.update(url,commentUrl, buf,dateTime );
 	        			visitedLinks.add(url);
@@ -148,7 +148,7 @@ public class NETEASEFocusComment implements NETEASECOMMENT{
 	        	}
 	        }
 	        crut.destory();
-	        System.out.println(i);
+//	        System.out.println(i);
 		}
 		
 		@Override

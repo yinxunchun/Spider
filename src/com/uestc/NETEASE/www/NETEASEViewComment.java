@@ -91,7 +91,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         		if(!visitedLinks.contains(url)){
 
         			String html = findContentHtml(url);
-        			System.out.println(url);
+//        			System.out.println(url);
         			i++;
         			Queue<String> buf = findNewsComment(url,html,label);
         			crut.add(url, commentUrl, buf,dateTime);
@@ -100,7 +100,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         		}
         	}else{
         		String html = findContentHtml(url);
-    			System.out.println(url);
+//    			System.out.println(url);
     			i++;
     			Queue<String> buf = findNewsComment(url,html,label);
     			crut.update(url, commentUrl, buf,dateTime);
@@ -110,7 +110,7 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         	
         }
         crut.destory();
-        System.out.println(i);
+//        System.out.println(i);
 	
 	
 	}

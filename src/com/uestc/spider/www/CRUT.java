@@ -255,22 +255,35 @@ public class CRUT {
 		DBObject buf  = users.findOne(new BasicDBObject("Url", url));
 		BasicDBList commentQueue = null;
 		Queue<String> bufQueue = new LinkedList<String>();
+		Queue<String> bufQueue1 = new LinkedList<String>();
 		if(buf.get("Comment") != null){
 			commentQueue = (BasicDBList) buf.get("Comment");
 			for(int i = 0 ; i < commentQueue.size();i ++){
 				bufQueue.offer(commentQueue.get(i).toString());
+				bufQueue1.offer(commentQueue.get(i).toString());
 			}
 		}else{
 			bufQueue = null;
 		}
 		
-
+		boolean flag = false ;
 		if(bufQueue != null){
 			
 			if(newComment != null){
 				while (!newComment.isEmpty()) {
-			
-					bufQueue.offer(newComment.poll());		
+					String bufComment = newComment.poll(); //获取新评论
+					String bufComment1 = bufComment ;       //保存评论
+					bufComment = bufComment.substring(0, bufComment.lastIndexOf("--"));
+					for(String i :bufQueue1){
+						String t = i ;
+						t = t.substring(0, t.lastIndexOf("--"));
+						if(bufComment.equals(t)){
+							flag = true ;
+						}
+					}
+					if(flag == false)
+						bufQueue.offer(bufComment1);
+					flag = false ;
 				}
 			}
 				

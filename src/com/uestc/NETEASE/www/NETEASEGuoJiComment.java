@@ -91,7 +91,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         	if(!crut.query("Url", url)){
         		i++;
         		String html = findContentHtml(url);
-        		System.out.println(url);
+//        		System.out.println(url);
         		Queue<String> buf = findNewsComment(url,html,label);
 //        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
 //        		System.out.println(findNewsContent(html,newsContentLabel));
@@ -99,7 +99,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
         		commentUrl = null;
         	}else {
         		String html = findContentHtml(url);
-        		System.out.println(url);
+//        		System.out.println(url);
         		Queue<String> buf = findNewsComment(url,html,label);
 //        		System.out.println(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"));
 //        		System.out.println(findNewsContent(html,newsContentLabel));
@@ -108,7 +108,7 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 			}
         }
         crut.destory();
-        System.out.println(i);
+//        System.out.println(i);
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {

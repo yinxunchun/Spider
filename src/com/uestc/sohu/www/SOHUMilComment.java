@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
@@ -46,6 +47,8 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	
 	//新闻主题link
 	private String theme ;
+	//time
+	Date bufDate = new Date();
 	//downloadTime
 	private String downloadTime;
 	Calendar today = Calendar.getInstance();
@@ -55,7 +58,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	
 	public void getSOHUMilComment(){
 		
-		DBName = "SOHUCOMMENT1";
+		DBName = "SOHUCOMMENT";
 		DBTable = "MIL";
 		ENCODE = "gb2312";
 		CRUT crut = new CRUT(DBName ,DBTable);
@@ -89,11 +92,19 @@ public class SOHUMilComment implements SOHUCOMMENT{
 			downloadTime += date ;
 		while(!milNewsContent.isEmpty()){
 			String url = milNewsContent.poll();
-			String commenturl = findNewsCommentUrl(url);
-			System.out.println(commenturl);
-//			handleNewsComment(commenturl);
-			crut.add(url, commenturl, handleNewsComment(commenturl), downloadTime);
+			if(!crut.query("Url", url)){
+				String commenturl = findNewsCommentUrl(url);
+				System.out.println(commenturl);
+//				handleNewsComment(commenturl);
+				crut.add(url, commenturl, handleNewsComment(commenturl),bufDate );
+			}else {
+				String commenturl = findNewsCommentUrl(url);
+				System.out.println(commenturl);
+//			 	handleNewsComment(commenturl);
+				crut.update(url, commenturl, handleNewsComment(commenturl), bufDate);
+			}
 		}
+		crut.destory();
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -149,7 +160,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	@Override
 	public Queue<String> findContentLinks(Queue<String> themeLink,String ContentLinkReg) {
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -185,15 +196,12 @@ public class SOHUMilComment implements SOHUCOMMENT{
 					}
 				}
 			}catch(ParserException e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
-					return contentlinks;
+				bufException = e ;
 			}catch(Exception e){
-				if(contentlinks.isEmpty())
+				bufException = e ;
+			}finally{
+				if(bufException != null )
 					return null;
-				else
-					return contentlinks;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -203,12 +211,12 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	public String findContentHtml(String url){
 		
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null ;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -217,13 +225,16 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException!= null )
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -235,7 +246,10 @@ public class SOHUMilComment implements SOHUCOMMENT{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {
@@ -264,6 +278,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	@Override
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
+		Exception bufException = null ;
 		System.getProperties().setProperty("webdriver.chrome.driver", "./seleniumjar/chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		try {
@@ -271,26 +286,31 @@ public class SOHUMilComment implements SOHUCOMMENT{
 			new Thread().sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			return null;
+			bufException = e ;
 		}catch(TimeoutException e){
-			return null;
+			bufException = e ;
 			
+		}finally{
+			if(bufException != null )
+				return null;
 		}
 		  
         WebElement webElement;
-        String test;
+        String test = null ;
         try{
         	webElement = driver.findElement(By.xpath("//div[@class='topic-changyan']"));  
         	test = webElement.getText();
         }catch(NoSuchElementException e){
-        	return null;
+        	bufException = e ;
         }catch(SessionNotFoundException e){
-        	return null;
+        	bufException = e ;
         }catch(TimeoutException e){
-        	return null;
+        	bufException = e ;
         }finally{
     		driver.close();  
             driver.quit();
+            if(bufException != null )
+            	return null;
         } 
         
         test = test.replaceAll("\\s+", "");
@@ -302,7 +322,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		while(themeMatcher.find()){
 			String mm = themeMatcher.group();
 			mm = mm.replaceAll("]|(回复分享)", "");
-			comment.offer(mm+"--"+downloadTime);
+			comment.offer(mm+"--"+bufDate);
 			System.out.println(mm);
 		} 
         return comment;

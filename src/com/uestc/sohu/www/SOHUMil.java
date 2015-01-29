@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -23,6 +24,7 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
 import com.uestc.spider.www.CRUT;
 
 /*
@@ -56,7 +58,7 @@ public class SOHUMil implements SOHU{
 	
 	public void getSOHUMilNews(){
 		DBName = "SOHU";
-		DBTable = "MILnew";
+		DBTable = "MIL";
 		ENCODE = "gb2312";
 		String[] newsTitleLabel = new String[]{"title",""};     //新闻标题标签 t
 		String[] newsContentLabel = new String[]{"id" ,"contentText"};  //新闻内容标签 "id","endText"
@@ -111,19 +113,23 @@ public class SOHUMil implements SOHU{
 			downloadTime += "0" + date;
 		else 
 			downloadTime += date ;
-		int i = 0;
+//		int i = 0;
 		while(!milNewsContent.isEmpty()){
 			String url = milNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-//			System.out.println(html);
-			i++;
-//			System.out.println(findNewsComment(url));
-//			System.out.println("\n");
-			crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-					findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
+			if(!crut.query("Url", url)){
+				Date date = new Date();
+				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println(url);
+//				System.out.println(html);
+//				i++;
+//				System.out.println(findNewsComment(url));
+//				System.out.println("\n");
+				crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+			}
 		}
-		System.out.println(i);
+//		System.out.println(i);
+		crut.destory();
 	
 	
 	}
@@ -149,7 +155,7 @@ public class SOHUMil implements SOHU{
 		String s2 = ".shtml";
 		themelinks.offer(themeLink);
 		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 99 ;
+		int number1 = number - 2 ;
 		for(int i = number ; i > number1 ; i--){
 			themelinks.offer(s1+i+s2);
 //			System.out.println(s1+i +s2);
@@ -172,7 +178,7 @@ public class SOHUMil implements SOHU{
 			mm1 = mm1.substring(8, mm1.indexOf(";var"));
 		}
 		int number2 = Integer.parseInt(mm1) - 1;
-		int number3 = number2 - 49 ;
+		int number3 = number2 - 2 ;
 		for(int i = number2 ; i > number3 ; i--){
 			themelinks.offer(s3+i+s4);
 //			System.out.println(s3+i +s4);
@@ -183,7 +189,7 @@ public class SOHUMil implements SOHU{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		// TODO Auto-generated method stub
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -219,14 +225,11 @@ public class SOHUMil implements SOHU{
 					}
 				}
 			}catch(ParserException e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
-					return contentlinks;
+				bufException = e ;
 			}catch(Exception e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
+				bufException = e ;
+			}finally{
+				if(bufException != null && contentlinks!= null)
 					return contentlinks;
 			}		
 		}
@@ -238,12 +241,12 @@ public class SOHUMil implements SOHU{
 	public String findContentHtml(String url) {
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0 ;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -252,12 +255,12 @@ public class SOHUMil implements SOHU{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
       }
 		if(state != 200 && state != 201){
 			return null;
@@ -270,7 +273,10 @@ public class SOHUMil implements SOHU{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {
@@ -292,7 +298,8 @@ public class SOHUMil implements SOHU{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -316,7 +323,8 @@ public class SOHUMil implements SOHU{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -344,7 +352,7 @@ public class SOHUMil implements SOHU{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf != null && titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
@@ -357,7 +365,7 @@ public class SOHUMil implements SOHU{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf != null && titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		return titleBuf;
 	}
@@ -370,28 +378,31 @@ public class SOHUMil implements SOHU{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		contentBuf = contentBuf.replaceAll("\\s+", "");
-		String contentReg = "//<(.*?)>";
-		String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
-		contentBuf = contentBuf.replaceAll(contentReg, "");
-		contentBuf = contentBuf.replaceAll(contentReg1, "");
-		contentBuf = contentBuf.replaceAll("&#160;", "");
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
+		if(contentBuf != null){
+			contentBuf = contentBuf.replaceAll("\\s+", "");
+			String contentReg = "//<(.*?)>";
+			String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
+			contentBuf = contentBuf.replaceAll(contentReg, "");
+			contentBuf = contentBuf.replaceAll(contentReg1, "");
+			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+		}
 		return contentBuf;
 	}
 	@Override
 	public String findNewsImages(String html , String[] label) {
+		if(html == null )
+			return null;
 		String bufHtml = "";        //辅助
 		String imageNameTime  = "";
-//		Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
-		if(html == null)
-			return null;
 		if(html.contains("<!-- 正文 -->")&&html.contains("<!-- 分享 -->"))
 			bufHtml = html.substring(html.indexOf("<!-- 正文 -->"), html.indexOf("<!-- 分享 -->"));
 		else 
 			return null;
 		//获取图片时间，为命名服务
-		imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+		imageNameTime = findNewsTime(html,label) ;
+		if(imageNameTime == null)
+			return null;
 		//处理存放条图片的文件夹
 	    File f = new File("SOHUMIL");
 	   	if(!f.exists()){
@@ -407,7 +418,7 @@ public class SOHUMil implements SOHU{
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -419,21 +430,21 @@ public class SOHUMil implements SOHU{
 				if(imageNumber < 9){
 					fileBuf = new File("SOHUMIL",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 99){
 					fileBuf = new File("SOHUMIL",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 	            
 				}else if(imageNumber < 999){
 					fileBuf = new File("SOHUMIL",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 	  
 				}else{
 					fileBuf = new File("SOHUMIL",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
-					imageLocation.offer(fileBuf.getAbsolutePath());
+					imageLocation.offer(fileBuf.getPath());
 				}
 	           
 				byte[] buf = new byte[1024];  
@@ -467,6 +478,12 @@ public class SOHUMil implements SOHU{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
+		if(timeBuf != null){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8){
+				timeBuf = timeBuf.substring(0, 8);
+			}
+		}
 		return timeBuf;
 	}
 	@Override
@@ -486,9 +503,10 @@ public class SOHUMil implements SOHU{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		
-		sourceBuf = sourceBuf.replaceAll("\\s+", "");
-		sourceBuf = label[2] +" - "+ sourceBuf;
+		if(sourceBuf!=null){
+			sourceBuf = sourceBuf.replaceAll("\\s+", "");
+			sourceBuf = label[2] +" - "+ sourceBuf;
+		}
 		return sourceBuf;
 	}
 	@Override
@@ -500,7 +518,7 @@ public class SOHUMil implements SOHU{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;
@@ -514,7 +532,7 @@ public class SOHUMil implements SOHU{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf!=null&&categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;

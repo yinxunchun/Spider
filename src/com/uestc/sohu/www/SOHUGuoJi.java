@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
@@ -85,6 +86,8 @@ public class SOHUGuoJi implements SOHU{
 		Queue<String>guoJiNewsContent = new LinkedList<String>();
 		guoJiNewsContent = findContentLinks(guoJiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
+		if(guoJiNewsContent == null)
+			return ;
 		//计算获取新闻的时间
 		if( month < 10)
 			downloadTime = year+"0"+month;
@@ -97,21 +100,22 @@ public class SOHUGuoJi implements SOHU{
 		int i = 0;
 		while(!guoJiNewsContent.isEmpty()){
 			String url = guoJiNewsContent.poll();
-			String html = findContentHtml(url);  //获取新闻的html
-			System.out.println(url);
-			i++;
-//			System.out.println(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"));
-//			System.out.println(findNewsTime(html,newsTitleLabel));
-//			System.out.println("\n");
-			if(!visitedUrl.contains(url)){
-				crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime);
+			if(!crut.query("Url", url)){
+				String html = findContentHtml(url);  //获取新闻的html
+				Date date = new Date();
+//				System.out.println(url);
+				i++;
+				if(!visitedUrl.contains(url)){
+					crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+				}
 			}
 			
 			visitedUrl.add(url);
 		}
 		visitedUrl = null ;
-		System.out.println(i);
+//		System.out.println(i);
+		crut.destory();
 	
 	
 	}
@@ -138,7 +142,7 @@ public class SOHUGuoJi implements SOHU{
 		String s2 = ".shtml";
 		themelinks.offer(themeLink);
 		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 99 ;
+		int number1 = number - 2 ;             //两页就行了
 		for(int i = number ; i > number1 ; i--){
 			themelinks.offer(s1+i+s2);
 		}
@@ -148,6 +152,7 @@ public class SOHUGuoJi implements SOHU{
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用	
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			try {
@@ -178,14 +183,11 @@ public class SOHUGuoJi implements SOHU{
 					}
 				}
 			}catch(ParserException e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
-					return contentlinks;
+				bufException = e ;
 			}catch(Exception e){
-				if(contentlinks.isEmpty())
-					return null;
-				else
+				bufException = e ;
+			}finally{
+				if(bufException != null && contentlinks != null)
 					return contentlinks;
 			}		
 		}
@@ -196,12 +198,12 @@ public class SOHUGuoJi implements SOHU{
 	public String findContentHtml(String url) {
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -210,13 +212,17 @@ public class SOHUGuoJi implements SOHU{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null )
+				return null;
+		}
+		
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -228,7 +234,10 @@ public class SOHUGuoJi implements SOHU{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null;
         }
   
         try {
@@ -250,7 +259,8 @@ public class SOHUGuoJi implements SOHU{
 	
 	@Override
 	public String HandleHtml(String html, String one) {
-		// TODO Auto-generated method stub
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -274,7 +284,8 @@ public class SOHUGuoJi implements SOHU{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
-		// TODO Auto-generated method stub
+		if(html == null)
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -302,7 +313,7 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf!=null&&titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
@@ -315,7 +326,7 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			titleBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(titleBuf.contains(buf))
+		if(titleBuf != null && titleBuf.contains(buf))
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
 		return titleBuf;
 	}
@@ -328,29 +339,32 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
-		if(!contentBuf.isEmpty()){
-			if(contentBuf.contains("// <![CDATA[")&&contentBuf.contains("_S_b.jpg\";")){
-				contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
+		if(contentBuf!=null){
+			if(!contentBuf.isEmpty()){
+				if(contentBuf.contains("// <![CDATA[")&&contentBuf.contains("_S_b.jpg\";")){
+					contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
+				}
+				contentBuf = contentBuf.replaceAll("&#160;", "");
 			}
-			contentBuf = contentBuf.replaceAll("&#160;", "");
+			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			contentBuf = contentBuf.replaceAll("<!--(.*?)-->", "");
 		}
-		contentBuf = contentBuf.replaceFirst("\\s+", "");
 		return contentBuf;
 	}
 	@Override
 	public String findNewsImages(String html , String[] label) {
-		// TODO Auto-generated method stub
-			String bufHtml = "";        //辅助
-			String imageNameTime  = "";
-//			Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
 			if(html == null)
 				return null;
+			String bufHtml = "";        //辅助
+			String imageNameTime  = "";
 			if(html.contains("<!-- 正文 -->")&&html.contains("<!-- 分享 -->"))
 				bufHtml = html.substring(html.indexOf("<!-- 正文 -->"), html.indexOf("<!-- 分享 -->"));
 			else 
 				return null;
 			//获取图片时间，为命名服务
-			imageNameTime = findNewsTime(html,label).substring(0, 10).replaceAll("-", "") ;
+			imageNameTime = findNewsTime(html,label);
+			if(imageNameTime == null )
+				return null;
 			//处理存放条图片的文件夹
 		    File f = new File("SOHUGuoJi");
 		   	if(!f.exists()){
@@ -366,7 +380,7 @@ public class SOHUGuoJi implements SOHU{
 			int i = 1 ;      //本条新闻图片的个数
 			while(imageMatcher.find()){
 				String bufUrl = imageMatcher.group();
-				System.out.println(bufUrl);
+//				System.out.println(bufUrl);
 				File fileBuf;
 //				imageMatcher.group();
 				String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -378,21 +392,21 @@ public class SOHUGuoJi implements SOHU{
 					if(imageNumber < 9){
 						fileBuf = new File("SOHUGuoJi",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 99){
 						fileBuf = new File("SOHUGuoJi",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 999){
 						fileBuf = new File("SOHUGuoJi",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
 						fileBuf = new File("SOHUGuoJi",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
-						imageLocation.offer(fileBuf.getAbsolutePath());
+						imageLocation.offer(fileBuf.getPath());
 					}
 		           
 					byte[] buf = new byte[1024];  
@@ -426,6 +440,11 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			timeBuf = HandleHtml(html , label[0],label[1]);
 		}
+		if(timeBuf!=null){
+			timeBuf = timeBuf.replaceAll("[^0-9]", "");
+			if(timeBuf.length() >= 8)
+				timeBuf = timeBuf.substring(0, 8);
+		}
 		return timeBuf;
 	}
 	@Override
@@ -445,8 +464,10 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			sourceBuf = HandleHtml(html , label[0],label[1]);
 		}
-		sourceBuf = sourceBuf.replaceAll("\\s+", "");
-		sourceBuf = label[2] +" - "+ sourceBuf;
+		if(sourceBuf != null){
+			sourceBuf = sourceBuf.replaceAll("\\s+", "");
+			sourceBuf = label[2] +" - "+ sourceBuf;
+		}
 		return sourceBuf;
 	}
 	@Override
@@ -458,7 +479,7 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf != null && categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;
@@ -472,7 +493,7 @@ public class SOHUGuoJi implements SOHU{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf.contains("&gt;")){
+		if(categroyBuf != null && categroyBuf.contains("&gt;")){
 			categroyBuf = categroyBuf.replaceAll("&gt;", "");
 		}
 		return categroyBuf;

@@ -123,20 +123,20 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			if(!crut.query("Url", url)){
 	
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.add(url, commentUrl, buf,dateTime);
 				commentUrl = null;
 			}else {
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.update(url, commentUrl, buf,dateTime);
 				commentUrl = null;
 			}
 		}
 		crut.destory();
-		System.out.println(i);
+//		System.out.println(i);
 	}
 	
 	@Override

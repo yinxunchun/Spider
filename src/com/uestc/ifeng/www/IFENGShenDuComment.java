@@ -117,7 +117,7 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 	@Override
 	public Queue<String> findContentLinks(Queue<String> themeLink,String ContentLinkReg) {
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufeException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -152,10 +152,13 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufeException = e ;
 			}catch(Exception e){
-				return null;
-			}		
+				bufeException = e ;
+			}finally{
+				if(bufeException != null)
+					return null;
+			}
 		}
 //		System.out.println(contentlinks);
 		return contentlinks;
@@ -173,12 +176,12 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 	@Override
 	public String findCommentHtml(String commentUrl) {
 		String html = null;                 //网页html
-		
-		HttpURLConnection httpUrlConnection;
+		Exception bufException = null ;
+		HttpURLConnection httpUrlConnection = null ;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(commentUrl).openConnection(); //创建连接
@@ -187,13 +190,16 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+commentUrl+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = null ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+commentUrl+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = null ;
+		}finally{
+			if(bufException != null)
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -205,7 +211,10 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e;
+        }finally{
+        	if(bufException != null )
+        		return null;
         }
   
         try {
@@ -227,7 +236,8 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 
 	@Override
 	public String HandleHtml(String html, String one) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one);
 		String buf = "";
 		try{
@@ -251,7 +261,8 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 	
 	@Override
 	public String HandleHtml(String html, String one, String two) {
-		// TODO Auto-generated method stub
+		if(html == null )
+			return null;
 		NodeFilter filter = new HasAttributeFilter(one,two);
 		String buf = "";
 		try{
@@ -281,16 +292,18 @@ public class IFENGShenDuComment implements IFENGCOMMENT{
 		}else{
 			comment = HandleHtml(commentHtml,label[0]);
 		}
-		comment = comment.replaceAll("\\t", "");
-		comment = comment.replaceAll("(\n)+", "\n");
-		comment = comment.replaceAll("推荐(.*?)复制\n", "");
-		comment = comment.replaceAll("发表日期(.*?)网友：", "");
-		comment = comment.replaceAll("\n手机用户\n","");
-		String bufReg = "(.*?)\n";
-		Pattern tt = Pattern.compile(bufReg);
-		Matcher bufMatcher = tt.matcher(comment);
-		while(bufMatcher.find()){
-			result.offer(bufMatcher.group()+"--"+dateBufDate);
+		if(comment!= null){
+			comment = comment.replaceAll("\\t", "");
+			comment = comment.replaceAll("(\n)+", "\n");
+			comment = comment.replaceAll("推荐(.*?)复制\n", "");
+			comment = comment.replaceAll("发表日期(.*?)网友：", "");
+			comment = comment.replaceAll("\n手机用户\n","");
+			String bufReg = "(.*?)\n";
+			Pattern tt = Pattern.compile(bufReg);
+			Matcher bufMatcher = tt.matcher(comment);
+			while(bufMatcher.find()){
+				result.offer(bufMatcher.group()+"--"+dateBufDate);
+			}
 		}
 		return result;
 	}

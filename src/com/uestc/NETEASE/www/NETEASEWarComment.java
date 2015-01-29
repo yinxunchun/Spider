@@ -88,19 +88,17 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-		if(warNewsContentLinks == null )
-			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.add(url, commentUrl, buf,dateTime);
 				commentUrl = null;
 			}else{
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.update(url, commentUrl, buf,dateTime);
 				commentUrl = null;
@@ -113,47 +111,17 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-//		int k = 1;
-		if(warNewsContentLinks == null )
-			return ;
 		while(!warNewsContentLinks.isEmpty()){
 			String url = warNewsContentLinks.poll();
 			if(!crut.query("Url", url)){
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.add(url, commentUrl, buf,dateTime);
 				commentUrl = null;
 			}else{
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
-				Queue<String> buf = findNewsComment(url,html,label);
-				crut.update(url, commentUrl, buf,dateTime);
-				commentUrl = null;
-			}
-		}
-//		System.out.println(k);
-		
-		//军事历史
-		theme = "http://war.163.com/special/historyread/";
-//		newsThemeLinksReg = "http://war.163.com/special/historyread(_[0-9]{2})*/";  //主题正则表达式
-		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
-		warNewsThemeLinks.offer(theme);
-		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-//		int j = 1 ;
-		if(warNewsContentLinks == null )
-			return ;
-		while(!warNewsContentLinks.isEmpty()){
-			String url = warNewsContentLinks.poll();
-			if(!crut.query("Url", url)){
-				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
-				Queue<String> buf = findNewsComment(url,html,label);
-				crut.add(url, commentUrl, buf,dateTime);
-				commentUrl = null;
-			}else {
-				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.update(url, commentUrl, buf,dateTime);
 				commentUrl = null;

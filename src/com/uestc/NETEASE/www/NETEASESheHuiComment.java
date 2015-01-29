@@ -120,7 +120,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 			if(!crut.query("Url", url)){
 
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //				System.out.println(html);
 				i++;
 				Queue<String> buf = findNewsComment(url,html,label);
@@ -128,7 +128,7 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 				commentUrl = null;
 			}else{
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //				System.out.println(html);
 				Queue<String> buf = findNewsComment(url,html,label);
 				crut.update(url, commentUrl, buf,dateTime);

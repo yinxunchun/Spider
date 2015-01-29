@@ -7,6 +7,7 @@ public class IfengCommentTimeTask extends TimerTask{
 	private int i = 0 ;
 	@Override
 	public void run(){
+		System.out.println("凤凰新闻评论第"+i+"次运行开始了...");
 		IFENGGuoNeiComment test = new IFENGGuoNeiComment();
 		test.getIFENGGuoNeiNews();
 		IFENGMilComment test1 = new IFENGMilComment();
@@ -19,7 +20,7 @@ public class IfengCommentTimeTask extends TimerTask{
 		test4.getIFENGSheHuiComment();
 		IFENGShenDuComment test5 = new IFENGShenDuComment();
 		test5.getIFENGShenDuComment();
-		System.out.println("凤凰新闻评论程序运行第"+i+"次");
+		System.out.println("凤凰新闻评论程序第"+i+"次运行结束...");
 		i++;
 	}
 	public static void main(String[] args){
