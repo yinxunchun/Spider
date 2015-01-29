@@ -1,5 +1,6 @@
 package com.uestc.sohu.www;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class SOHUCOMMENTTimeTask extends TimerTask{
@@ -21,6 +22,10 @@ public class SOHUCOMMENTTimeTask extends TimerTask{
 		System.out.println("搜狐评论程序第"+i+"次运行结束...");
 		i++;
 		
+	}
+	public static void main(String[] args){
+		Timer timer = new Timer();
+		timer.schedule(new SOHUCOMMENTTimeTask(), 0,4*60*60*1000);
 	}
 
 }

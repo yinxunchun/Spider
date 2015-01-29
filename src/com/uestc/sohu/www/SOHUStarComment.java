@@ -228,7 +228,7 @@ public class SOHUStarComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
 		Exception bufException = null ;
-		System.getProperties().setProperty("webdriver.chrome.driver", "./seleniumjar/chromedriver.exe");
+		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		try {
 			driver.get(commentUrl);
