@@ -286,12 +286,6 @@ public class CDSB implements Runnable {
   * 命名处理待改进
   * */
    public String handleImage(String html){
-	 //图片配置：http://www.chinamil.com.cn/jfjbmap/ 
-	   //正则表达式："IMG src=\"(.*?)res(.*?)attpic_brief.jpg\"" 路径表达式："http:\"?(.*?)(\"|>|\\s+)" 辅助："../../../"
-//	   String url = "http://www.chinamil.com.cn/jfjbmap/";
-//	   String imageurl = "IMG src=\"(.*?)res(.*?)attpic_brief.jpg\"";     //"img src=\"(.*?)res(.*?)attpic_brief.jpg\""
-//	   String imagescr = "http:\"?(.*?)(\"|>|\\s+)";     //"http:\"?(.*?)(\"|>|\\s+)"
-//	   String imageBuf = "../../../";
 	   StringBuffer buf = new StringBuffer("");
 	   StringBuffer load = new StringBuffer("C:\\Users\\Administrator\\git\\Spider\\Spider\\image\\");
 	   StringBuffer symbol = new StringBuffer(";");

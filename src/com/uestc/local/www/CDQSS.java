@@ -346,7 +346,8 @@ public class CDQSS {
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		if(contentBuf==null||contentBuf.equals("")){
-			contentBuf = html.substring(html.lastIndexOf("<!--enpcontent-->")+17, html.indexOf("<!--/enpcontent-->"));
+			if(html!=null)
+				contentBuf = html.substring(html.lastIndexOf("<!--enpcontent-->")+17, html.indexOf("<!--/enpcontent-->"));
 		}
 		if(contentBuf!=null){
 			if(contentBuf.contains("<font color=\"teal\">")){

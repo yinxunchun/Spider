@@ -159,7 +159,7 @@ public class GetImage {
             }  
         } catch (Exception e) {  
             System.out.println("œ¬‘ÿ ß∞‹"); 
-//            e.printStackTrace();
+            e.printStackTrace();
         } 
         
         return name;
