@@ -24,11 +24,10 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.thoughtworks.selenium.webdriven.commands.GetTitle;
 import com.uestc.spider.www.CRUT;
 
-public class CDSB implements NEWSPAPER{
-	
+public class BJWB implements NEWSPAPER{
+
 	private String DBName ;
 	private String DBTable ;
 	private String ENCODE ;
@@ -48,16 +47,16 @@ public class CDSB implements NEWSPAPER{
 	//图片个数
 	private int imageNumber = 1;
 	
-	public void getCDSB(){
+	public void getBJWB(){
 		DBName = "NEWSPAPER";
-		DBTable ="CDSB";
+		DBTable ="BJWB";
 		ENCODE = "utf-8";
 		
 		String[] titleLabel = new String[]{"title",""};     
 		String[] contentLabel = new String[]{"id","ozoom"};  
-		String[] timeLabel = new String[]{"class","header-today"};   
-		String[] sourceLabel =new String[]{"成都商报","成都商报网站: http://e.chengdu.cn | 成都商报刊号: CN51-0073成都商报新闻热线: 86612222"}; 
-		String[] categroyLabel = new String[]{"width","57%"} ; 
+		String[] timeLabel = new String[]{"width","316"};   
+		String[] sourceLabel =new String[]{"北京晚报","北京晚报：http://bjwb.bjd.com.cn/"}; 
+		String[] categroyLabel = new String[]{"width","145"} ; 
 		
 		CRUT crut = new CRUT(DBName ,DBTable);
 		
@@ -76,13 +75,13 @@ public class CDSB implements NEWSPAPER{
 		}
 		
 		//新闻入口赋值
-		themeUrl = "http://e.chengdu.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_2.htm";
+		themeUrl = "http://bjwb.bjd.com.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_82.htm";
 
 		//主题连接 赋值
-		themeLinksReg = "http://e.chengdu.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_[0-9]{1,3}.htm";
+		themeLinksReg = "http://bjwb.bjd.com.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_[0-9]{1,3}.htm";
 		
 		//内容连接 赋值
-		contentLinksReg = "http://e.chengdu.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/"+"content_[0-9]{5,7}.htm";
+		contentLinksReg = "http://bjwb.bjd.com.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/content_[0-9]{6}.htm";
 		
 		IOException bufException = null ;
 		int state = 0 ;
@@ -128,7 +127,7 @@ public class CDSB implements NEWSPAPER{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);
-				crut.add(getNewsTitle(html,titleLabel," - 成都商报|成都商报电子版|成都商报官方网站"), getNewsOriginalTitle(html,titleLabel," - 成都商报|成都商报电子版|成都商报官方网站"),getNewsOriginalTitle(html,titleLabel," - 成都商报|成都商报电子版|成都商报官方网站"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
+				crut.add(getNewsTitle(html,titleLabel,"-北京晚报"), getNewsOriginalTitle(html,titleLabel,"-北京晚报"),getNewsOriginalTitle(html,titleLabel,"-北京晚报"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
 						getNewsOriginalSource(html,sourceLabel), getNewsCategroy(html,categroyLabel), getNewsOriginalCategroy(html,categroyLabel), url, getNewsImages(html,timeLabel),downloadTime,date);
 			}
 		}
@@ -350,8 +349,8 @@ public class CDSB implements NEWSPAPER{
 		}else{
 			titleBuf = getHtml(html,label[0],label[1]);
 		}
-		if(titleBuf!=null&&titleBuf.contains(buf))
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
+//		if(titleBuf!=null&&titleBuf.contains(buf))
+//			titleBuf = titleBuf ;
 		return titleBuf;
 	}
 
@@ -363,22 +362,20 @@ public class CDSB implements NEWSPAPER{
 		}else{
 			titleBuf = getHtml(html,label[0],label[1]);
 		}
-		if(titleBuf!=null&&titleBuf.contains(buf))
-			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf)+buf.length())	;
+		if(titleBuf!=null)
+			titleBuf = titleBuf + buf	;
 		return titleBuf;
 	}
 
 	@Override
 	public String getNewsContent(String html, String[] label) {
-		String contentBuf;
-		if(label[1].equals("")){
-			contentBuf = getHtml(html,label[0]);
-		}else{
-			contentBuf = getHtml(html,label[0],label[1]);
+		String contentBuf = null;
+		if(html!=null&&html.contains("<!--enpcontent-->")&&html.contains("<!--/enpcontent-->")){
+			contentBuf = html.substring(html.indexOf("<!--enpcontent-->")+17, html.indexOf("<!--/enpcontent-->"));
+			contentBuf = contentBuf.replaceAll("<(.*?)>", "");
 		}
-		if(contentBuf!=null){
-			contentBuf = contentBuf.replaceFirst("\\s+", "");
-		}
+		if(contentBuf.contains("&nbsp;"))
+			contentBuf = contentBuf.replaceAll("&nbsp;", " ");
 		return contentBuf;
 	}
 
@@ -386,23 +383,28 @@ public class CDSB implements NEWSPAPER{
 	public String getNewsImages(String html, String[] label) {
 		if(html == null)
 			return null;
-		String bufHtml = html ;        //辅助
+		String bufHtml;
+		if(html.contains("<!--enpcontent-->")&&html.contains("<table bgcolor=#efefef>")){
+			bufHtml = html.substring(html.indexOf("<table bgcolor=#efefef>"), html.indexOf("<!--enpcontent-->"))  ;      //辅助
+		}else {
+			return null;
+		}        //辅助
 		String imageNameTime  = "";
 
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label) ;
 		System.out.println(imageNameTime);
-		if(imageNameTime == null || imageNameTime.equals(""))
+		if(imageNameTime == null || imageNameTime.equals("")||imageNameTime.length() < 8)
 			return null;
 		//处理存放条图片的文件夹
-    	File f = new File("CDSB");
+    	File f = new File("BJWB");
     	if(!f.exists()){
     		f.mkdir();
     	}
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "../../../res/[0-9]{1}/[0-9]{1}/"+imageNameTime.substring(0,4)+"-"+imageNameTime.substring(4, 6)+"/"+imageNameTime.substring(6, 8)+"/[0-9]{2}/res[0-9]{2}_attpic_brief.jpg";
+		String imageReg = "../../../images/"+imageNameTime.substring(0, 4)+"-"+imageNameTime.substring(4,6)+"/"+imageNameTime.substring(6, 8)+"/[0-9]{2}/(.*?).jpg";
 //		System.out.println(imageReg);
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
@@ -413,7 +415,7 @@ public class CDSB implements NEWSPAPER{
 			
 			bufUrl =bufUrl.replace("../../../", "");
 //			System.out.println(bufUrl);
-			bufUrl =  "http://e.chengdu.cn/" + bufUrl;
+			bufUrl =  "http://bjwb.bjd.com.cn/" + bufUrl;
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -423,21 +425,21 @@ public class CDSB implements NEWSPAPER{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("CDSB",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("BJWB",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("CDSB",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("BJWB",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("CDSB",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("BJWB",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("CDSB",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("BJWB",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}
@@ -525,8 +527,8 @@ public class CDSB implements NEWSPAPER{
 			categroyBuf = getHtml(html , label[0],label[1]);
 		}
 		if(categroyBuf!=null){
-			if(categroyBuf.contains("：")&&categroyBuf.contains("»"))
-			 categroyBuf = categroyBuf.substring(categroyBuf.indexOf("：")+1, categroyBuf.indexOf("»")-1);
+			if(categroyBuf.contains("："))
+			 categroyBuf = categroyBuf.substring(categroyBuf.indexOf("：")+1, categroyBuf.length());
 			 categroyBuf = categroyBuf.replaceAll("\\s+", "");
 		}
 		return categroyBuf;
@@ -540,15 +542,11 @@ public class CDSB implements NEWSPAPER{
 		}else{
 			categroyBuf = getHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf!=null){
-			if(categroyBuf.contains("第")&&categroyBuf.contains("»")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("第"), categroyBuf.indexOf("»")-1);
-			}
-		}
+
 		return categroyBuf;
 	}
 	public static void main(String[] args){
-		CDSB test = new CDSB();
-		test.getCDSB();
+		BJWB test = new BJWB();
+		test.getBJWB();
 	}
 }

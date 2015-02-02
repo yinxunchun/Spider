@@ -356,16 +356,16 @@ public class ZJGOV implements GOV{
 			
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
-				if(imageNumber < 9){
+				if(imageNumber <10){
 					fileBuf = new File("ZJGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
-				}else if(imageNumber < 99){
+				}else if(imageNumber < 100){
 					fileBuf = new File("ZJGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
-				}else if(imageNumber < 999){
+				}else if(imageNumber < 1000){
 					fileBuf = new File("ZJGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());

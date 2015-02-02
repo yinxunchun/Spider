@@ -371,16 +371,16 @@ public class IFENGMil implements IFENG{
 					
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
-					if(imageNumber < 9){
+					if(imageNumber < 10){
 						fileBuf = new File("IFENGMIL",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getPath());
-					}else if(imageNumber < 99){
+					}else if(imageNumber < 100){
 						fileBuf = new File("IFENGMIL",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		            
-					}else if(imageNumber < 999){
+					}else if(imageNumber < 1000){
 						fileBuf = new File("IFENGMIL",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
