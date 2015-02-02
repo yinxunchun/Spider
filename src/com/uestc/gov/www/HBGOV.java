@@ -134,14 +134,16 @@ public class HBGOV implements GOV{
 			String buf = themeLink.poll();
 //			System.out.println(buf);
 			String html = getContentHtml(buf);
-			html = html.substring(html.indexOf("id=\"wuhang\""),html.indexOf("<div class=\"fen_page\">"));
-//			System.out.println(html);
-			Matcher MatcherUrl = newsContent.matcher(html);
-			while(MatcherUrl.find()){
-				String contentUrlString = MatcherUrl.group();
-//				System.out.println(contentUrlString);
-				contentUrlString = "http://www.hebei.gov.cn" + contentUrlString;
-				contentlinks.offer(contentUrlString);
+			if(html!=null&&html.contains("id=\"wuhang\"")&&html.contains("<div class=\"fen_page\">")){
+				html = html.substring(html.indexOf("id=\"wuhang\""),html.indexOf("<div class=\"fen_page\">"));
+//				System.out.println(html);
+				Matcher MatcherUrl = newsContent.matcher(html);
+				while(MatcherUrl.find()){
+					String contentUrlString = MatcherUrl.group();
+//					System.out.println(contentUrlString);
+					contentUrlString = "http://www.hebei.gov.cn" + contentUrlString;
+					contentlinks.offer(contentUrlString);
+				}
 			}
 		}
 //		System.out.println(contentlinks);
