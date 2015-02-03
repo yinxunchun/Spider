@@ -451,9 +451,10 @@ public class IFENGOpinion implements IFENG{
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf != null && categroyBuf.equals("")&&categroyBuf.contains("来源"))
+		if(categroyBuf != null && categroyBuf.equals("")&&categroyBuf.contains("来源")){
 			categroyBuf = categroyBuf.substring(0, categroyBuf.indexOf("来源"));
-		categroyBuf = categroyBuf.replaceAll("\\s+", "");
+			categroyBuf = categroyBuf.replaceAll("\\s+", "");
+		}
 		return categroyBuf;
 	}
 	@Override

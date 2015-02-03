@@ -1,5 +1,6 @@
 package com.uestc.ifeng.www;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +23,7 @@ public class IfengTimeTask extends TimerTask{
 		IFENGOpinion opinion = new IFENGOpinion();
 		opinion.getIFENGOpinionNews();
 		System.out.println("凤凰新闻结束运行第"+i+"次...");
+		System.out.println("现在时间是：" + new Date());
 		i++;
 		
 	}

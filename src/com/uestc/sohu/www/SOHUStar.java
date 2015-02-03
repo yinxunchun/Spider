@@ -98,7 +98,7 @@ public class SOHUStar implements SOHU{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //				System.out.println(html);
 				i++;
 //				System.out.println(findNewsComment(url));
@@ -315,13 +315,22 @@ public class SOHUStar implements SOHU{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		if(contentBuf!= null ){
-			contentBuf = contentBuf.replaceAll("\\s+", "");
-			String contentReg = "//<(.*?)>";
-			String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
-			contentBuf = contentBuf.replaceAll(contentReg, "");
-			contentBuf = contentBuf.replaceAll(contentReg1, "");
-			contentBuf = contentBuf.replaceAll("&#160;", "");
-			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			
+			if(contentBuf.contains("// <![CDATA["))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("// <![CDATA["));
+			if(contentBuf!=null&&contentBuf.contains("media_span_url"))
+				contentBuf = contentBuf.substring(0, contentBuf.indexOf("media_span_url"));
+			if(contentBuf!=null&&contentBuf.contains("http://"))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("http://"));
+			if(contentBuf!=null){
+				contentBuf = contentBuf.replaceAll(" ", "");
+				String contentReg = "//<(.*?)>";
+				String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
+				contentBuf = contentBuf.replaceAll(contentReg, "");
+				contentBuf = contentBuf.replaceAll(contentReg1, "");
+				contentBuf = contentBuf.replaceAll("&#160;", "");
+				contentBuf = contentBuf.replaceFirst("\\s+", "");
+			}
 		}
 		return contentBuf;
 	}

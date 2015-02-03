@@ -113,13 +113,13 @@ public class SOHUMil implements SOHU{
 			downloadTime += "0" + date;
 		else 
 			downloadTime += date ;
-//		int i = 0;
+		
 		while(!milNewsContent.isEmpty()){
 			String url = milNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				System.out.println(url);
+//				System.out.println(url);
 //				System.out.println(html);
 //				i++;
 //				System.out.println(findNewsComment(url));
@@ -128,7 +128,7 @@ public class SOHUMil implements SOHU{
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
-//		System.out.println(i);
+		System.out.println("目前时间 :"+downloadTime);
 		crut.destory();
 	
 	
@@ -139,26 +139,28 @@ public class SOHUMil implements SOHU{
 		
 		Queue<String> themelinks = new LinkedList<String>();
 		String html = findContentHtml(themeLink);
-		html = html.replaceAll("\\s+", "");
-		String commentReg = "maxPage=(.*?);var";
+		if(html != null ){
+			html = html.replaceAll("\\s+", "");
+			String commentReg = "maxPage=(.*?);var";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+			Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(html);
-		String mm = "";
-		while(themeMatcher.find()){
-			mm = themeMatcher.group();
-			mm = mm.substring(8, mm.indexOf(";var"));
-		}
-		//我军themelinks
-		String s1 = "http://mil.sohu.com/wojun_";
-		String s2 = ".shtml";
-		themelinks.offer(themeLink);
-		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 2 ;
-		for(int i = number ; i > number1 ; i--){
-			themelinks.offer(s1+i+s2);
+			Matcher themeMatcher = newPage.matcher(html);
+			String mm = "";
+			while(themeMatcher.find()){
+				mm = themeMatcher.group();
+				mm = mm.substring(8, mm.indexOf(";var"));
+			}
+			//我军themelinks
+			String s1 = "http://mil.sohu.com/wojun_";
+			String s2 = ".shtml";
+			themelinks.offer(themeLink);
+			int number = Integer.parseInt(mm) - 1;
+			int number1 = number - 2 ;
+			for(int i = number ; i > number1 ; i--){
+				themelinks.offer(s1+i+s2);
 //			System.out.println(s1+i +s2);
+			}
 		}
 		//国际军事themelinks http://mil.sohu.com/s2005/junshiguonei.shtml
 		String themeguojijunshi = "http://mil.sohu.com/s2005/junshiguonei.shtml";
@@ -166,22 +168,24 @@ public class SOHUMil implements SOHU{
 		String s4 = ".shtml";
 		themelinks.offer(themeguojijunshi);
 		String html1 = findContentHtml(themeguojijunshi);
-		html1 = html1.replaceAll("\\s+", "");
-		String commentReg1 = "maxPage=(.*?);var";
+		if(html1!=null){
+			html1 = html1.replaceAll("\\s+", "");
+			String commentReg1 = "maxPage=(.*?);var";
 		
-		Pattern newPage1 = Pattern.compile(commentReg1);
+			Pattern newPage1 = Pattern.compile(commentReg1);
 		
-		Matcher themeMatcher1 = newPage1.matcher(html1);
-		String mm1 = "";
-		while(themeMatcher1.find()){
-			mm1 = themeMatcher1.group();
-			mm1 = mm1.substring(8, mm1.indexOf(";var"));
-		}
-		int number2 = Integer.parseInt(mm1) - 1;
-		int number3 = number2 - 2 ;
-		for(int i = number2 ; i > number3 ; i--){
-			themelinks.offer(s3+i+s4);
-//			System.out.println(s3+i +s4);
+			Matcher themeMatcher1 = newPage1.matcher(html1);
+			String mm1 = "";
+			while(themeMatcher1.find()){
+				mm1 = themeMatcher1.group();
+				mm1 = mm1.substring(8, mm1.indexOf(";var"));
+			}
+			int number2 = Integer.parseInt(mm1) - 1;
+			int number3 = number2 - 2 ;
+			for(int i = number2 ; i > number3 ; i--){
+				themelinks.offer(s3+i+s4);
+//				System.out.println(s3+i +s4);
+			}
 		}
 		return themelinks ;
 	}
@@ -194,7 +198,7 @@ public class SOHUMil implements SOHU{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 		
 			try {
 				Parser parser = new Parser(buf);
@@ -379,13 +383,23 @@ public class SOHUMil implements SOHU{
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		if(contentBuf != null){
-			contentBuf = contentBuf.replaceAll("\\s+", "");
-			String contentReg = "//<(.*?)>";
-			String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
-			contentBuf = contentBuf.replaceAll(contentReg, "");
-			contentBuf = contentBuf.replaceAll(contentReg1, "");
-			contentBuf = contentBuf.replaceAll("&#160;", "");
-			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			
+			if(contentBuf.contains("// <![CDATA["))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("// <![CDATA["));
+			if(contentBuf!=null&&contentBuf.contains("media_span_url"))
+				contentBuf = contentBuf.substring(0, contentBuf.indexOf("media_span_url"));
+			if(contentBuf!=null&&contentBuf.contains("http://"))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("http://"));
+			if(contentBuf!=null){
+				contentBuf = contentBuf.replaceAll(" ", "");
+				String contentReg = "//<(.*?)>";
+				String contentReg1 = "\\(function\\(\\$\\)(.*?)\\(jQuery\\);";
+				contentBuf = contentBuf.replaceAll(contentReg, "");
+				contentBuf = contentBuf.replaceAll(contentReg1, "");
+				contentBuf = contentBuf.replaceAll("&#160;", "");
+			
+				contentBuf = contentBuf.replaceFirst("\\s+", "");
+			}
 		}
 		return contentBuf;
 	}

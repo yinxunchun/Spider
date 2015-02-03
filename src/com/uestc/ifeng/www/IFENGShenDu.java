@@ -425,7 +425,7 @@ public class IFENGShenDu implements IFENG{
 			if(timeBuf.length() >= 8)
 				timeBuf = timeBuf.substring(0, 8);
 		}
-		if(timeBuf == "" || timeBuf == null){
+		if(timeBuf == null||timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"h4");
 			timeBuf = timeBuf.replaceAll("[^0-9]", "");
 			if(timeBuf.length() > 8)

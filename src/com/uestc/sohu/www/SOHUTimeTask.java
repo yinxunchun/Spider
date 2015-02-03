@@ -26,6 +26,10 @@ public class SOHUTimeTask extends TimerTask{
 		Timer timer = new Timer();
 		timer.schedule(new SOHUTimeTask(), 0,20*60*1000);
 		
+		
+		
 	}
+	
+	
 
 }

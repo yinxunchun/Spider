@@ -340,13 +340,21 @@ public class SOHUGuoNei implements SOHU{
 		}
 		if(contentBuf!=null){
 			if(!contentBuf.isEmpty()){
-				if(contentBuf.contains("// <![CDATA[")&&contentBuf.contains("_S_b.jpg\";")){
+				if(contentBuf.contains("_S_b.jpg\";")){
 					contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
 				}
 				contentBuf = contentBuf.replaceAll("&#160;", "");
 			}
-			contentBuf = contentBuf.replaceFirst("\\s+", "");
-			contentBuf = contentBuf.replaceAll("<!--(.*?)-->", "");
+			if(contentBuf!=null&&contentBuf.contains("// <![CDATA["))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("// <![CDATA["));
+			if(contentBuf!=null&&contentBuf.contains("media_span_url"))
+				contentBuf = contentBuf.substring(0, contentBuf.indexOf("media_span_url"));
+			if(contentBuf!=null&&contentBuf.contains("http://"))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("http://"));
+			if(contentBuf!=null){
+				contentBuf = contentBuf.replaceFirst("\\s+", "");
+				contentBuf = contentBuf.replaceAll("<!--(.*?)-->", "");
+			}	
 		}
 		return contentBuf;
 	}

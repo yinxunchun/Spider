@@ -335,11 +335,19 @@ public class SOHUSheHui implements SOHU {
 			contentBuf = HandleHtml(html,label[0],label[1]);
 		}
 		if(contentBuf!= null ){
-			if(contentBuf.contains("// <![CDATA[")&&contentBuf.contains("_S_b.jpg\";")){
+			if(contentBuf.contains("_S_b.jpg\";")){
 				contentBuf = contentBuf.substring(contentBuf.indexOf("_S_b.jpg\";")+10, contentBuf.length());
 			}
-			contentBuf = contentBuf.replaceAll("&#160;", "");
-			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			if(contentBuf!=null&&contentBuf.contains("// <![CDATA["))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("// <![CDATA["));
+			if(contentBuf!=null&&contentBuf.contains("media_span_url"))
+				contentBuf = contentBuf.substring(0, contentBuf.indexOf("media_span_url"));
+			if(contentBuf!=null&&contentBuf.contains("http://"))
+				contentBuf = contentBuf.substring(0,contentBuf.indexOf("http://"));
+			if(contentBuf!=null){
+				contentBuf = contentBuf.replaceAll("&#160;", "");
+				contentBuf = contentBuf.replaceFirst("\\s+", "");
+			}
 		}
 		return contentBuf;
 	}
