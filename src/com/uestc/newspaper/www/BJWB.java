@@ -245,12 +245,12 @@ public class BJWB implements NEWSPAPER{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			bufException = null; 
+			bufException = e; 
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			bufException = null;
+			bufException = e;
 		}finally{
 			if(bufException != null){
 				return null;
