@@ -117,7 +117,7 @@ public class SCNEWS {
 				i++;
 //				System.out.println("download:"+downloadTime);
 //				findNewsTime(html,newsTimeLabel);
-					crut.add(findNewsTitle(html,newsTitleLabel,"四川新闻网_四川新闻"), findNewsOriginalTitle(html,newsTitleLabel,"四川新闻网_四川新闻"),findNewsOriginalTitle(html,newsTitleLabel,"四川新闻网_四川新闻"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+					crut.add(findNewsTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
 				
@@ -170,7 +170,7 @@ public class SCNEWS {
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -205,9 +205,12 @@ public class SCNEWS {
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null )
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -215,13 +218,13 @@ public class SCNEWS {
 	}
 	
 	public String findContentHtml(String url) {
-		
+		Exception bufException = null ;
 		String html = null;                 //网页html
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null ;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -230,13 +233,17 @@ public class SCNEWS {
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null )
+				return null;
+		}
+		
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -248,7 +255,10 @@ public class SCNEWS {
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null)
+        		return null ;
         }
   
         try {
@@ -364,10 +374,10 @@ public class SCNEWS {
 		}
 		
 //		System.out.println(html);
-		if(contentBuf!=null){
+		if(contentBuf==null||contentBuf.equals("")){
 			
-			if(html.contains("class=\"content14\">")&&html.contains("[编辑")){
-				contentBuf = html.substring(html.indexOf("class=\"content14\">")+18, html.indexOf("[编辑"));
+			if(html.contains("<section>")&&html.contains("</section>")){
+				contentBuf = html.substring(html.indexOf("<section>")+9, html.indexOf("</section>"));
 			}else if(html.contains("class=\"content\">")&&(html.contains("[编辑"))){
 				contentBuf = html.substring(html.indexOf("class=\"content\">")+16, html.indexOf("[编辑"));
 				
@@ -376,6 +386,7 @@ public class SCNEWS {
 		if(contentBuf!=null){
 			contentBuf = contentBuf.replaceAll("<(.*?)>", "");
 			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			contentBuf = contentBuf.replaceAll("&nbsp;", "");
 		}
 		return contentBuf;
 	}
@@ -386,15 +397,15 @@ public class SCNEWS {
 		String bufHtml = "";        //辅助
 		String imageNameTime  = "";
 
-		if(html.contains("content14"))
-			bufHtml = html.substring(html.indexOf("content14"), html.lastIndexOf("content14"));
+		if(html.contains("<section>"))
+			bufHtml = html.substring(html.indexOf("<section>"), html.indexOf("</section>"));
 		else{
 			bufHtml = html;
 		}
 			
 		//获取图片时间，为命名服务
 		imageNameTime = findNewsTime(html,label) ;
-		if(imageNameTime == null || imageNameTime.equals(""))
+		if(imageNameTime == null ||imageNameTime.length() < 8)
 			return null;
 		//处理存放条图片的文件夹
     	File f = new File("SCXWW");
@@ -524,7 +535,7 @@ public class SCNEWS {
 		}else{
 			categroyBuf = HandleHtml(html , label[0],label[1]);
 		}
-		if(categroyBuf==null&&categroyBuf.equals(""))
+		if(categroyBuf==null||categroyBuf.equals(""))
 			return "四川新闻";
 		return categroyBuf;
 	}

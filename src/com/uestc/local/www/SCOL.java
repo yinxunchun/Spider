@@ -108,12 +108,7 @@ public class SCOL {
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
-				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-				i++;
-//				System.out.println("download:"+downloadTime);
-//				System.out.println(findNewsTime(html,newsTimeLabel));
-				
+				String html = findContentHtml(url);  //获取新闻的html				
 				crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 	
@@ -166,7 +161,7 @@ public class SCOL {
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception  bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -201,9 +196,12 @@ public class SCOL {
 					}
 				}
 			}catch(ParserException e){
-				return null;
+				bufException = e ;
 			}catch(Exception e){
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -211,13 +209,13 @@ public class SCOL {
 	}
 	
 	public String findContentHtml(String url) {
-		
+		Exception bufException = null ;
 		String html = null;                 //网页html
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -226,13 +224,16 @@ public class SCOL {
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null )
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -244,7 +245,10 @@ public class SCOL {
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e ;
+        }finally{
+        	if(bufException != null )
+        		return null;
         }
   
         try {

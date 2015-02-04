@@ -166,7 +166,7 @@ public class CDQSS {
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
-		
+		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
@@ -202,10 +202,13 @@ public class CDQSS {
 				}
 			}catch(ParserException e){
 				System.out.println("sss"+ e);
-				return null;
+				bufException = e ;
 			}catch(Exception e){
 				System.out.println("tttt"+ e);
-				return null;
+				bufException = e ;
+			}finally{
+				if(bufException!= null)
+					return null;
 			}		
 		}
 //		System.out.println(contentlinks);
@@ -213,13 +216,13 @@ public class CDQSS {
 	}
 	
 	public String findContentHtml(String url) {
-		
+		Exception bufException = null ;
 		String html = null;                 //网页html
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null ;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
-		int state;
+		int state = 0;
 		//判断url是否为有效连接
 		try{
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
@@ -228,12 +231,12 @@ public class CDQSS {
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
-			return null ;
+			bufException = e ;
       }
 		if(state != 200 && state != 201){
 			return null;
@@ -246,7 +249,10 @@ public class CDQSS {
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	bufException = e;
+        }finally{
+        	if(bufException != null )
+        		return null;
         }
   
         try {
@@ -354,16 +360,18 @@ public class CDQSS {
 				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("<font color=\"teal\">"), contentBuf.length());
 			}
 		
-			if(contentBuf.contains("size=\"1\">")){
+			if(contentBuf!=null&&contentBuf.contains("size=\"1\">")){
 				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("size=\"1\">")+11, contentBuf.length());
 			}
-			if(contentBuf.contains("target=\"_blank\">")){
+			if(contentBuf!=null&&contentBuf.contains("target=\"_blank\">")){
 				contentBuf = contentBuf.substring(contentBuf.lastIndexOf("target=\"_blank\">")+18, contentBuf.length());
 			}
-			contentBuf= contentBuf.replaceAll("(<font color=\"teal\">)|(<p style=\"COLOR: teal\">)|(</font)>", "");
-			contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
-			contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
-			contentBuf = contentBuf.replaceAll("<(.*?)>", "");
+			if(contentBuf!=null){
+				contentBuf= contentBuf.replaceAll("(<font color=\"teal\">)|(<p style=\"COLOR: teal\">)|(</font)>", "");
+				contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
+				contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
+				contentBuf = contentBuf.replaceAll("<(.*?)>", "");
+			}
 		}
 		return contentBuf;
 	}
