@@ -24,13 +24,14 @@ public class NETEASETimeTask extends TimerTask{
 		NETEASEFocus test5 = new NETEASEFocus();
 		test5.getNETEASEFocusNews();
 		System.out.println("网易新闻程序运行第"+i+"次完成...");
+		System.out.println("现在时间为："+new Date());
 		i++;
 		
 	}
 	public static void main(String[] args){
 
 		Timer timer = new Timer();
-		timer.schedule(new NETEASETimeTask(), 0,20*60*1000);
+		timer.schedule(new NETEASETimeTask(), 0,1000);
 
 	}
 	

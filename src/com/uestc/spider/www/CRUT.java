@@ -3,6 +3,7 @@ package com.uestc.spider.www;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ import com.mongodb.MongoException;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+import com.uestc.ifeng.www.IFENGMil;
 
 public class CRUT {
 
@@ -29,7 +31,6 @@ public class CRUT {
 	private GridFS gd;
 	private String DBName ;  // = "TODAY"; //数据库名称 华西都市报 成都商报等
 	private String DBTable  ; //= "cg"; //数据库表名
-	
 	public CRUT(String dbname,String dbtable){
 		
 		this.DBName = dbname ;
@@ -235,6 +236,10 @@ public class CRUT {
 		else
 			user.put("Comment", comment);
 		user.put("Date", date);
+		if(url.contains("163.com")){
+		
+			System.err.println(url+"---"+comment+"----"+date);
+		}
 	    users.insert(user);
 	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 	}
@@ -301,6 +306,10 @@ public class CRUT {
 		else
 			user.put("Comment", bufQueue);
 		user.put("Date", date);
+		if(url.contains("163.com")){
+			
+			System.err.println(url+"---"+bufQueue+"----"+date);
+		}
 	    users.insert(user);
 //	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 	}
@@ -322,7 +331,8 @@ public class CRUT {
   		    users.remove(new BasicDBObject(key, new BasicDBObject("$gte", value))).getN();
   		
   	 }
-  	 
+//增加打印日志
+
     public static void main(String args[]){
     	
     	CRUT test = new CRUT("TODAY" ,"CG");
