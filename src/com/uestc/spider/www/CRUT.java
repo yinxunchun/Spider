@@ -238,7 +238,7 @@ public class CRUT {
 		user.put("Date", date);
 		if(url.contains("163.com")){
 		
-			System.err.println(url+"---"+comment+"----"+date);
+			System.out.println(url+"---"+comment+"----"+date);
 		}
 	    users.insert(user);
 	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
@@ -308,7 +308,7 @@ public class CRUT {
 		user.put("Date", date);
 		if(url.contains("163.com")){
 			
-			System.err.println(url+"---"+bufQueue+"----"+date);
+			System.out.println(url+"---"+bufQueue+"----"+date);
 		}
 	    users.insert(user);
 //	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);

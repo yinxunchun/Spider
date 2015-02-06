@@ -57,7 +57,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 	}
 	
 	public void getNETEASEGuoNeiComment(){
-		System.out.println("Guonei start...");
+		System.err.println("Guonei start...");
 		if( month < 10)
 			downloadTime = year+"0"+month;
 		else 
@@ -90,19 +90,19 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			httpUrlConnection.disconnect();
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
-			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
+//			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
 			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
-			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
+//			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
 			bufException = e ;
       }finally{
     	  if(bufException != null)
     		  return ;
       }
 		if(state != 200 && state != 201){
-			System.out.println("ss");
+//			System.out.println("ss");
 			return;
 		}
 		//保存国内新闻主题links
@@ -137,7 +137,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			}
 		}
 		crut.destory();
-		System.out.println("Guonei over...");
+		System.err.println("Guonei over...");
 	}
 	
 	@Override
@@ -249,12 +249,12 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			httpUrlConnection.disconnect();
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
-			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
+//			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
 			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
-			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
+//			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
 			bufException = e ;
 		}finally{
 			if(bufException != null)
@@ -272,7 +272,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+//        	System.out.println("该链接访问超时...");
         	bufException = null ;
         }finally{
         	if(bufException != null )
@@ -417,8 +417,8 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		try {
 			link = new URL(commentUrl);
 		} catch (MalformedURLException e1) {
-		System.out.println("what is the fuck!!!");
-		return null;
+//		System.out.println("what is the fuck!!!");
+//		return null;
 		}
 				
 		WebClient wc=new WebClient();
@@ -442,18 +442,18 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 		}
 		if(page==null)
 		{
-			System.out.println("采集 "+commentUrl+" 失败!!!");
+//			System.out.println("采集 "+commentUrl+" 失败!!!");
 			return null;
 		}
 		String content=page.asText();//网页内容保存在content里
 		if(content==null)
 		{
-			System.out.println("采集 "+commentUrl+" 失败!!!");
+//			System.out.println("采集 "+commentUrl+" 失败!!!");
 			return null;
 		}else;
 //			System.out.println(content);
 		if(!content.contains("去跟贴广场看看")){
-			System.out.println("居然没有 去跟帖广场看看"+ commentUrl);
+//			System.out.println("居然没有 去跟帖广场看看"+ commentUrl);
 			return null;
 		
 		}

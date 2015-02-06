@@ -12,7 +12,7 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 	private int i = 0 ;
 	@Override
 	public void run() {
-		System.out.println("网易评论程序第"+i+"次运行开始...");
+		System.err.println("网易评论程序第"+i+"次运行开始...");
 		NETEASEViewComment test = new NETEASEViewComment();
 		test.getNETEASEViewComment();
 		NETEASEWarComment test1 = new NETEASEWarComment();
@@ -25,15 +25,15 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 		test4.getNETEASEGuoJiComment();
 		NETEASEFocusComment test5 = new NETEASEFocusComment();
 		test5.getNETEASEFocusComment();
-		System.out.println("网易评论程序第"+i+ "次运行结束...");
-		System.out.println("现在时间："+new Date());
+		System.err.println("网易评论程序第"+i+ "次运行结束...");
+		System.err.println("现在时间："+new Date());
 		i++;
 	}
 	
  	 public static void SystemOut(){
   		 
  		try {
-			System.setErr(new PrintStream(new File("NETEASELog.txt")));
+			System.setOut(new PrintStream(new File("NETEASELog.txt")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
