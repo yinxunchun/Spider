@@ -54,6 +54,7 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 	String commentUrl = null;
 	public NETEASEWarComment(){}
 	public void getNETEASEWarComment(){
+		System.out.println("war start...");
 		if( month < 10)
 			downloadTime = year+"0"+month;
 		else 
@@ -128,7 +129,8 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 			}
 		}
 		crut.destory();
-//		System.out.println(j);
+		System.out.println("war over...");
+		
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -257,6 +259,8 @@ public class NETEASEWarComment implements NETEASECOMMENT{
   
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
         	httpUrlConnection.setRequestMethod("GET");
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理

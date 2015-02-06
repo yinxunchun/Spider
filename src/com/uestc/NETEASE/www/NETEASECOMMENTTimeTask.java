@@ -1,7 +1,12 @@
 package com.uestc.NETEASE.www;
 
+import java.io.File;
+import java.io.PrintStream;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.uestc.spider.www.CRUT;
 
 public class NETEASECOMMENTTimeTask extends TimerTask{
 	private int i = 0 ;
@@ -21,12 +26,24 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 		NETEASEFocusComment test5 = new NETEASEFocusComment();
 		test5.getNETEASEFocusComment();
 		System.out.println("网易评论程序第"+i+ "次运行结束...");
+		System.out.println("现在时间："+new Date());
 		i++;
 	}
 	
+ 	 public static void SystemOut(){
+  		 
+ 		try {
+			System.setErr(new PrintStream(new File("NETEASELog.txt")));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+ 	 }
+	
 	public static void main(String[] args){
+		SystemOut();
 		Timer timer = new Timer();
-		timer.schedule(new NETEASECOMMENTTimeTask(), 0,4*60*60*1000);
+		timer.schedule(new NETEASECOMMENTTimeTask(), 0,1000);
 	}
 
 }

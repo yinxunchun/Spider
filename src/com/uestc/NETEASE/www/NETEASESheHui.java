@@ -52,6 +52,7 @@ public class NETEASESheHui implements NETEASE{
 	}
 	
 	public void getNETEASESheHuiNews(){
+		System.out.println("网易社会新闻运行开始...");
 		DBName = "NETEASE";
 		DBTable = "sh";
 		ENCODE = "gb2312";
@@ -128,14 +129,13 @@ public class NETEASESheHui implements NETEASE{
 					crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
-				}else {
-//					System.out.println(downloadTime+"!="+findNewsTime(html,newsTimeLabel));
 				}
 			}
 //			System.out.println(i);
 		}
 		crut.destory();
 		imageNumber = 1 ;
+		System.out.println("网易社会新闻运行结束...");
 	}
 	
 	@Override
@@ -269,6 +269,8 @@ public class NETEASESheHui implements NETEASE{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -416,6 +418,11 @@ public class NETEASESheHui implements NETEASE{
 		   	if(!f.exists()){
 		    	f.mkdir();
 		   	}
+	    	//加入具体时间 时分秒 防止图片命名重复
+	    	Calendar photoTime = Calendar.getInstance();
+	    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+	    	int photominute = photoTime.get(Calendar.MINUTE);
+	    	int photosecond = photoTime.get(Calendar.SECOND); 
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
@@ -426,7 +433,7 @@ public class NETEASESheHui implements NETEASE{
 			int i = 1 ;      //本条新闻图片的个数
 			while(imageMatcher.find()){
 				String bufUrl = imageMatcher.group();
-				System.out.println(bufUrl);
+//				System.out.println(bufUrl);
 				File fileBuf;
 //				imageMatcher.group();
 				String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -436,21 +443,21 @@ public class NETEASESheHui implements NETEASE{
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
 					if(imageNumber < 10){
-						fileBuf = new File("NETEASESheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 100){
-						fileBuf = new File("NETEASESheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 1000){
-						fileBuf = new File("NETEASESheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
-						fileBuf = new File("NETEASESheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("NETEASESheHui",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 					}

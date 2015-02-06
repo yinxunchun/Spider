@@ -54,6 +54,7 @@ public class NETEASEGuoJi implements NETEASE{
 	}
 	
 	public void getNETEASEGuoJiNews(){
+		System.out.println("网易国际新闻运行...");
 		DBName = "NETEASE";
 		DBTable = "gj";
 		ENCODE = "gb2312";
@@ -108,6 +109,7 @@ public class NETEASEGuoJi implements NETEASE{
 //        System.out.println(i);
         crut.destory();
         imageNumber = 1;
+        System.out.println("网易国际新闻结束...");
 	}
 	
 	@Override
@@ -241,6 +243,8 @@ public class NETEASEGuoJi implements NETEASE{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -386,6 +390,11 @@ public class NETEASEGuoJi implements NETEASE{
     	if(!f.exists()){
     		f.mkdir();
     	}
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND); 
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
@@ -406,21 +415,21 @@ public class NETEASEGuoJi implements NETEASE{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("NETEASEGuoJi",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoJi",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("NETEASEGuoJi",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoJi",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("NETEASEGuoJi",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoJi",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("NETEASEGuoJi",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("NETEASEGuoJi",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}

@@ -57,6 +57,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 	}
 	
 	public void getNETEASEGuoNeiComment(){
+		System.out.println("Guonei start...");
 		if( month < 10)
 			downloadTime = year+"0"+month;
 		else 
@@ -136,7 +137,7 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 			}
 		}
 		crut.destory();
-//		System.out.println(i);
+		System.out.println("Guonei over...");
 	}
 	
 	@Override
@@ -266,6 +267,8 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
