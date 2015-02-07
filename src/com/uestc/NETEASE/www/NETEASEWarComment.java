@@ -410,7 +410,7 @@ public class NETEASEWarComment implements NETEASECOMMENT{
 		try {
 			link = new URL(commentUrl);
 		} catch (MalformedURLException e1) {
-//		System.out.println("what is the fuck!!!");
+//		System.out.println("what is the fuck!!!");		
 //		return null;
 		}
 				

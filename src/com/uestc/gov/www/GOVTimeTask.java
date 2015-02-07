@@ -1,5 +1,6 @@
 package com.uestc.gov.www;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,12 +38,13 @@ public class GOVTimeTask extends TimerTask{
 		test12.getSHGOVNews();
 			
 		System.out.println("政府网站程序运行第"+i+"次结束...");
+		System.out.println("现在时间是："+ new Date());
 		i++;
 	}
 
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new GOVTimeTask(), 0,30*60*1000);
+		timer.schedule(new GOVTimeTask(), 0,1000);
 		
 	}
 }

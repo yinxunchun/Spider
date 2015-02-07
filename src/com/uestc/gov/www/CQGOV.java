@@ -48,6 +48,7 @@ public class CQGOV implements GOV{
 	private int imageNumber = 1 ;
 	
 	public void getCQGOVNews(){
+		System.out.println("CQ start...");
 		DBName = "GOV";
 		DBTable = "CQGOV";
 		CRUT crut =  new CRUT(DBName,DBTable);
@@ -75,9 +76,9 @@ public class CQGOV implements GOV{
   			downloadTime += date ;
   			dateBuf = "" + date;
   		}
-		System.out.println(year);
-		System.out.println(month);
-		System.out.println(date);
+//		System.out.println(year);
+//		System.out.println(month);
+//		System.out.println(date);
 		ENCODE = "utf-8";
 		//首页links
 		Queue<String> themeLinks = new LinkedList<String>();
@@ -106,10 +107,10 @@ public class CQGOV implements GOV{
 		//内容links
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
-		int i = 1 ;
+//		int i = 1 ;
 		if(contentLinks == null||contentLinks.isEmpty()){
 			crut.destory();
-			System.out.println("CQGOV");
+//			System.out.println("CQGOV");
 			return ;
 		}
 		while(!contentLinks.isEmpty()){
@@ -118,12 +119,6 @@ public class CQGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//			System.out.println(getNewsTitle(html,newsTitleLabel,""));
-//			System.out.println(getNewsContent(html,newsContentLabel));
-				i++;
-//			System.out.println(findNewsComment(url));
-//			System.out.println("\n");
 				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 		
@@ -141,7 +136,6 @@ public class CQGOV implements GOV{
 					Date date = new Date();
 					String html = getContentHtml(url);  //获取新闻的html
 //					System.out.println(url);
-					i++;
 					crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 							getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 				}
@@ -149,6 +143,7 @@ public class CQGOV implements GOV{
 		}
 //		System.out.println(i);
 		crut.destory();
+		System.out.println("CQ over...");
 		
 	}
 	
@@ -196,11 +191,12 @@ public class CQGOV implements GOV{
 					}
 				}
 			}catch(ParserException e){
-				System.out.println(".1");
-				break ;
+				bufException = e ;
 			}catch(Exception e){
-				System.out.println(".2");
-				break;
+				bufException = e ;
+			}finally{
+				if(bufException != null)
+					return null;
 			}		
 		}
 		return contentlinks;
@@ -240,10 +236,12 @@ public class CQGOV implements GOV{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+        	System.out.println(url+"该链接访问超时...");
         	bufException = e ;
         }finally{
         	if(bufException != null )
@@ -366,6 +364,11 @@ public class CQGOV implements GOV{
     	if(!f.exists()){
     		f.mkdir();
     	}
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND);
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
@@ -386,21 +389,21 @@ public class CQGOV implements GOV{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("CQGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("CQGOV",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("CQGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("CQGOV",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("CQGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("CQGOV",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("CQGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("CQGOV",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}

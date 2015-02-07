@@ -48,6 +48,7 @@ public class ZJGOV implements GOV{
 	private int imageNumber = 1 ;
 	
 	public void getZJGOVNews(){
+		System.out.println("ZJ start...");
 		DBName = "GOV";
 		DBTable = "ZJGOV";
 		CRUT crut =  new CRUT(DBName,DBTable);
@@ -84,11 +85,10 @@ public class ZJGOV implements GOV{
 		themeLinks.offer("http://www.zhejiang.gov.cn/");
 		// 内容link 正则http://www.zhejiang.gov.cn/art/2015/1/9/art_15774_1476109.html
 		newsContentLinksReg = "http://www.zhejiang.gov.cn/art/"+year+"/"+month+"/"+date+"/"+"art_[0-9]{5}_[0-9]{6,8}.html";
-		System.out.println(newsContentLinksReg);
+//		System.out.println(newsContentLinksReg);
 		//内容links
 		Queue<String> contentLinks = new LinkedList<String>();
 		contentLinks = getContentLinks(themeLinks,newsContentLinksReg);
-		int i = 1 ;
 		if(contentLinks == null || contentLinks.isEmpty()){
 			crut.destory();
 			return ;
@@ -98,18 +98,13 @@ public class ZJGOV implements GOV{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//			System.out.println(getNewsTitle(html,newsTitleLabel,""));
-//			System.out.println(getNewsContent(html,newsContentLabel));
-				i++;
-//			System.out.println(findNewsComment(url));
-//			System.out.println("\n");
 				crut.add(getNewsTitle(html,newsTitleLabel,""), getNewsOriginalTitle(html,newsTitleLabel,""),getNewsOriginalTitle(html,newsTitleLabel,""), getNewsTime(html,newsTimeLabel),getNewsContent(html,newsContentLabel), getNewsSource(html,newsSourceLabel),
 						getNewsOriginalSource(html,newsSourceLabel), getNewsCategroy(html,newsCategroyLabel), getNewsOriginalCategroy(html,newsCategroyLabel), url, getNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
 //		System.out.println(i);
 		crut.destory();
+		System.out.println("ZJ over...");
 	}
 	
 	@Override
@@ -126,7 +121,7 @@ public class ZJGOV implements GOV{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 			try {
 				Parser parser = new Parser(buf);
 				parser.setEncoding(ENCODE);
@@ -156,10 +151,10 @@ public class ZJGOV implements GOV{
 					}
 				}
 			}catch(ParserException e){
-				System.out.println(".1");
+//				System.out.println(".1");
 				bufException = e ;
 			}catch(Exception e){
-				System.out.println(".2");
+//				System.out.println(".2");
 				bufException = e ;
 			}finally{
 				if(bufException != null )
@@ -204,10 +199,12 @@ public class ZJGOV implements GOV{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+        	System.out.println(url+"该链接访问超时...");
         	bufeException = e ;
         }finally{
         	if (bufeException != null) {
@@ -329,13 +326,18 @@ public class ZJGOV implements GOV{
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label);
-		if(imageNameTime == null )
+		if(imageNameTime == null || imageNameTime.length() < 8)
 			return null;
 		//处理存放条图片的文件夹
     	File f = new File("ZJGOV");
     	if(!f.exists()){
     		f.mkdir();
     	}
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND);
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
@@ -347,7 +349,7 @@ public class ZJGOV implements GOV{
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
 			bufUrl = "http://www.zj.gov.cn" + bufUrl ;
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -357,21 +359,21 @@ public class ZJGOV implements GOV{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber <10){
-					fileBuf = new File("ZJGOV",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("ZJGOV",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("ZJGOV",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
   
 				}else{
-					fileBuf = new File("ZJGOV",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZJGOV",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getAbsolutePath());
 				}
