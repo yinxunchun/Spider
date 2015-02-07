@@ -56,7 +56,7 @@ public class IFENGGuoJi implements IFENG{
 	private int imageNumber = 1 ;
 	
 	public void getIFENGGuoJiNews(){
-		System.out.println("IFENGguonei start...");
+		System.out.println("IFENGguoji start...");
 		DBName = "IFENG";
 		DBTable = "GJ";
 		ENCODE = "utf-8";
@@ -115,7 +115,7 @@ public class IFENGGuoJi implements IFENG{
 			}
 		}
 		crut.destory();
-		System.out.println("IFENGguonei over...");	
+		System.out.println("IFENGguoji over...");	
 	
 	
 	}
@@ -433,9 +433,11 @@ public class IFENGGuoJi implements IFENG{
 		}
 		if(timeBuf == null || timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"h4");
-			timeBuf = timeBuf.replaceAll("[^0-9]", "");
-			if(timeBuf.length() >= 8)
-				timeBuf = timeBuf.substring(0,8);
+			if(timeBuf!=null){
+				timeBuf = timeBuf.replaceAll("[^0-9]", "");
+				if(timeBuf.length() >= 8)
+					timeBuf = timeBuf.substring(0,8);
+			}
 		}
 		return timeBuf;
 	}

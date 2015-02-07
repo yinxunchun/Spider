@@ -421,9 +421,11 @@ public class IFENGSheHui implements IFENG{
 		}
 		if(timeBuf == null || timeBuf.equals("")){
 			timeBuf = HandleHtml(html,"h4");
-			timeBuf = timeBuf.replaceAll("[^0-9]", "");
-			if(timeBuf.length() >= 8)
-				timeBuf = timeBuf.substring(0,8);
+			if(timeBuf!=null){
+				timeBuf = timeBuf.replaceAll("[^0-9]", "");
+				if(timeBuf.length() >= 8)
+					timeBuf = timeBuf.substring(0,8);
+			}
 		}
 		return timeBuf;
 	}
