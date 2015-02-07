@@ -30,6 +30,6 @@ public class IfengTimeTask extends TimerTask{
 
 	public static void main(String args[]){
 		Timer timer = new Timer();
-		timer.schedule(new IfengTimeTask(), 0,20*60*1000);
+		timer.schedule(new IfengTimeTask(), 0,1000);
 	}
 }

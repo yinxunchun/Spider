@@ -49,6 +49,7 @@ public class IFENGSheHui implements IFENG{
 	private int imageNumber = 1 ;
 	
 	public void getIFENGSheHuiNews(){
+		System.out.println("IFENGSHEHUI start...");
 		DBName = "IFENG";
 		DBTable = "SH";
 		ENCODE = "utf-8";
@@ -91,24 +92,17 @@ public class IFENGSheHui implements IFENG{
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;
-		int i = 0;
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//				System.out.println(html);
-				i++;
-//				System.out.println(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"));
-//				System.out.println(findNewsTime(html,newsTimeLabel));
-//				System.out.println("\n");
 				crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
 		crut.destory();
-//		System.out.println(i);
+		System.out.println("IFENGSHEHUI over...");
 	
 	
 	}
@@ -204,10 +198,12 @@ public class IFENGSheHui implements IFENG{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+        	System.out.println(url+"该链接访问超时...");
         	bufException = e ;
         }finally{
         	if(bufException != null )
@@ -319,7 +315,7 @@ public class IFENGSheHui implements IFENG{
 			contentBuf = contentBuf.replaceAll("&ldquo;", "“");
 			contentBuf = contentBuf.replaceAll("&rdquo;","”");
 			contentBuf = contentBuf.replaceAll("&middot;", "·");
-			contentBuf = contentBuf.replaceAll("\\n       \\n        ", "");
+			contentBuf = contentBuf.replaceFirst("\\n       \\n        ", "\n");
 		}
 		return contentBuf;
 	}
@@ -343,6 +339,11 @@ public class IFENGSheHui implements IFENG{
 		   	if(!f.exists()){
 		    	f.mkdir();
 		   	}
+	    	//加入具体时间 时分秒 防止图片命名重复
+	    	Calendar photoTime = Calendar.getInstance();
+	    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+	    	int photominute = photoTime.get(Calendar.MINUTE);
+	    	int photosecond = photoTime.get(Calendar.SECOND); 
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
@@ -363,21 +364,21 @@ public class IFENGSheHui implements IFENG{
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
 					if(imageNumber < 10){
-						fileBuf = new File("IFENGSheHui",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("IFENGSheHui",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 100){
-						fileBuf = new File("IFENGSheHui",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("IFENGSheHui",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 1000){
-						fileBuf = new File("IFENGSheHui",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("IFENGSheHui",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
-						fileBuf = new File("IFENGSheHui",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("IFENGSheHui",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 					}
