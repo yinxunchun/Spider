@@ -110,8 +110,8 @@ public class CDQSS {
 				String html = findContentHtml(url);  //获取新闻的html
 //				System.out.println(url);
 				i++;
-				
-				crut.add(findNewsTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+				if(html!=null)
+					crut.add(findNewsTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-成都全搜索新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
 				

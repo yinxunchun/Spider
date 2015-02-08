@@ -108,8 +108,9 @@ public class SCOL {
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
-				String html = findContentHtml(url);  //获取新闻的html				
-				crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+				String html = findContentHtml(url);  //获取新闻的html
+				if(html!=null)
+					crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 	
 			}

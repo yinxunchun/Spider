@@ -97,7 +97,8 @@ public class IFENGSheHui implements IFENG{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+				if(html!=null)
+					crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
