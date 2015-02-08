@@ -30,18 +30,18 @@ public class NETEASECOMMENTTimeTask extends TimerTask{
 		i++;
 	}
 	
- 	 public static void SystemOut(){
-  		 
- 		try {
-			System.setOut(new PrintStream(new File("NETEASELog.txt")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
- 	 }
+// 	 public static void SystemOut(){
+//  		 
+// 		try {
+//			System.setOut(new PrintStream(new File("NETEASELog.txt")));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+// 	 }
 	
 	public static void main(String[] args){
-		SystemOut();
+//		SystemOut();
 		Timer timer = new Timer();
 		timer.schedule(new NETEASECOMMENTTimeTask(), 0,1000);
 	}

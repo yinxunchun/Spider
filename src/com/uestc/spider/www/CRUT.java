@@ -236,10 +236,10 @@ public class CRUT {
 		else
 			user.put("Comment", comment);
 		user.put("Date", date);
-		if(url!=null&&url.contains("163.com")){
-		
-			System.out.println(url+"---"+comment+"----"+date);
-		}
+//		if(url!=null&&url.contains("163.com")){
+//		
+//			System.out.println(url+"---"+comment+"----"+date);
+//		}
 	    users.insert(user);
 	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 	}
@@ -306,10 +306,10 @@ public class CRUT {
 		else
 			user.put("Comment", bufQueue);
 		user.put("Date", date);
-		if(url!=null&&url.contains("163.com")){
-			
-			System.out.println(url+"---"+bufQueue+"----"+date);
-		}
+//		if(url!=null&&url.contains("163.com")){
+//			
+//			System.out.println(url+"---"+bufQueue+"----"+date);
+//		}
 	    users.insert(user);
 //	    users.addOption(Bytes.QUERYOPTION_NOTIMEOUT);
 	}
