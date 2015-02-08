@@ -1,5 +1,6 @@
 package com.uestc.newspaper.www;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,11 +26,22 @@ public class newsPaperTimeTask extends TimerTask{
 		gzrb.getGZRB();
 		JFJB jfjb =new JFJB();
 		jfjb.getJFJB();
+		NANDU nandu = new NANDU();
+		nandu.getNANDU();
+		WCC wcc = new WCC();
+		wcc.getWCC();
+		XMWB xmwb = new XMWB();
+		xmwb.getXMWB();
+		XWCB xwcb = new XWCB();
+		xwcb.getXWCB();
+		YNET ynet = new YNET();
+		ynet.getYNET();
 		System.out.println("报社程序结束运行第"+i+"次...");
+		System.out.println("现在时间是："+ new Date() +"\n\n");
 		i++;
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new newsPaperTimeTask(), 0,20*60*1000);
+		timer.schedule(new newsPaperTimeTask(), 0,1000);
 	}
 }

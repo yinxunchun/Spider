@@ -50,6 +50,7 @@ public class GZRB implements NEWSPAPER{
 	private int imageNumber = 1;
 	
 	public void getGZRB(){
+		System.out.println("gzrb start...");
 		DBName = "NEWSPAPER";
 		DBTable ="GZRB";
 		ENCODE = "utf-8";
@@ -123,17 +124,16 @@ public class GZRB implements NEWSPAPER{
 			return ;
 		while(!cdsbContentQueue.isEmpty()){
 			String url = cdsbContentQueue.poll();
-			System.out.println(url);
-//			String html = getContentHtml(url);
-//			System.out.println(getNewsTitle(html,titleLabel," - 成都商报|成都商报电子版|成都商报官方网站"));
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);
-				crut.add(getNewsTitle(html,titleLabel,"广州日报"), getNewsOriginalTitle(html,titleLabel,"广州日报"),getNewsOriginalTitle(html,titleLabel,"广州日报"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
-						getNewsOriginalSource(html,sourceLabel), getNewsCategroy(html,categroyLabel), getNewsOriginalCategroy(html,categroyLabel), url, getNewsImages(html,timeLabel),downloadTime,date);
+				if(html!=null)
+					crut.add(getNewsTitle(html,titleLabel,"广州日报"), getNewsOriginalTitle(html,titleLabel,"广州日报"),getNewsOriginalTitle(html,titleLabel,"广州日报"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
+							getNewsOriginalSource(html,sourceLabel), getNewsCategroy(html,categroyLabel), getNewsOriginalCategroy(html,categroyLabel), url, getNewsImages(html,timeLabel),downloadTime,date);
 			}
 		}
 		crut.destory();
+		System.out.println("gzrb over...");
 	}
 	@Override
 	public Queue<String> getThemeLinks(String themeLink, String themeLinkReg) {
@@ -158,8 +158,8 @@ public class GZRB implements NEWSPAPER{
 				{
 				
 					LinkTag n = (LinkTag) nodeList.elementAt(i);
-		        	System.out.print(n.getStringText() + "==>> ");
-		       	 	System.out.println(n.extractLink());
+//		        	System.out.print(n.getStringText() + "==>> ");
+//		       	 	System.out.println(n.extractLink());
 					//新闻主题
 					Matcher themeMatcher = newsThemeLink.matcher(n.extractLink());
 					if(themeMatcher.find()){
@@ -265,6 +265,8 @@ public class GZRB implements NEWSPAPER{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -396,7 +398,7 @@ public class GZRB implements NEWSPAPER{
 
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label) ;
-		System.out.println(imageNameTime);
+//		System.out.println(imageNameTime);
 		if(imageNameTime == null || imageNameTime.equals(""))
 			return null;
 		//处理存放条图片的文件夹
@@ -404,6 +406,11 @@ public class GZRB implements NEWSPAPER{
     	if(!f.exists()){
     		f.mkdir();
     	}
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND);
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
@@ -428,21 +435,21 @@ public class GZRB implements NEWSPAPER{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("GZRB",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("GZRB",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("GZRB",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("GZRB",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("GZRB",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("GZRB",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("GZRB",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("GZRB",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}
