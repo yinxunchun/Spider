@@ -266,6 +266,8 @@ public class SCOL {
             html = sb.toString();
         } catch (IOException e) {
 //            e.printStackTrace();
+        }finally{
+        	httpUrlConnection.disconnect();
         }
 //        System.out.println(html);
 		return html;

@@ -65,23 +65,22 @@ public class SCNEWS {
 		String[] newsTimeLabel = new String[]{"id","pubtime_baidu"};   //新闻时间 
 		String[] newsSourceLabel =new String[]{"id","source_baidu","四川新闻网"}; //来源
 		String[] newsCategroyLabel = new String[]{"class","black12"} ; // 属性
-		String monthBuf = null;
-		String dateBuf = null;
+//		String monthBuf = null;
+//		String dateBuf = null;
 		//计算获取新闻的时间
 		if( month < 10){
 			downloadTime = year+"0"+month;
-			monthBuf = "0" + month;	
-		}
-		else 
+//			monthBuf = "0" + month;	
+		}else 
 			downloadTime = year+""+month;
 		if(date < 10){
 			downloadTime += "0" + date;
-			dateBuf = "0" + date ;
-		}
-		else {
+//			dateBuf = "0" + date ;
+		}else {
 			downloadTime += date ;
-			dateBuf = "" +date ;
+//			dateBuf = "" +date ;
 		}
+		System.out.println("111");
 		CRUT crut = new CRUT(DBName ,DBTable);
 		//四川新闻 首页链接 
 		theme = "http://scnews.newssc.org/2009scxw/";
@@ -91,31 +90,36 @@ public class SCNEWS {
 		
 		//新闻内容links的正则表达式 http://scnews.newssc.org/system/20150120/000530755.html
 		newsContentLinksReg = "http://scnews.newssc.org/system/"+downloadTime+"/[0-9]{9,10}.html";
+		System.out.println("222");
 		//保存国内新闻主题links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme.offer(theme);
 		guoNeiNewsTheme.offer(theme1);
 		guoNeiNewsTheme.offer(theme2);
 //		System.out.println(guoNeiNewsTheme);
-		
+		System.out.println("333");
 		//获取国内新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
+		System.out.println("44444");
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
-		int i = 0;
 		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty()){
 			crut.destory();
 			return ;
 		}
+		System.out.println("mmmmmm");
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-				if(html!=null)
+				if(html!=null){
+					System.out.println("sssssssssss");
 					crut.add(findNewsTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"), findNewsOriginalTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"),findNewsOriginalTitle(html,newsTitleLabel,"-四川新闻-四川新闻网"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+					System.out.println("ttttt");
+				}
 		
 				
 			}
@@ -168,13 +172,16 @@ public class SCNEWS {
 		
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Exception bufException = null ;
+		System.out.println("qqq");
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
 		
 			try {
+				System.out.println("www");
 				Parser parser = new Parser(buf);
+				System.out.println("eeee");
 				parser.setEncoding(ENCODE);
 				@SuppressWarnings("serial")
 				NodeList nodeList = parser.extractAllNodesThatMatch(new NodeFilter(){
@@ -186,6 +193,7 @@ public class SCNEWS {
 					}
 		
 				});
+				System.out.println("rrrrr");
 			
 				for (int i = 0; i < nodeList.size(); i++)
 				{
@@ -206,11 +214,14 @@ public class SCNEWS {
 			}catch(Exception e){
 				bufException = e ;
 			}finally{
-				if(bufException != null )
+				if(bufException != null ){
+					System.out.println("ttttt");
 					return null;
+				}
 			}		
 		}
 //		System.out.println(contentlinks);
+		System.out.println("yyyyy");
 		return contentlinks;
 	}
 	
@@ -224,9 +235,11 @@ public class SCNEWS {
 		int state = 0;
 		//判断url是否为有效连接
 		try{
+			System.out.println("可能出现的链接暂停---0");
 			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
 			state = httpUrlConnection.getResponseCode();
 			httpUrlConnection.disconnect();
+			System.out.println("可能出现的链接暂停未遂---0");
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("该连接"+url+"网络有故障，已经无法正常链接，无法获取新闻");
@@ -246,13 +259,15 @@ public class SCNEWS {
 		}
   
         try {
+        	System.out.println("可能出现的链接暂停---1");
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
         	httpUrlConnection.setConnectTimeout(3000);
 			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
-        } catch (IOException e) {
+            System.out.println("可能出现的链接未遂---1");
+        } catch (Exception e) {
         	System.out.println(url+"该链接访问超时...");
         	bufException = e ;
         }finally{
@@ -261,6 +276,7 @@ public class SCNEWS {
         }
   
         try {
+        	System.out.println("可能出现的链接暂停---2");
             inputStream = httpUrlConnection.getInputStream(); //读取输入流
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, ENCODE)); 
             String string;
@@ -270,8 +286,11 @@ public class SCNEWS {
             	sb.append("\n");
             }
             html = sb.toString();
+            System.out.println("可能出现的链接暂停未遂---2");
         } catch (IOException e) {
 //            e.printStackTrace();
+        }finally{
+        	httpUrlConnection.disconnect();
         }
 //        System.out.println(html);
 		return html;

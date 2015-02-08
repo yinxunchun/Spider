@@ -238,7 +238,10 @@ public class CDQSS {
 //          e.printStackTrace();
 //			System.out.println("该连接"+url+"网络超级慢，已经无法正常链接，无法获取新闻");
 			bufException = e ;
-      }
+		}finally{
+			if(bufException!=null)
+				return null;
+		}
 		if(state != 200 && state != 201){
 			return null;
 		}
@@ -270,6 +273,8 @@ public class CDQSS {
             html = sb.toString();
         } catch (IOException e) {
 //            e.printStackTrace();
+        }finally{
+        	httpUrlConnection.disconnect();
         }
 //        System.out.println(html);
 		return html;
