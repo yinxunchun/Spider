@@ -128,39 +128,39 @@ public class SCNEWS {
 	public Queue<String> findThemeLinks(String themeLink ,String themeLinkReg) {
 		
 		Queue<String> themelinks = new LinkedList<String>();
-		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
-		themelinks.offer(themeLink);
-		
-		try {
-				Parser parser = new Parser(themeLink);
-				parser.setEncoding(ENCODE);
-				@SuppressWarnings("serial")
-				NodeList nodeList = parser.extractAllNodesThatMatch(new NodeFilter(){
-					public boolean accept(Node node)
-					{
-						if (node instanceof LinkTag)// 标记
-							return true;
-						return false;
-					}});
-				
-				for (int i = 0; i < nodeList.size(); i++)
-				{
-				
-					LinkTag n = (LinkTag) nodeList.elementAt(i);
-//		        	System.out.print(n.getStringText() + "==>> ");
-//		       	 	System.out.println(n.extractLink());
-					//新闻主题
-					Matcher themeMatcher = newsThemeLink.matcher(n.extractLink());
-					if(themeMatcher.find()){
-						if(!themelinks.contains(n.extractLink()))
-							themelinks.offer(n.extractLink());
-		        	}
-				}
-			}catch(ParserException e){
-				return null;
-			}catch(Exception e){
-				return null;
-			}
+//		Pattern newsThemeLink = Pattern.compile(themeLinkReg);
+//		themelinks.offer(themeLink);
+//		
+//		try {
+//				Parser parser = new Parser(themeLink);
+//				parser.setEncoding(ENCODE);
+//				@SuppressWarnings("serial")
+//				NodeList nodeList = parser.extractAllNodesThatMatch(new NodeFilter(){
+//					public boolean accept(Node node)
+//					{
+//						if (node instanceof LinkTag)// 标记
+//							return true;
+//						return false;
+//					}});
+//				
+//				for (int i = 0; i < nodeList.size(); i++)
+//				{
+//				
+//					LinkTag n = (LinkTag) nodeList.elementAt(i);
+////		        	System.out.print(n.getStringText() + "==>> ");
+////		       	 	System.out.println(n.extractLink());
+//					//新闻主题
+//					Matcher themeMatcher = newsThemeLink.matcher(n.extractLink());
+//					if(themeMatcher.find()){
+//						if(!themelinks.contains(n.extractLink()))
+//							themelinks.offer(n.extractLink());
+//		        	}
+//				}
+//			}catch(ParserException e){
+//				return null;
+//			}catch(Exception e){
+//				return null;
+//			}
 		return themelinks ;
 	}
 
