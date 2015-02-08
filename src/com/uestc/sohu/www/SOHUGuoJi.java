@@ -58,6 +58,7 @@ public class SOHUGuoJi implements SOHU{
 	private int imageNumber = 1 ;
 	
 	public void getSOHUGuoJiNews(){
+		System.out.println("guoji start...");
 		DBName = "SOHU";
 		DBTable = "GJ";
 		ENCODE = "gb2312";
@@ -67,6 +68,24 @@ public class SOHUGuoJi implements SOHU{
 		String[] newsSourceLabel =new String[]{"class","source","搜狐新闻-国际新闻"}; //（3个参数）新闻来源 同新闻时间
 		String[] newsCategroyLabel = new String[]{"class","navigation"} ; // 属性
 		
+		String monthBuf = null;
+		String dateBuf = null;
+		//计算获取新闻的时间
+		if( month < 10){
+			downloadTime = year+"0"+month;
+			monthBuf = "0" + month;	
+		}
+		else 
+			downloadTime = year+""+month;
+		if(date < 10){
+			downloadTime += "0" + date;
+			dateBuf = "0" + date ;
+		}
+		else {
+			downloadTime += date ;
+			dateBuf = "" +date ;
+		}
+		
 		CRUT crut = new CRUT(DBName ,DBTable);
 		//国际新闻 首页链接
 		theme = "http://news.sohu.com/guojixinwen.shtml";
@@ -75,7 +94,7 @@ public class SOHUGuoJi implements SOHU{
 		newsThemeLinksReg = "";
 		
 		//新闻内容links的正则表达式 http://news.sohu.com/20141217/n407032613.shtml
-		newsContentLinksReg = "http://news.sohu.com/[0-9]{4}[0-9]{2}[0-9]{2}/n[0-9]{9}.shtml";
+		newsContentLinksReg = "http://news.sohu.com/"+downloadTime+"/n[0-9]{9}.shtml";
 		
 		//保存国际新闻主题links
 		Queue<String> guoJiNewsTheme = new LinkedList<String>();
@@ -105,7 +124,7 @@ public class SOHUGuoJi implements SOHU{
 				Date date = new Date();
 //				System.out.println(url);
 				i++;
-				if(!visitedUrl.contains(url)){
+				if(html!=null){
 					crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐新闻"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 				}
@@ -116,6 +135,7 @@ public class SOHUGuoJi implements SOHU{
 		visitedUrl = null ;
 //		System.out.println(i);
 		crut.destory();
+		System.out.println("guoji over...");
 	
 	
 	}
@@ -126,25 +146,27 @@ public class SOHUGuoJi implements SOHU{
 		// TODO Auto-generated method stub
 		Queue<String> themelinks = new LinkedList<String>();
 		String html = findContentHtml(themeLink);
-		html = html.replaceAll("\\s+", "");
-		String commentReg = "maxPage=(.*?);var";
+		if(html!=null){
+			html = html.replaceAll("\\s+", "");
+			String commentReg = "maxPage=(.*?);var";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+			Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(html);
-		String mm = "";
-		while(themeMatcher.find()){
-			mm = themeMatcher.group();
-			mm = mm.substring(8, mm.indexOf(";var"));
-		}
+			Matcher themeMatcher = newPage.matcher(html);
+			String mm = "";
+			while(themeMatcher.find()){
+				mm = themeMatcher.group();
+				mm = mm.substring(8, mm.indexOf(";var"));
+			}
 		
-		String s1 = "http://news.sohu.com/guojixinwen_";
-		String s2 = ".shtml";
-		themelinks.offer(themeLink);
-		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 2 ;             //两页就行了
-		for(int i = number ; i > number1 ; i--){
-			themelinks.offer(s1+i+s2);
+			String s1 = "http://news.sohu.com/guojixinwen_";
+			String s2 = ".shtml";
+			themelinks.offer(themeLink);
+			int number = Integer.parseInt(mm) - 1;
+			int number1 = number - 2 ;             //两页就行了
+			for(int i = number ; i > number1 ; i--){
+				themelinks.offer(s1+i+s2);
+			}
 		}
 		return themelinks ;
 	}
@@ -230,10 +252,12 @@ public class SOHUGuoJi implements SOHU{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
-        	System.out.println("该链接访问超时...");
+        	System.out.println(url+"该链接访问超时...");
         	bufException = e ;
         }finally{
         	if(bufException != null)
@@ -378,6 +402,11 @@ public class SOHUGuoJi implements SOHU{
 		   	if(!f.exists()){
 		    	f.mkdir();
 		   	}
+	    	//加入具体时间 时分秒 防止图片命名重复
+	    	Calendar photoTime = Calendar.getInstance();
+	    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+	    	int photominute = photoTime.get(Calendar.MINUTE);
+	    	int photosecond = photoTime.get(Calendar.SECOND);
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
@@ -398,21 +427,21 @@ public class SOHUGuoJi implements SOHU{
 					InputStream in = uri.openStream();
 					FileOutputStream fo;
 					if(imageNumber < 10){
-						fileBuf = new File("SOHUGuoJi",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("SOHUGuoJi",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf); 
 						imageLocation.offer(fileBuf.getPath());
 					}else if(imageNumber < 100){
-						fileBuf = new File("SOHUGuoJi",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("SOHUGuoJi",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		            
 					}else if(imageNumber < 1000){
-						fileBuf = new File("SOHUGuoJi",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("SOHUGuoJi",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 		  
 					}else{
-						fileBuf = new File("SOHUGuoJi",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+						fileBuf = new File("SOHUGuoJi",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 						fo = new FileOutputStream(fileBuf);
 						imageLocation.offer(fileBuf.getPath());
 					}

@@ -1,5 +1,6 @@
 package com.uestc.sohu.www;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,12 +20,13 @@ public class SOHUTimeTask extends TimerTask{
 		SOHUStar star = new SOHUStar();
 		star.getSOHUStarNews();
 		System.out.println("搜狐新闻第"+i+"次运行结束...");
+		System.out.println("现在时间是："+ new Date());
 		i++;
 	}
 	public static void main(String[] args){
 		
 		Timer timer = new Timer();
-		timer.schedule(new SOHUTimeTask(), 0,20*60*1000);
+		timer.schedule(new SOHUTimeTask(), 0,1000);
 		
 		
 		

@@ -54,6 +54,7 @@ public class SOHUStar implements SOHU{
 	private int imageNumber = 1 ;
 	
 	public void getSOHUStarNews(){
+		System.out.println("star start...");
 		DBName = "SOHU";
 		DBTable = "STAR";
 		ENCODE = "gb2312";
@@ -63,6 +64,15 @@ public class SOHUStar implements SOHU{
 		String[] newsSourceLabel =new String[]{"class","source","搜狐新闻-评论新闻"}; //（3个参数）新闻来源 同新闻时间
 		String[] newsCategroyLabel = new String[]{"class","navigation"} ; // 属性
 		
+		//计算获取新闻的时间
+		if( month < 10)
+			downloadTime = year+"0"+month;
+		else 
+			downloadTime = year+""+month;
+		if(date < 10)
+			downloadTime += "0" + date;
+		else 
+			downloadTime += date ;
 		CRUT crut = new CRUT(DBName ,DBTable);
 		//评论新闻 首页链接
 		theme = "http://star.news.sohu.com/";
@@ -71,7 +81,7 @@ public class SOHUStar implements SOHU{
 		newsThemeLinksReg = "";
 		
 		//新闻内容links的正则表达式 
-		newsContentLinksReg = "http://star.news.sohu.com/[0-9]{4}[0-9]{2}[0-9]{2}/n[0-9]{9}.shtml";
+		newsContentLinksReg = "http://star.news.sohu.com/"+downloadTime+"/n[0-9]{9}.shtml";
 		
 		//保存社会新闻主题links
 		Queue<String> starNewsTheme = new LinkedList<String>();
@@ -83,32 +93,19 @@ public class SOHUStar implements SOHU{
 		starNewsContent = findContentLinks(starNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
-		//计算获取新闻的时间
-		if( month < 10)
-			downloadTime = year+"0"+month;
-		else 
-			downloadTime = year+""+month;
-		if(date < 10)
-			downloadTime += "0" + date;
-		else 
-			downloadTime += date ;
-		int i = 0;
+
 		while(!starNewsContent.isEmpty()){
 			String url = starNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//				System.out.println(html);
-				i++;
-//				System.out.println(findNewsComment(url));
-//				System.out.println("\n");
-				crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐评论"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐评论"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐评论"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+				if(html!=null)
+					crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐评论"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐评论"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐评论"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
-		System.out.println(i);
 		crut.destory();
+		System.out.println("star over...");
 	
 	
 	}
@@ -205,6 +202,8 @@ public class SOHUStar implements SOHU{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -354,6 +353,12 @@ public class SOHUStar implements SOHU{
 	   	if(!f.exists()){
 	    	f.mkdir();
 	   	}
+	   	
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND);
 	   	//保存图片文件的位置信息
 	   	Queue<String> imageLocation = new LinkedList<String>();
 	   	//图片正则表达式
@@ -364,7 +369,7 @@ public class SOHUStar implements SOHU{
 		int i = 1 ;      //本条新闻图片的个数
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			System.out.println(bufUrl);
+//			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -374,21 +379,21 @@ public class SOHUStar implements SOHU{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("SOHUStar",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUStar",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("SOHUStar",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUStar",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 	            
 				}else if(imageNumber < 1000){
-					fileBuf = new File("SOHUStar",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUStar",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 	  
 				}else{
-					fileBuf = new File("SOHUStar",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUStar",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}

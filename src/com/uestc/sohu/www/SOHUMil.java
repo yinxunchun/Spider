@@ -57,6 +57,7 @@ public class SOHUMil implements SOHU{
 	private int imageNumber = 1 ;
 	
 	public void getSOHUMilNews(){
+		System.out.println("mil start...");
 		DBName = "SOHU";
 		DBTable = "MIL";
 		ENCODE = "gb2312";
@@ -66,6 +67,15 @@ public class SOHUMil implements SOHU{
 		String[] newsSourceLabel =new String[]{"class","source","搜狐新闻-军事新闻"}; //（3个参数）新闻来源 同新闻时间
 		String[] newsCategroyLabel = new String[]{"class","navigation"} ; // 属性
 		
+		//计算获取新闻的时间
+		if( month < 10)
+			downloadTime = year+"0"+month;
+		else 
+			downloadTime = year+""+month;
+		if(date < 10)
+			downloadTime += "0" + date;
+		else 
+			downloadTime += date ;
 		CRUT crut = new CRUT(DBName ,DBTable);
 		//军事新闻 首页链接
 		theme = "http://mil.sohu.com/wojun.shtml";
@@ -74,9 +84,10 @@ public class SOHUMil implements SOHU{
 		newsThemeLinksReg = "";
 		
 		//新闻内容links的正则表达式 
-		newsContentLinksReg = "http://mil.sohu.com/[0-9]{4}[0-9]{2}[0-9]{2}/n[0-9]{9}.shtml";
+		newsContentLinksReg = "http://mil.sohu.com/"+downloadTime+"/n[0-9]{9}.shtml";
 		
-		int state ;
+		int state = 0 ;
+		Exception bufException = null ;
 		try{
 			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(theme).openConnection(); //创建连接
 			state = httpUrlConnection.getResponseCode();
@@ -84,13 +95,16 @@ public class SOHUMil implements SOHU{
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
 			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
-			return;
+			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
 			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
-			return ;
-      }
+			bufException = e ;
+		}finally{
+			if(bufException != null)
+				return ;
+		}
 		if(state != 200 && state != 201){
 			return;
 		}
@@ -104,33 +118,20 @@ public class SOHUMil implements SOHU{
 		milNewsContent = findContentLinks(milNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
-		//计算获取新闻的时间
-		if( month < 10)
-			downloadTime = year+"0"+month;
-		else 
-			downloadTime = year+""+month;
-		if(date < 10)
-			downloadTime += "0" + date;
-		else 
-			downloadTime += date ;
+
 		
 		while(!milNewsContent.isEmpty()){
 			String url = milNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//				System.out.println(html);
-//				i++;
-//				System.out.println(findNewsComment(url));
-//				System.out.println("\n");
-				crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+				if(crut!=null)
+					crut.add(findNewsTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"),findNewsOriginalTitle(html,newsTitleLabel,"-搜狐军事频道"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 			}
 		}
-		System.out.println("目前时间 :"+downloadTime);
 		crut.destory();
-	
+		System.out.println("mil over...");
 	
 	}
 	
@@ -273,6 +274,8 @@ public class SOHUMil implements SOHU{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -422,6 +425,11 @@ public class SOHUMil implements SOHU{
 	   	if(!f.exists()){
 	    	f.mkdir();
 	   	}
+    	//加入具体时间 时分秒 防止图片命名重复
+    	Calendar photoTime = Calendar.getInstance();
+    	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
+    	int photominute = photoTime.get(Calendar.MINUTE);
+    	int photosecond = photoTime.get(Calendar.SECOND);
 	   	//保存图片文件的位置信息
 	   	Queue<String> imageLocation = new LinkedList<String>();
 	   	//图片正则表达式
@@ -442,21 +450,21 @@ public class SOHUMil implements SOHU{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("SOHUMIL",imageNameTime+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUMIL",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("SOHUMIL",imageNameTime+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUMIL",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 	            
 				}else if(imageNumber < 1000){
-					fileBuf = new File("SOHUMIL",imageNameTime+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUMIL",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 	  
 				}else{
-					fileBuf = new File("SOHUMIL",imageNameTime+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("SOHUMIL",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}
