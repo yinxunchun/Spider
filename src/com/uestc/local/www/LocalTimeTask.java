@@ -1,5 +1,6 @@
 package com.uestc.local.www;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,11 +18,12 @@ public class LocalTimeTask extends TimerTask{
 		SCOL scol = new SCOL();
 		scol.getSCOLNews();
 		System.out.println("本地新闻程序结束运行第"+i+"次...");
+		System.out.println("现在时间是："+ new Date() +"\n\n");
 		i++;
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new LocalTimeTask(), 0,20*60*1000);
+		timer.schedule(new LocalTimeTask(), 0,1000);
 	}
 
 }
