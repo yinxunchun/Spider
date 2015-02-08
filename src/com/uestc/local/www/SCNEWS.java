@@ -97,11 +97,11 @@ public class SCNEWS {
 		guoNeiNewsTheme.offer(theme1);
 		guoNeiNewsTheme.offer(theme2);
 //		System.out.println(guoNeiNewsTheme);
-//		System.out.println("333");
+		System.out.println("333");
 		//获取国内新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
-//		System.out.println("44444");
+		System.out.println("44444");
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty()){
