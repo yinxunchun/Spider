@@ -256,6 +256,7 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>() ;
 		Exception bufException = null;
+//		System.getProperty("webdriver.chrome.driver");
 		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		try {
