@@ -58,7 +58,7 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 	private int date = today.get(Calendar.DATE);	
 	
 	public void getSOHUGuoJiComment(){
-		
+		System.out.println("sohuguoji start...");
 		DBName = "SOHUCOMMENT";
 		DBTable = "GJ";
 		ENCODE = "gb2312";
@@ -80,6 +80,8 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 		//获取国际新闻内容links
 		Queue<String>guoJiNewsContent = new LinkedList<String>();
 		guoJiNewsContent = findContentLinks(guoJiNewsTheme,newsContentLinksReg);
+		if(guoJiNewsContent==null)
+			return ;
 //		System.out.println(guoNeiNewsContent);
 		if( month < 10)
 			downloadTime = year+"0"+month;
@@ -93,12 +95,12 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 			String url = guoJiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.add(url, commenturl, handleNewsComment(commenturl), bufDate);
 			}else {
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.update(url, commenturl, handleNewsComment(commenturl), bufDate);
 			}
@@ -109,25 +111,27 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
 		Queue<String> themelinks = new LinkedList<String>();
 		String html = findContentHtml(themeLink);
-		html = html.replaceAll("\\s+", "");
-		String commentReg = "maxPage=(.*?);var";
+		if(html!=null){
+			html = html.replaceAll("\\s+", "");
+			String commentReg = "maxPage=(.*?);var";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+			Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(html);
-		String mm = "";
-		while(themeMatcher.find()){
-			mm = themeMatcher.group();
-			mm = mm.substring(8, mm.indexOf(";var"));
-		}
+			Matcher themeMatcher = newPage.matcher(html);
+			String mm = "";
+			while(themeMatcher.find()){
+				mm = themeMatcher.group();
+				mm = mm.substring(8, mm.indexOf(";var"));
+			}
 		
-		String s1 = "http://news.sohu.com/guojixinwen_";
-		String s2 = ".shtml";
-		themelinks.offer(themeLink);
-		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 2 ;
-		for(int i = number ; i > number1 ; i--){
-			themelinks.offer(s1+i+s2);
+			String s1 = "http://news.sohu.com/guojixinwen_";
+			String s2 = ".shtml";
+			themelinks.offer(themeLink);
+			int number = Integer.parseInt(mm) - 1;
+			int number1 = number - 2 ;
+			for(int i = number ; i > number1 ; i--){
+				themelinks.offer(s1+i+s2);
+			}
 		}
 		return themelinks ;
 	}
@@ -211,6 +215,8 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -239,7 +245,8 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 	}
 	@Override
 	public String findNewsCommentUrl(String url) {
-		// http://quan.sohu.com/pinglun/cyqemw6s1/407248469
+		if(url==null)
+			return null;
 		String commentUrl = url.substring(url.lastIndexOf("n")+1, url.lastIndexOf("."));
 		return "http://quan.sohu.com/pinglun/cyqemw6s1/"+commentUrl;
 	}
@@ -283,18 +290,19 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
             if(bufException!= null )
             	return null;
         } 
-        
-        test = test.replaceAll("\\s+", "");
-        String commentReg = "](.*?)回复分享";
+        if(test!=null){
+        	test = test.replaceAll("\\s+", "");
+        	String commentReg = "](.*?)回复分享";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+        	Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(test);
-		while(themeMatcher.find()){
-			String mm = themeMatcher.group();
-			mm = mm.replaceAll("]|(回复分享)", "");
-			comment.offer(mm+"--"+bufDate);
-		} 
+        	Matcher themeMatcher = newPage.matcher(test);
+        	while(themeMatcher.find()){
+        		String mm = themeMatcher.group();
+        		mm = mm.replaceAll("]|(回复分享)", "");
+        		comment.offer(mm+"--"+bufDate);
+        	} 
+        }
         return comment;
 	}
 

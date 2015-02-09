@@ -57,7 +57,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	private int date = today.get(Calendar.DATE);	
 	
 	public void getSOHUMilComment(){
-		
+		System.out.println("sohumil start...");
 		DBName = "SOHUCOMMENT";
 		DBTable = "MIL";
 		ENCODE = "gb2312";
@@ -79,7 +79,8 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		//获取社会新闻内容links
 		Queue<String>milNewsContent = new LinkedList<String>();
 		milNewsContent = findContentLinks(milNewsTheme,newsContentLinksReg);
-	//				System.out.println(guoNeiNewsContent);
+		if(milNewsContent == null)
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -94,12 +95,12 @@ public class SOHUMilComment implements SOHUCOMMENT{
 			String url = milNewsContent.poll();
 			if(!crut.query("Url", url)){
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.add(url, commenturl, handleNewsComment(commenturl),bufDate );
 			}else {
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //			 	handleNewsComment(commenturl);
 				crut.update(url, commenturl, handleNewsComment(commenturl), bufDate);
 			}
@@ -110,26 +111,28 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
 		Queue<String> themelinks = new LinkedList<String>();
 		String html = findContentHtml(themeLink);
-		html = html.replaceAll("\\s+", "");
-		String commentReg = "maxPage=(.*?);var";
+		if(html!=null){
+			html = html.replaceAll("\\s+", "");
+			String commentReg = "maxPage=(.*?);var";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+			Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(html);
-		String mm = "";
-		while(themeMatcher.find()){
-			mm = themeMatcher.group();
-			mm = mm.substring(8, mm.indexOf(";var"));
-		}
-		//我军themelinks
-		String s1 = "http://mil.sohu.com/wojun_";
-		String s2 = ".shtml";
-		themelinks.offer(themeLink);
-		int number = Integer.parseInt(mm) - 1;
-		int number1 = number - 2 ;
-		for(int i = number ; i > number1 ; i--){
-			themelinks.offer(s1+i+s2);
+			Matcher themeMatcher = newPage.matcher(html);
+			String mm = "";
+			while(themeMatcher.find()){
+				mm = themeMatcher.group();
+				mm = mm.substring(8, mm.indexOf(";var"));
+			}
+			//我军themelinks
+			String s1 = "http://mil.sohu.com/wojun_";
+			String s2 = ".shtml";
+			themelinks.offer(themeLink);
+			int number = Integer.parseInt(mm) - 1;
+			int number1 = number - 2 ;
+			for(int i = number ; i > number1 ; i--){
+				themelinks.offer(s1+i+s2);
 //			System.out.println(s1+i +s2);
+			}
 		}
 		//国际军事themelinks http://mil.sohu.com/s2005/junshiguonei.shtml
 		String themeguojijunshi = "http://mil.sohu.com/s2005/junshiguonei.shtml";
@@ -137,22 +140,24 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		String s4 = ".shtml";
 		themelinks.offer(themeguojijunshi);
 		String html1 = findContentHtml(themeguojijunshi);
-		html1 = html1.replaceAll("\\s+", "");
-		String commentReg1 = "maxPage=(.*?);var";
+		if(html1!=null){
+			html1 = html1.replaceAll("\\s+", "");
+			String commentReg1 = "maxPage=(.*?);var";
 		
-		Pattern newPage1 = Pattern.compile(commentReg1);
+			Pattern newPage1 = Pattern.compile(commentReg1);
 		
-		Matcher themeMatcher1 = newPage1.matcher(html1);
-		String mm1 = "";
-		while(themeMatcher1.find()){
-			mm1 = themeMatcher1.group();
-			mm1 = mm1.substring(8, mm1.indexOf(";var"));
-		}
-		int number2 = Integer.parseInt(mm1) - 1;
-		int number3 = number2 - 2 ;
-		for(int i = number2 ; i > number3 ; i--){
-			themelinks.offer(s3+i+s4);
+			Matcher themeMatcher1 = newPage1.matcher(html1);
+			String mm1 = "";
+			while(themeMatcher1.find()){
+				mm1 = themeMatcher1.group();
+				mm1 = mm1.substring(8, mm1.indexOf(";var"));
+			}
+			int number2 = Integer.parseInt(mm1) - 1;
+			int number3 = number2 - 2 ;
+			for(int i = number2 ; i > number3 ; i--){
+				themelinks.offer(s3+i+s4);
 //			System.out.println(s3+i +s4);
+			}
 		}
 		return themelinks ;
 	}
@@ -242,6 +247,8 @@ public class SOHUMilComment implements SOHUCOMMENT{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -270,11 +277,13 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	}
 	@Override
 	public String findNewsCommentUrl(String url) {
-		// http://quan.sohu.com/pinglun/cyqemw6s1/407248469
+		if(url==null)
+			return null;
 		String commentUrl = url.substring(url.lastIndexOf("n")+1, url.lastIndexOf("."));
 		return "http://quan.sohu.com/pinglun/cyqemw6s1/"+commentUrl;
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
@@ -312,19 +321,20 @@ public class SOHUMilComment implements SOHUCOMMENT{
             if(bufException != null )
             	return null;
         } 
-        
-        test = test.replaceAll("\\s+", "");
-        String commentReg = "](.*?)回复分享";
+        if(test!=null){
+        	test = test.replaceAll("\\s+", "");
+        	String commentReg = "](.*?)回复分享";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+        	Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(test);
-		while(themeMatcher.find()){
-			String mm = themeMatcher.group();
-			mm = mm.replaceAll("]|(回复分享)", "");
-			comment.offer(mm+"--"+bufDate);
-			System.out.println(mm);
-		} 
+        	Matcher themeMatcher = newPage.matcher(test);
+        	while(themeMatcher.find()){
+        		String mm = themeMatcher.group();
+        		mm = mm.replaceAll("]|(回复分享)", "");
+        		comment.offer(mm+"--"+bufDate);
+//        		System.out.println(mm);
+        	} 
+        }
         return comment;
 	}
 

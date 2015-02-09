@@ -57,6 +57,7 @@ public class SOHUStarComment implements SOHUCOMMENT{
 	private int imageNumber = 1 ;
 	
 	public void getSOHUStarComment(){
+		System.out.println("sohustar start...");
 		DBName = "SOHUCOMMENT";
 		DBTable = "STAR";
 		ENCODE = "gb2312";
@@ -79,7 +80,8 @@ public class SOHUStarComment implements SOHUCOMMENT{
 		//获取社会新闻内容links
 		Queue<String>starNewsContent = new LinkedList<String>();
 		starNewsContent = findContentLinks(starNewsTheme,newsContentLinksReg);
-//		System.out.println(guoNeiNewsContent);
+		if(starNewsContent==null)
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -94,16 +96,17 @@ public class SOHUStarComment implements SOHUCOMMENT{
 			String url = starNewsContent.poll();
 			if(!crut.query("Url", url)){
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.add(url, commenturl, handleNewsComment(commenturl), bufDate);
 			}else{
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.update(url, commenturl, handleNewsComment(commenturl), bufDate);
 			}
 		}
+		crut.destory();
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -191,6 +194,8 @@ public class SOHUStarComment implements SOHUCOMMENT{
         try {
         	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //创建连接
         	httpUrlConnection.setRequestMethod("GET");
+        	httpUrlConnection.setConnectTimeout(3000);
+			httpUrlConnection.setReadTimeout(1000);
             httpUrlConnection.setUseCaches(true); //使用缓存
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
@@ -219,7 +224,8 @@ public class SOHUStarComment implements SOHUCOMMENT{
 	}
 	@Override
 	public String findNewsCommentUrl(String url) {
-		// http://quan.sohu.com/pinglun/cyqemw6s1/407248469
+		if(url==null)
+			return null;
 		String commentUrl = url.substring(url.lastIndexOf("n")+1, url.lastIndexOf("."));
 		return "http://quan.sohu.com/pinglun/cyqemw6s1/"+commentUrl;
 	}
@@ -261,19 +267,20 @@ public class SOHUStarComment implements SOHUCOMMENT{
             if(bufException!= null )
             	return null;
         } 
-        
-        test = test.replaceAll("\\s+", "");
-        String commentReg = "](.*?)回复分享";
+        if(test!=null){
+        	test = test.replaceAll("\\s+", "");
+        	String commentReg = "](.*?)回复分享";
 		
-		Pattern newPage = Pattern.compile(commentReg);
+        	Pattern newPage = Pattern.compile(commentReg);
 		
-		Matcher themeMatcher = newPage.matcher(test);
-		while(themeMatcher.find()){
-			String mm = themeMatcher.group();
-			mm = mm.replaceAll("]|(回复分享)", "");
-			comment.offer(mm+"--"+bufDate);
-			System.out.println(mm);
-		} 
+        	Matcher themeMatcher = newPage.matcher(test);
+        	while(themeMatcher.find()){
+        		String mm = themeMatcher.group();
+        		mm = mm.replaceAll("]|(回复分享)", "");
+        		comment.offer(mm+"--"+bufDate);
+//        		System.out.println(mm);
+        	} 
+        }
         return comment;
 	}
 
