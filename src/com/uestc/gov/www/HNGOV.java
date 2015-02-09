@@ -333,6 +333,8 @@ public class HNGOV implements GOV{
 
 	@Override
 	public String getNewsImages(String html, String[] label) {
+		if(html == null )
+			return null;
 		String bufHtml = html;        //辅助
 		String imageNameTime  = "";
 		//获取图片时间，为命名服务
