@@ -96,6 +96,8 @@ public class SOHUGuoNei implements SOHU{
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
 		System.out.println("22");
+		if(guoNeiNewsContent==null)
+			return ;
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 
