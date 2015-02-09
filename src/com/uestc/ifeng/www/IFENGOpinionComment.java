@@ -80,6 +80,8 @@ public class IFENGOpinionComment implements IFENGCOMMENT{
 		Queue<String>opinionNewsContent = new LinkedList<String>();
 		opinionNewsContent = findContentLinks(OpinionNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
+		if(opinionNewsContent == null )
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;

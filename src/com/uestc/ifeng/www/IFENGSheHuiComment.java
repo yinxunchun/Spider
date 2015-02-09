@@ -80,6 +80,8 @@ public class IFENGSheHuiComment implements IFENGCOMMENT{
 		Queue<String>sheHuiNewsContent = new LinkedList<String>();
 		sheHuiNewsContent = findContentLinks(sheHuiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
+		if(sheHuiNewsContent == null )
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;

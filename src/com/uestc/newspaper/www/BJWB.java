@@ -119,9 +119,6 @@ public class BJWB implements NEWSPAPER{
 			return ;
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
-		
-		if(cdsbContentQueue == null )
-			return ;
 		while(!cdsbContentQueue.isEmpty()){
 			String url = cdsbContentQueue.poll();
 			if(!crut.query("Url", url)){

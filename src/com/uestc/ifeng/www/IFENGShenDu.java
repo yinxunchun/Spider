@@ -91,6 +91,8 @@ public class IFENGShenDu implements IFENG{
 		Queue<String>shenDuNewsContent = new LinkedList<String>();
 		shenDuNewsContent = findContentLinks(shenDuNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
+		if(shenDuNewsContent == null )
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;
