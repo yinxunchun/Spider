@@ -115,6 +115,8 @@ public class BJWB implements NEWSPAPER{
 		Queue<String> cdsbContentQueue = new LinkedList<String>();
 		cdsbContentQueue = getContentLinks(cdsbThemeQueue, contentLinksReg);
 //		System.out.println(cdsbContentQueue);
+		if(cdsbContentQueue==null)
+			return ;
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
