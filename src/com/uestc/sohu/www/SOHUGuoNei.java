@@ -91,10 +91,13 @@ public class SOHUGuoNei implements SOHU{
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme = findThemeLinks(theme,newsThemeLinksReg);
 //		System.out.println(guoNeiNewsTheme);
-		
+		System.out.println("11");
 		//获取社会新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
+		System.out.println("22");
+		if(guoNeiNewsContent==null)
+			return ;
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 
@@ -108,9 +111,9 @@ public class SOHUGuoNei implements SOHU{
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 				}
 			}
-			visitedUrl.add(url);
+//			visitedUrl.add(url);
 		}
-		visitedUrl = null ;
+//		visitedUrl = null ;
 //		System.out.println(i);
 		crut.destory();
 		System.out.println("guonei over...");

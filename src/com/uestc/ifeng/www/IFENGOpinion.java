@@ -327,6 +327,8 @@ public class IFENGOpinion implements IFENG{
 		// TODO Auto-generated method stub
 			String bufHtml = "";        //辅助
 			String imageNameTime  = "";
+			if(html==null)
+				return null;
 //			Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
 			if(html.contains("<!--文章内容 begin-->")&&html.contains("<!--文章内容 end-->"))
 				bufHtml = html.substring(html.indexOf("<!--文章内容 begin-->"), html.indexOf("<!--文章内容 end-->"));

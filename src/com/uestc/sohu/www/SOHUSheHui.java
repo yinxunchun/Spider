@@ -89,6 +89,8 @@ public class SOHUSheHui implements SOHU {
 		//获取社会新闻内容links
 		Queue<String>sheHuiNewsContent = new LinkedList<String>();
 		sheHuiNewsContent = findContentLinks(sheHuiNewsTheme,newsContentLinksReg);
+		if(sheHuiNewsContent==null)
+			return ;
 		//获取每个新闻网页的html
 
 		while(!sheHuiNewsContent.isEmpty()){

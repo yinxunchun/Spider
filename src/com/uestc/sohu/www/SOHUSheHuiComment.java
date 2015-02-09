@@ -56,6 +56,7 @@ public class SOHUSheHuiComment implements SOHUCOMMENT{
 	private int imageNumber = 1 ;
 	
 	public void getSOHUSheHuiComment(){
+		System.out.println("shehui start...");
 		DBName = "SOHUCOMMENT";
 		DBTable = "SH";
 		ENCODE = "gb2312";
@@ -77,7 +78,8 @@ public class SOHUSheHuiComment implements SOHUCOMMENT{
 		//获取社会新闻内容links
 		Queue<String>sheHuiNewsContent = new LinkedList<String>();
 		sheHuiNewsContent = findContentLinks(sheHuiNewsTheme,newsContentLinksReg);
-//		System.out.println(guoNeiNewsContent);
+		if(sheHuiNewsContent==null)
+			return ;
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -92,16 +94,17 @@ public class SOHUSheHuiComment implements SOHUCOMMENT{
 			String url = sheHuiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.add(url, commenturl, handleNewsComment(commenturl), bufdDate);
 			}else {
 				String commenturl = findNewsCommentUrl(url);
-				System.out.println(commenturl);
+//				System.out.println(commenturl);
 //				handleNewsComment(commenturl);
 				crut.update(url, commenturl, handleNewsComment(commenturl), bufdDate);
 			}
 		}
+		crut.destory();
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {

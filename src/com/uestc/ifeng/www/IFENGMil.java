@@ -336,7 +336,8 @@ public class IFENGMil implements IFENG{
 		// TODO Auto-generated method stub
 			String bufHtml = "";        //辅助
 			String imageNameTime  = "";
-//			Queue<String> imageUrl = new LinkedList<String>();  //保存获取的图片链接
+			if(html==null)
+				return null;
 			if(html.contains("<!--mainContent begin-->")&&html.contains("<!--mainContent end-->"))
 				bufHtml = html.substring(html.indexOf("<!--mainContent begin-->"), html.indexOf("<!--mainContent end-->"));
 			else 
