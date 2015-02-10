@@ -332,6 +332,7 @@ public class SOHUStar implements SOHU{
 				contentBuf = contentBuf.replaceAll(contentReg1, "");
 				contentBuf = contentBuf.replaceAll("&#160;", "");
 				contentBuf = contentBuf.replaceFirst("\\s+", "");
+				contentBuf = contentBuf.replaceAll("¡¡¡¡", "");
 			}
 		}
 		return contentBuf;

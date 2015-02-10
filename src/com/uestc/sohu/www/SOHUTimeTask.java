@@ -19,7 +19,7 @@ public class SOHUTimeTask extends TimerTask{
 		SOHUStar star = new SOHUStar();
 		star.getSOHUStarNews();
 		System.out.println("搜狐新闻运行结束...");
-		System.out.println("现在时间是："+ new Date());
+		System.out.println(new Date());
 
 	}
 	public static void main(String[] args){

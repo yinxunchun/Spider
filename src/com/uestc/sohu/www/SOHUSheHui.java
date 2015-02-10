@@ -351,6 +351,7 @@ public class SOHUSheHui implements SOHU {
 			if(contentBuf!=null){
 				contentBuf = contentBuf.replaceAll("&#160;", "");
 				contentBuf = contentBuf.replaceFirst("\\s+", "");
+				contentBuf = contentBuf.replaceAll("¡¡¡¡", "");
 			}
 		}
 		return contentBuf;

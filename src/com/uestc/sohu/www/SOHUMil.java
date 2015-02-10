@@ -405,6 +405,7 @@ public class SOHUMil implements SOHU{
 				contentBuf = contentBuf.replaceAll("&#160;", "");
 			
 				contentBuf = contentBuf.replaceFirst("\\s+", "");
+				contentBuf = contentBuf.replaceAll("¡¡¡¡", "");
 			}
 		}
 		return contentBuf;

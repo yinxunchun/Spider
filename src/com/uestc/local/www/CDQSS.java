@@ -27,7 +27,7 @@ import org.htmlparser.util.ParserException;
 import com.uestc.spider.www.CRUT;
 
 /*
- * ³É¶¼È«ËÑË÷
+ * æˆéƒ½å…¨æœç´¢
  * url http://news.chengdu.cn/node_583.htm
  * */
 public class CDQSS {
@@ -35,9 +35,9 @@ public class CDQSS {
 	private String DBName ;   //sql name
 	private String DBTable ;  // collections name
 	private String ENCODE ;   //html encode gb2312		
-	//ĞÂÎÅÄÚÈİlinksµÄÕıÔò±í´ïÊ½
+	//æ–°é—»å†…å®¹linksçš„æ­£åˆ™è¡¨è¾¾å¼
 	private String newsContentLinksReg ; //= "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html#f=dlist";	
-	//ĞÂÎÅÖ÷Ìâlink
+	//æ–°é—»ä¸»é¢˜link
 	private String theme ;
 	//downloadTime
 	private String downloadTime;
@@ -45,7 +45,7 @@ public class CDQSS {
 	private int year = today.get(Calendar.YEAR);
 	private int month = today.get(Calendar.MONTH)+1;
 	private int date = today.get(Calendar.DATE);	
-	//Í¼Æ¬¸öÊı
+	//å›¾ç‰‡ä¸ªæ•°
 	private int imageNumber = 1;
 	
 	public void getCDQSSNews(){
@@ -53,14 +53,14 @@ public class CDQSS {
 		DBName = "LOCALNEWS";
 		DBTable = "CDQSS";
 		ENCODE = "utf-8";
-		String[] newsTitleLabel = new String[]{"title",""};     //ĞÂÎÅ±êÌâ±êÇ© 
-		String[] newsContentLabel = new String[]{"class" ,"contxt"};  //ĞÂÎÅÄÚÈİ±êÇ© 
-		String[] newsTimeLabel = new String[]{"class","font_gray"};   //ĞÂÎÅÊ±¼ä  
-		String[] newsSourceLabel =new String[]{"class","font_gray","³É¶¼È«ËÑË÷"}; //À´Ô´±êÇ©
-		String[] newsCategroyLabel = new String[]{"class","location font"} ; // ÊôĞÔ±êÇ©
+		String[] newsTitleLabel = new String[]{"title",""};     //æ–°é—»æ ‡é¢˜æ ‡ç­¾ 
+		String[] newsContentLabel = new String[]{"class" ,"contxt"};  //æ–°é—»å†…å®¹æ ‡ç­¾ 
+		String[] newsTimeLabel = new String[]{"class","font_gray"};   //æ–°é—»æ—¶é—´  
+		String[] newsSourceLabel =new String[]{"class","font_gray","æˆéƒ½å…¨æœç´¢"}; //æ¥æºæ ‡ç­¾
+		String[] newsCategroyLabel = new String[]{"class","location font"} ; // å±æ€§æ ‡ç­¾
 		String monthBuf = null;
 		String dateBuf = null;
-		//¼ÆËã»ñÈ¡ĞÂÎÅµÄÊ±¼ä
+		//è®¡ç®—è·å–æ–°é—»çš„æ—¶é—´
 		if( month < 10){
 			downloadTime = year+"0"+month;
 			monthBuf = "0" + month;	
@@ -76,28 +76,28 @@ public class CDQSS {
 			dateBuf = "" +date ;
 		}
 		CRUT crut = new CRUT(DBName ,DBTable);
-		//¹úÄÚĞÂÎÅ Ê×Ò³Á´½Ó 
+		//å›½å†…æ–°é—» é¦–é¡µé“¾æ¥ 
 		theme = "http://news.chengdu.cn/node_583.htm";
 		
-		//ĞÂÎÅÖ÷ÌâlinksµÄÕıÔò±í´ïÊ½
+		//æ–°é—»ä¸»é¢˜linksçš„æ­£åˆ™è¡¨è¾¾å¼
 		String theme1 = "http://news.chengdu.cn/node_583_2.htm";
 //		System.out.println(monthBuf + " " + dateBuf);
-		//ĞÂÎÅÄÚÈİlinksµÄÕıÔò±í´ïÊ½http://news.chengdu.cn/content/2015-01/20/content_1670797.htm?node=583
+		//æ–°é—»å†…å®¹linksçš„æ­£åˆ™è¡¨è¾¾å¼http://news.chengdu.cn/content/2015-01/20/content_1670797.htm?node=583
 		newsContentLinksReg = "http://news.chengdu.cn/content/"+year+"-"+monthBuf+"/"+dateBuf+"/content_[0-9]{7}.htm\\?node=583";
 //		System.out.println(newsContentLinksReg);
 		
-		//±£´æ¹úÄÚĞÂÎÅÖ÷Ìâlinks
+		//ä¿å­˜å›½å†…æ–°é—»ä¸»é¢˜links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme.offer(theme);
 		guoNeiNewsTheme.offer(theme1);
 //		System.out.println(guoNeiNewsTheme);
 		
-		//»ñÈ¡¹úÄÚĞÂÎÅÄÚÈİlinks
+		//è·å–å›½å†…æ–°é—»å†…å®¹links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
 
-		//»ñÈ¡Ã¿¸öĞÂÎÅÍøÒ³µÄhtml
+		//è·å–æ¯ä¸ªæ–°é—»ç½‘é¡µçš„html
 		int i = 0;
 		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty()){
 			crut.destory();
@@ -107,11 +107,11 @@ public class CDQSS {
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
-				String html = findContentHtml(url);  //»ñÈ¡ĞÂÎÅµÄhtml
+				String html = findContentHtml(url);  //è·å–æ–°é—»çš„html
 //				System.out.println(url);
 				i++;
 				if(html!=null)
-					crut.add(findNewsTitle(html,newsTitleLabel,"-³É¶¼È«ËÑË÷ĞÂÎÅÍø"), findNewsOriginalTitle(html,newsTitleLabel,"-³É¶¼È«ËÑË÷ĞÂÎÅÍø"),findNewsOriginalTitle(html,newsTitleLabel,"-³É¶¼È«ËÑË÷ĞÂÎÅÍø"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+					crut.add(findNewsTitle(html,newsTitleLabel,"-æˆéƒ½å…¨æœç´¢æ–°é—»ç½‘"), findNewsOriginalTitle(html,newsTitleLabel,"-æˆéƒ½å…¨æœç´¢æ–°é—»ç½‘"),findNewsOriginalTitle(html,newsTitleLabel,"-æˆéƒ½å…¨æœç´¢æ–°é—»ç½‘"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 						findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
 				
@@ -136,7 +136,7 @@ public class CDQSS {
 				NodeList nodeList = parser.extractAllNodesThatMatch(new NodeFilter(){
 					public boolean accept(Node node)
 					{
-						if (node instanceof LinkTag)// ±ê¼Ç
+						if (node instanceof LinkTag)// æ ‡è®°
 							return true;
 						return false;
 					}});
@@ -147,7 +147,7 @@ public class CDQSS {
 					LinkTag n = (LinkTag) nodeList.elementAt(i);
 //		        	System.out.print(n.getStringText() + "==>> ");
 //		       	 	System.out.println(n.extractLink());
-					//ĞÂÎÅÖ÷Ìâ
+					//æ–°é—»ä¸»é¢˜
 					Matcher themeMatcher = newsThemeLink.matcher(n.extractLink());
 					if(themeMatcher.find()){
 						if(!themelinks.contains(n.extractLink()))
@@ -167,7 +167,7 @@ public class CDQSS {
 
 	public Queue<String> findContentLinks(Queue<String> themeLink ,String contentLinkReg) {
 		
-		Queue<String> contentlinks = new LinkedList<String>(); // ÁÙÊ±Õ÷ÓÃ
+		Queue<String> contentlinks = new LinkedList<String>(); // ä¸´æ—¶å¾ç”¨
 		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(contentLinkReg);
 		while(!themeLink.isEmpty()){
@@ -181,7 +181,7 @@ public class CDQSS {
 				NodeList nodeList = parser.extractAllNodesThatMatch(new NodeFilter(){
 					public boolean accept(Node node)
 					{
-						if (node instanceof LinkTag)// ±ê¼Ç
+						if (node instanceof LinkTag)// æ ‡è®°
 							return true;
 						return false;
 					}
@@ -194,7 +194,7 @@ public class CDQSS {
 					LinkTag n = (LinkTag) nodeList.elementAt(i);
 //	        	System.out.print(n.getStringText() + "==>> ");
 //	       	 	System.out.println(n.extractLink());
-					//ĞÂÎÅÖ÷Ìâ
+					//æ–°é—»ä¸»é¢˜
 					Matcher themeMatcher = newsContent.matcher(n.extractLink());
 					if(themeMatcher.find()){
 					
@@ -218,25 +218,25 @@ public class CDQSS {
 	
 	public String findContentHtml(String url) {
 		Exception bufException = null ;
-		String html = null;                 //ÍøÒ³html
+		String html = null;                 //ç½‘é¡µhtml
 		HttpURLConnection httpUrlConnection = null ;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    
 		int state = 0;
-		//ÅĞ¶ÏurlÊÇ·ñÎªÓĞĞ§Á¬½Ó
+		//åˆ¤æ–­urlæ˜¯å¦ä¸ºæœ‰æ•ˆè¿æ¥
 		try{
-			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //´´½¨Á¬½Ó
+			httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //åˆ›å»ºè¿æ¥
 			state = httpUrlConnection.getResponseCode();
 			httpUrlConnection.disconnect();
 		}catch (MalformedURLException e) {
 //          e.printStackTrace();
-//			System.out.println("¸ÃÁ¬½Ó"+url+"ÍøÂçÓĞ¹ÊÕÏ£¬ÒÑ¾­ÎŞ·¨Õı³£Á´½Ó£¬ÎŞ·¨»ñÈ¡ĞÂÎÅ");
+//			System.out.println("è¯¥è¿æ¥"+url+"ç½‘ç»œæœ‰æ•…éšœï¼Œå·²ç»æ— æ³•æ­£å¸¸é“¾æ¥ï¼Œæ— æ³•è·å–æ–°é—»");
 			bufException = e ;
 		} catch (IOException e) {
           // TODO Auto-generated catch block
 //          e.printStackTrace();
-//			System.out.println("¸ÃÁ¬½Ó"+url+"ÍøÂç³¬¼¶Âı£¬ÒÑ¾­ÎŞ·¨Õı³£Á´½Ó£¬ÎŞ·¨»ñÈ¡ĞÂÎÅ");
+//			System.out.println("è¯¥è¿æ¥"+url+"ç½‘ç»œè¶…çº§æ…¢ï¼Œå·²ç»æ— æ³•æ­£å¸¸é“¾æ¥ï¼Œæ— æ³•è·å–æ–°é—»");
 			bufException = e ;
 		}finally{
 			if(bufException!=null)
@@ -247,14 +247,14 @@ public class CDQSS {
 		}
   
         try {
-        	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //´´½¨Á¬½Ó
+        	httpUrlConnection = (HttpURLConnection) new URL(url).openConnection(); //åˆ›å»ºè¿æ¥
         	httpUrlConnection.setRequestMethod("GET");
         	httpUrlConnection.setConnectTimeout(3000);
 			httpUrlConnection.setReadTimeout(1000);
-            httpUrlConnection.setUseCaches(true); //Ê¹ÓÃ»º´æ
-            httpUrlConnection.connect();           //½¨Á¢Á¬½Ó  Á´½Ó³¬Ê±´¦Àí
+            httpUrlConnection.setUseCaches(true); //ä½¿ç”¨ç¼“å­˜
+            httpUrlConnection.connect();           //å»ºç«‹è¿æ¥  é“¾æ¥è¶…æ—¶å¤„ç†
         } catch (IOException e) {
-        	System.out.println(url+"¸ÃÁ´½Ó·ÃÎÊ³¬Ê±...");
+        	System.out.println(url+"è¯¥é“¾æ¥è®¿é—®è¶…æ—¶...");
         	bufException = e;
         }finally{
         	if(bufException != null )
@@ -262,7 +262,7 @@ public class CDQSS {
         }
   
         try {
-            inputStream = httpUrlConnection.getInputStream(); //¶ÁÈ¡ÊäÈëÁ÷
+            inputStream = httpUrlConnection.getInputStream(); //è¯»å–è¾“å…¥æµ
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, ENCODE)); 
             String string;
             StringBuffer sb = new StringBuffer();
@@ -338,7 +338,7 @@ public class CDQSS {
 			titleBuf = titleBuf.substring(0, titleBuf.indexOf(buf))	;
 		return titleBuf;
 	}
-	//news Î´´¦Àí±êÌâ
+	//news æœªå¤„ç†æ ‡é¢˜
 	public String findNewsOriginalTitle(String html , String[] label,String buf) {
 		// TODO Auto-generated method stub
 		String titleBuf ;
@@ -379,49 +379,52 @@ public class CDQSS {
 				contentBuf= contentBuf.replaceAll("(<p>)|(<strong>)|(</span>)|(<span>)", "");
 				contentBuf= contentBuf.replaceAll("(</p>)|(</strong>)", "\n");
 				contentBuf = contentBuf.replaceAll("<(.*?)>", "");
+			    contentBuf = contentBuf.replaceAll("    ", "");
+			    contentBuf = contentBuf.replaceAll("Â Â Â  ", "");
+			    contentBuf = contentBuf.replaceFirst("\\s+", "");
 			}
 		}
 		return contentBuf;
 	}
-	//´¦ÀíÍ¼Æ¬£¬Ê¹ÓÃÊ±¼älabel
+	//å¤„ç†å›¾ç‰‡ï¼Œä½¿ç”¨æ—¶é—´label
 	public String findNewsImages(String html , String[] label) {
 		if(html == null )
 			return null;
-		String bufHtml = "";        //¸¨Öú
+		String bufHtml = "";        //è¾…åŠ©
 		String imageNameTime  = "";
-//		Queue<String> imageUrl = new LinkedList<String>();  //±£´æ»ñÈ¡µÄÍ¼Æ¬Á´½Ó
+//		Queue<String> imageUrl = new LinkedList<String>();  //ä¿å­˜è·å–çš„å›¾ç‰‡é“¾æ¥
 		if(html.contains("<div class=\"contxt\">")&&html.contains("<!--/enpcontent-->"))
 			bufHtml = html.substring(html.indexOf("<div class=\"contxt\">"), html.indexOf("<!--/enpcontent-->"));
 		else 
 			return null;
-		//»ñÈ¡Í¼Æ¬Ê±¼ä£¬ÎªÃüÃû·şÎñ
+		//è·å–å›¾ç‰‡æ—¶é—´ï¼Œä¸ºå‘½åæœåŠ¡
 		imageNameTime = findNewsTime(html,label) ;
 		if(imageNameTime == null || imageNameTime.equals(""))
 			return null;
-		//´¦Àí´æ·ÅÌõÍ¼Æ¬µÄÎÄ¼ş¼Ğ
+		//å¤„ç†å­˜æ”¾æ¡å›¾ç‰‡çš„æ–‡ä»¶å¤¹
     	File f = new File("LOCALCDQSS");
     	if(!f.exists()){
     		f.mkdir();
     	}
-    	//¼ÓÈë¾ßÌåÊ±¼ä Ê±·ÖÃë ·ÀÖ¹Í¼Æ¬ÃüÃûÖØ¸´
+    	//åŠ å…¥å…·ä½“æ—¶é—´ æ—¶åˆ†ç§’ é˜²æ­¢å›¾ç‰‡å‘½åé‡å¤
     	Calendar photoTime = Calendar.getInstance();
     	int photohour = photoTime.get(Calendar.HOUR_OF_DAY); 
     	int photominute = photoTime.get(Calendar.MINUTE);
     	int photosecond = photoTime.get(Calendar.SECOND);
-    	//±£´æÍ¼Æ¬ÎÄ¼şµÄÎ»ÖÃĞÅÏ¢
+    	//ä¿å­˜å›¾ç‰‡æ–‡ä»¶çš„ä½ç½®ä¿¡æ¯
     	Queue<String> imageLocation = new LinkedList<String>();
-    	//Í¼Æ¬ÕıÔò±í´ïÊ½
+    	//å›¾ç‰‡æ­£åˆ™è¡¨è¾¾å¼
 		String imageReg = "http://img.cache.cdqss.com/images/attachement/jpg/site2/[0-9]{8}/(.*?).jpg";
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
-		//´¦ÀíÍ¼Æ¬
-		int i = 1 ;      //±¾ÌõĞÂÎÅÍ¼Æ¬µÄ¸öÊı
+		//å¤„ç†å›¾ç‰‡
+		int i = 1 ;      //æœ¬æ¡æ–°é—»å›¾ç‰‡çš„ä¸ªæ•°
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
 //			System.out.println(bufUrl);
 			File fileBuf;
 //			imageMatcher.group();
-			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //Í¼Æ¬ºó×ºÃû
+			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //å›¾ç‰‡åç¼€å
 			try{
 				URL uri = new URL(bufUrl);  
 			
@@ -449,26 +452,26 @@ public class CDQSS {
             
 				byte[] buf = new byte[1024];  
 				int length = 0;  
-//           	 System.out.println("¿ªÊ¼ÏÂÔØ:" + url);  
+//           	 System.out.println("å¼€å§‹ä¸‹è½½:" + url);  
 				while ((length = in.read(buf, 0, buf.length)) != -1) {  
 					fo.write(buf, 0, length);  
 				}  
 				in.close();  
 				fo.close();  
-//          	  System.out.println(imageName + "ÏÂÔØÍê³É"); 
+//          	  System.out.println(imageName + "ä¸‹è½½å®Œæˆ"); 
 			}catch(Exception e){
-				System.out.println("Ç×£¬Í¼Æ¬ÏÂÔØÊ§°Ü£¡£¡"+e);
-				System.out.println("Çë¼ì²éÍøÂçÊÇ·ñÕı³££¡");
+				System.out.println("äº²ï¼Œå›¾ç‰‡ä¸‹è½½å¤±è´¥ï¼ï¼"+e);
+				System.out.println("è¯·æ£€æŸ¥ç½‘ç»œæ˜¯å¦æ­£å¸¸ï¼");
 			}
 			i ++;
 			
         }  
-		//Èç¹û¸ÃÌõĞÂÎÅÃ»ÓĞÍ¼Æ¬ÔòÍ¼Æ¬µÄ±àºÅ²»ÔÙÔö¼Ó
+		//å¦‚æœè¯¥æ¡æ–°é—»æ²¡æœ‰å›¾ç‰‡åˆ™å›¾ç‰‡çš„ç¼–å·ä¸å†å¢åŠ 
 		if(!imageLocation.isEmpty())
 			imageNumber ++;
 		return imageLocation.toString();
 	}
-	//ĞÂÎÅÊ±¼ä
+	//æ–°é—»æ—¶é—´
 	public String findNewsTime(String html , String[] label) {
 		// TODO Auto-generated method stub
 		String timeBuf ="";
@@ -505,8 +508,8 @@ public class CDQSS {
 			return label[2];
 		if(sourceBuf!=null){
 			sourceBuf = sourceBuf.replaceAll("\\s+", "");
-			if(sourceBuf.contains("À´Ô´")&&sourceBuf.contains("±à¼­"))
-				sourceBuf = sourceBuf.substring(sourceBuf.indexOf("À´Ô´"), sourceBuf.indexOf("±à¼­"));
+			if(sourceBuf.contains("æ¥æº")&&sourceBuf.contains("ç¼–è¾‘"))
+				sourceBuf = sourceBuf.substring(sourceBuf.indexOf("æ¥æº"), sourceBuf.indexOf("ç¼–è¾‘"));
 		}
 		return label[2] + sourceBuf ;
 	}
@@ -521,23 +524,23 @@ public class CDQSS {
 		if(categroyBuf!=null&&categroyBuf.contains("&raquo;")){
 			categroyBuf = categroyBuf.replaceAll("&raquo;", "");
 			categroyBuf = categroyBuf.replaceAll("\\s+", "");
-			if(categroyBuf.contains("ĞÂÎÅÊ×Ò³")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÊ×Ò³")+4, categroyBuf.indexOf("ÕıÎÄ"));
-			}else if(categroyBuf.contains("ĞÂÎÅÆµµÀ")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÆµµÀ")+5, categroyBuf.length());
-			}else if(categroyBuf.contains("ĞÂÎÅÊ×Ò³")){
-				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÊ×Ò³")+5, categroyBuf.indexOf("ÕıÎÄ")-1);
+			if(categroyBuf.contains("æ–°é—»é¦–é¡µ")){
+				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¦–é¡µ")+4, categroyBuf.indexOf("æ­£æ–‡"));
+			}else if(categroyBuf.contains("æ–°é—»é¢‘é“")){
+				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¢‘é“")+5, categroyBuf.length());
+			}else if(categroyBuf.contains("æ–°é—»é¦–é¡µ")){
+				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¦–é¡µ")+5, categroyBuf.indexOf("æ­£æ–‡")-1);
 			}else;
 			
 		}else{	
 			if(categroyBuf!=null){
 				categroyBuf = categroyBuf.replaceAll("\\s+", "");
-				if(categroyBuf.contains("ĞÂÎÅÊ×Ò³")){
-					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÊ×Ò³")+4, categroyBuf.indexOf("ÕıÎÄ"));
-				}else if(categroyBuf.contains("ĞÂÎÅÆµµÀ")){
-					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÆµµÀ")+5, categroyBuf.length());
-				}else if(categroyBuf.contains("ĞÂÎÅÊ×Ò³")){
-					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("ĞÂÎÅÊ×Ò³")+5, categroyBuf.indexOf("ÕıÎÄ")-1);
+				if(categroyBuf.contains("æ–°é—»é¦–é¡µ")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¦–é¡µ")+4, categroyBuf.indexOf("æ­£æ–‡"));
+				}else if(categroyBuf.contains("æ–°é—»é¢‘é“")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¢‘é“")+5, categroyBuf.length());
+				}else if(categroyBuf.contains("æ–°é—»é¦–é¡µ")){
+					categroyBuf = categroyBuf.substring(categroyBuf.indexOf("æ–°é—»é¦–é¡µ")+5, categroyBuf.indexOf("æ­£æ–‡")-1);
 				}else;
 			}
 		}

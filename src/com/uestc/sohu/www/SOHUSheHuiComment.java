@@ -252,7 +252,7 @@ public class SOHUSheHuiComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
 		Exception bufeException = null ;
-//		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
+		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
 //		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
 //		WebDriver driver = new ChromeDriver();
 		WebDriver driver = new FirefoxDriver();

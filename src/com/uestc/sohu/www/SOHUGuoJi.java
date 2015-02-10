@@ -381,6 +381,7 @@ public class SOHUGuoJi implements SOHU{
 			if(contentBuf!=null){
 				contentBuf = contentBuf.replaceFirst("\\s+", "");
 				contentBuf = contentBuf.replaceAll("<!--(.*?)-->", "");
+				contentBuf = contentBuf.replaceAll("¡¡¡¡", "");
 			}
 		}
 		return contentBuf;

@@ -263,7 +263,7 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 		Queue<String> comment = new LinkedList<String>() ;
 		Exception bufException = null;
 //		System.getProperty("webdriver.chrome.driver");
-//		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
+		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
 //		WebDriver driver = new ChromeDriver();
 //		File file = new File("firebug-1.8.1.xpi");
 //		FirefoxProfile firefoxProfile = new FirefoxProfile();
