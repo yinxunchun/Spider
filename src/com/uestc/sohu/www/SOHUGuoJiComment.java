@@ -1,6 +1,7 @@
 package com.uestc.sohu.www;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,8 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
 import com.uestc.spider.www.CRUT;
@@ -80,8 +83,10 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 		//获取国际新闻内容links
 		Queue<String>guoJiNewsContent = new LinkedList<String>();
 		guoJiNewsContent = findContentLinks(guoJiNewsTheme,newsContentLinksReg);
-		if(guoJiNewsContent==null)
+		if(guoJiNewsContent==null){
+			crut.destory();
 			return ;
+		}
 //		System.out.println(guoNeiNewsContent);
 		if( month < 10)
 			downloadTime = year+"0"+month;
@@ -106,6 +111,7 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 			}
 		}
 		crut.destory();
+		System.out.println("sohuguoji over...");
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -257,8 +263,18 @@ public class SOHUGuoJiComment implements SOHUCOMMENT{
 		Queue<String> comment = new LinkedList<String>() ;
 		Exception bufException = null;
 //		System.getProperty("webdriver.chrome.driver");
-		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
+//		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
+//		WebDriver driver = new ChromeDriver();
+//		File file = new File("firebug-1.8.1.xpi");
+//		FirefoxProfile firefoxProfile = new FirefoxProfile();
+//		try {
+//			firefoxProfile.addExtension(file);
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		firefoxProfile.setPreference("extensions.firebug.currentVersion", "1.8.1"); // Avoid startup screen
+		WebDriver driver = new FirefoxDriver();
 		try {
 			driver.get(commentUrl);
 			new Thread().sleep(5000);

@@ -27,6 +27,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
 import com.sun.jna.platform.win32.Secur32.EXTENDED_NAME_FORMAT;
@@ -80,8 +81,10 @@ public class SOHUStarComment implements SOHUCOMMENT{
 		//获取社会新闻内容links
 		Queue<String>starNewsContent = new LinkedList<String>();
 		starNewsContent = findContentLinks(starNewsTheme,newsContentLinksReg);
-		if(starNewsContent==null)
+		if(starNewsContent==null){
+			crut.destory();
 			return ;
+		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -107,6 +110,7 @@ public class SOHUStarComment implements SOHUCOMMENT{
 			}
 		}
 		crut.destory();
+		System.out.println("sohustar over...");
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -230,12 +234,12 @@ public class SOHUStarComment implements SOHUCOMMENT{
 		return "http://quan.sohu.com/pinglun/cyqemw6s1/"+commentUrl;
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
 		Exception bufException = null ;
-		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
+		WebDriver driver = new FirefoxDriver();
 		try {
 			driver.get(commentUrl);
 			new Thread().sleep(5000);

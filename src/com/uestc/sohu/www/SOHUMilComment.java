@@ -27,6 +27,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
 import com.uestc.spider.www.CRUT;
@@ -79,8 +80,10 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		//获取社会新闻内容links
 		Queue<String>milNewsContent = new LinkedList<String>();
 		milNewsContent = findContentLinks(milNewsTheme,newsContentLinksReg);
-		if(milNewsContent == null)
+		if(milNewsContent == null){
+			crut.destory();
 			return ;
+		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -106,6 +109,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 			}
 		}
 		crut.destory();
+		System.out.println("sohumil over...");
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -288,8 +292,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
 		Exception bufException = null ;
-		System.getProperties().setProperty("webdriver.chrome.driver", "seleniumjar/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
+		WebDriver driver = new FirefoxDriver();
 		try {
 			driver.get(commentUrl);
 			new Thread().sleep(5000);
