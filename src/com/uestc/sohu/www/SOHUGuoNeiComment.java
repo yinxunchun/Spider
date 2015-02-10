@@ -178,9 +178,9 @@ public class SOHUGuoNeiComment implements SOHUCOMMENT{
 					}
 				}
 			}catch(ParserException e){
-				bufException = null ;
+				bufException = e ;
 			}catch(Exception e){
-				bufException = null ;
+				bufException = e ;
 			}finally{
 				if(bufException!= null )
 					return null;
@@ -265,6 +265,7 @@ public class SOHUGuoNeiComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>() ;
 		Exception bufException = null ;
+//		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
 		WebDriver driver = new FirefoxDriver();
 		try {
 			driver.get(commentUrl);

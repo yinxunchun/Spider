@@ -174,7 +174,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 		while(!themeLink.isEmpty()){
 			
 			String buf = themeLink.poll();
-			System.out.println(buf);
+//			System.out.println(buf);
 		
 			try {
 				Parser parser = new Parser(buf);
@@ -292,6 +292,7 @@ public class SOHUMilComment implements SOHUCOMMENT{
 	public Queue<String> handleNewsComment(String commentUrl) {
 		Queue<String> comment = new LinkedList<String>();
 		Exception bufException = null ;
+//		System.setProperty("webdriver.firefox.bin", "E:/Firefox/firefox.exe");
 		WebDriver driver = new FirefoxDriver();
 		try {
 			driver.get(commentUrl);
