@@ -11,11 +11,10 @@ import com.uestc.local.www.SCOL;
 
 public class newsPaperTimeTask extends TimerTask{
 
-	private int i = 0;
 
 	@Override
 	public void run() {
-		System.out.println("报社程序开始第"+i+"次运行...");
+		System.out.println("报社程序开始运行...");
 		BJWB bjwb = new BJWB();
 		bjwb.getBJWB();
 		CDSB cdsb = new CDSB();
@@ -36,12 +35,11 @@ public class newsPaperTimeTask extends TimerTask{
 		xwcb.getXWCB();
 		YNET ynet = new YNET();
 		ynet.getYNET();
-		System.out.println("报社程序结束运行第"+i+"次...");
+		System.out.println("报社程序结束运行...");
 		System.out.println("现在时间是："+ new Date() +"\n\n");
-		i++;
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new newsPaperTimeTask(), 0,1000);
+		timer.schedule(new newsPaperTimeTask(), 0,5*60*1000);
 	}
 }

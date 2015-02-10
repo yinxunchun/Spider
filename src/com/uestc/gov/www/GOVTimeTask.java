@@ -6,10 +6,9 @@ import java.util.TimerTask;
 
 
 public class GOVTimeTask extends TimerTask{
-	private int i = 0 ;
 	@Override
 	public void run() {
-		System.out.println("政府网新闻运行第"+i+"次开始...");
+		System.out.println("政府网新闻运行开始...");
 		AHGOV test = new AHGOV();
 		test.getAHGOVNews();
 		BJGOV test1 = new  BJGOV();
@@ -37,14 +36,13 @@ public class GOVTimeTask extends TimerTask{
 		SHGOV test12 = new SHGOV();
 		test12.getSHGOVNews();
 			
-		System.out.println("政府网站程序运行第"+i+"次结束...");
+		System.out.println("政府网站程序运行结束...");
 		System.out.println("现在时间是："+ new Date());
-		i++;
 	}
 
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new GOVTimeTask(), 0,1000);
+		timer.schedule(new GOVTimeTask(), 0,5*60*1000);
 		
 	}
 }

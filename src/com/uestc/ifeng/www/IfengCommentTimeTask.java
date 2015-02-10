@@ -5,12 +5,11 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 public class IfengCommentTimeTask extends TimerTask{
-	private int i = 0 ;
 	@Override
 	public void run(){
-		System.out.println("凤凰新闻评论第"+i+"次运行开始了...");
+		System.out.println("凤凰新闻评论运行开始了...");
 		IFENGGuoNeiComment test = new IFENGGuoNeiComment();
-		test.getIFENGGuoNeiNews();
+		test.getIFENGGuoNeiNewsComment();
 		IFENGMilComment test1 = new IFENGMilComment();
 		test1.getIFENGMilComment();
 		IFENGGuoJiComment test2 = new IFENGGuoJiComment();
@@ -21,13 +20,12 @@ public class IfengCommentTimeTask extends TimerTask{
 		test4.getIFENGSheHuiComment();
 		IFENGShenDuComment test5 = new IFENGShenDuComment();
 		test5.getIFENGShenDuComment();
-		System.out.println("凤凰新闻评论程序第"+i+"次运行结束...");
+		System.out.println("凤凰新闻评论程序运行结束...");
 		System.out.println("现在时间是："+ new Date());
 		
-		i++;
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new IfengCommentTimeTask(), 0,1000);
+		timer.schedule(new IfengCommentTimeTask(), 0,60*1000);
 	}
 }

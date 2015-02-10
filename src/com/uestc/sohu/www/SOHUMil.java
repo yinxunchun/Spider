@@ -119,8 +119,10 @@ public class SOHUMil implements SOHU{
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 
-		if(milNewsContent==null)
+		if(milNewsContent==null){
+			crut.destory();
 			return ;
+		}
 		while(!milNewsContent.isEmpty()){
 			String url = milNewsContent.poll();
 			if(!crut.query("Url", url)){

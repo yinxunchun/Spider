@@ -105,8 +105,10 @@ public class SOHUGuoJi implements SOHU{
 		Queue<String>guoJiNewsContent = new LinkedList<String>();
 		guoJiNewsContent = findContentLinks(guoJiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
-		if(guoJiNewsContent == null)
+		if(guoJiNewsContent == null){
+			crut.destory();
 			return ;
+		}
 		//计算获取新闻的时间
 		if( month < 10)
 			downloadTime = year+"0"+month;

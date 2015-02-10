@@ -74,8 +74,10 @@ public class NETEASEFocus implements NETEASE{
 		newsContentLinksReg = "http://focus.news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html"; //内容正则表达式
 		
 		String focusHtml = findContentHtml(theme);
-		if(focusHtml == null)
+		if(focusHtml == null){
+			crut.destory();
 			return ;
+		}
 		Queue<String> visitedLinks = new LinkedList<String>();
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
@@ -91,8 +93,10 @@ public class NETEASEFocus implements NETEASE{
   		else 
   			downloadTime += date ;
         int i = 0;
-        if(themeMatcher == null )
+        if(themeMatcher == null ){
+        	crut.destory();
         	return ;
+        }
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();

@@ -72,8 +72,10 @@ public class NETEASEGuoJi implements NETEASE{
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		
 		String guoJiHtml = findContentHtml(theme);
-		if(guoJiHtml == null)
+		if(guoJiHtml == null){
+			crut.destory();
 			return ;
+		}
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
         
@@ -88,8 +90,10 @@ public class NETEASEGuoJi implements NETEASE{
   		else 
   			downloadTime += date ;
         int i = 0;
-        if(themeMatcher == null)
+        if(themeMatcher == null){
+        	crut.destory();
         	return ;
+        }
         while(themeMatcher.find()){
         	i++;
         	String url = themeMatcher.group();

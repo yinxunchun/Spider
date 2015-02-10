@@ -117,8 +117,10 @@ public class YNET implements NEWSPAPER{
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
-		if(ynetContentQueue == null )
+		if(ynetContentQueue == null ){
+			crut.destory();
 			return ;
+		}
 		while(!ynetContentQueue.isEmpty()){
 			String url = ynetContentQueue.poll();
 			if(!crut.query("Url", url)){

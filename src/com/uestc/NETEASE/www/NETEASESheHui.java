@@ -114,8 +114,10 @@ public class NETEASESheHui implements NETEASE{
 		else 
 			downloadTime += date ;
 		int i = 0;
-		if(sheHuiNewsContent == null)
+		if(sheHuiNewsContent == null){
+			crut.destory();
 			return ;
+		}
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
 			if(!crut.query("Url", url)){

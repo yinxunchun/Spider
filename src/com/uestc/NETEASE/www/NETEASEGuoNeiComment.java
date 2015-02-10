@@ -117,8 +117,10 @@ public class NETEASEGuoNeiComment implements NETEASECOMMENT{
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		int i = 0;
-		if(guoNeiNewsContent == null )
+		if(guoNeiNewsContent == null ){
+			crut.destory();
 			return;
+		}
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){

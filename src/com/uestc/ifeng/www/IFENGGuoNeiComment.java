@@ -44,7 +44,8 @@ public class IFENGGuoNeiComment implements IFENGCOMMENT{
 	private int month = today.get(Calendar.MONTH)+1;
 	private int date = today.get(Calendar.DATE);	
 	
-	public void getIFENGGuoNeiNews(){
+	public void getIFENGGuoNeiNewsComment(){
+		System.out.println("gncomment start...");
 		DBName = "IFENGCOMMENT";
 		DBTable = "GN";
 		ENCODE = "utf-8";
@@ -80,33 +81,33 @@ public class IFENGGuoNeiComment implements IFENGCOMMENT{
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
-		if(guoNeiNewsContent == null)
+		if(guoNeiNewsContent == null){
+			crut.destory();
 			return ;
+		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;
-		int i = 0;
 		while(!guoNeiNewsContent.isEmpty()){
 			String url = guoNeiNewsContent.poll();
 //			System.out.println(url);
 			if(!crut.query("Url", url)){
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 //				System.out.println(html);
-				i++;
 			}else{
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.update(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 			}
 		}
 		crut.destory();
-		System.out.println(i);
+		System.out.println("gNcomment over...");
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {
@@ -309,7 +310,7 @@ public class IFENGGuoNeiComment implements IFENGCOMMENT{
 	}
 	public static void main(String[] args){
 		IFENGGuoNeiComment test = new IFENGGuoNeiComment();
-		test.getIFENGGuoNeiNews();
+		test.getIFENGGuoNeiNewsComment();
 		IFENGMilComment test1 = new IFENGMilComment();
 		test1.getIFENGMilComment();
 		IFENGGuoJiComment test2 = new IFENGGuoJiComment();

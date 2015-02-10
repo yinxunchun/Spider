@@ -114,8 +114,10 @@ public class NETEASESheHuiComment implements NETEASECOMMENT{
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
 		int i = 0;
-		if(sheHuiNewsContent == null)
+		if(sheHuiNewsContent == null){
+			crut.destory();
 			return ;
+		}
 		while(!sheHuiNewsContent.isEmpty()){
 			String url = sheHuiNewsContent.poll();
 			if(!crut.query("Url", url)){

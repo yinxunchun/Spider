@@ -118,8 +118,10 @@ public class NANDU implements NEWSPAPER{
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
-		if(nanduContentQueue == null )
+		if(nanduContentQueue == null ){
+			crut.destory();
 			return ;
+		}
 		while(!nanduContentQueue.isEmpty()){
 			String url = nanduContentQueue.poll();
 			if(!crut.query("Url", url)){

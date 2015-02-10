@@ -118,8 +118,10 @@ public class WCC implements NEWSPAPER{
 //		System.out.println(wccContentQueue);
 		
 		
-		if(wccContentQueue == null )
+		if(wccContentQueue == null ){
+			crut.destory();
 			return ;
+		}
 		while(!wccContentQueue.isEmpty()){
 			String url = wccContentQueue.poll();
 			if(!crut.query("Url", url)){

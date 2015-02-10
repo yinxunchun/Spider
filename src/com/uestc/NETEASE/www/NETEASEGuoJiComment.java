@@ -77,15 +77,19 @@ public class NETEASEGuoJiComment implements NETEASECOMMENT{
 		newsContentLinksReg = "http://news.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		
 		String guoJiHtml = findContentHtml(theme);
-		if(guoJiHtml == null )
+		if(guoJiHtml == null ){
+			crut.destory();
 			return ;
+		}
 		//匹配获得内容的links
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
         
         Matcher themeMatcher = newPage.matcher(guoJiHtml);
         int i = 0;
-        if(themeMatcher == null )
+        if(themeMatcher == null ){
+        	crut.destory();
         	return ;
+        }
         while(themeMatcher.find()){
         	
         	String url = themeMatcher.group();

@@ -48,6 +48,7 @@ public class IFENGGuoJiComment implements IFENGCOMMENT{
 	private int imageNumber = 1 ;
 	
 	public void getIFENGGuoJiComment(){
+		System.out.println("gjcomment start...");
 		DBName = "IFENGCOMMENT";
 		DBTable = "GJ";
 		ENCODE = "utf-8";
@@ -84,33 +85,33 @@ public class IFENGGuoJiComment implements IFENGCOMMENT{
 		Queue<String>guoJiNewsContent = new LinkedList<String>();
 		guoJiNewsContent = findContentLinks(guoJiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
-		if(guoJiNewsContent == null )
+		if(guoJiNewsContent == null ){
+			crut.destory();
 			return ;
+		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;
-		int i = 0;
 		while(!guoJiNewsContent.isEmpty()){
 			String url = guoJiNewsContent.poll();
 //			System.out.println(url);
 			if(!crut.query("Url", url)){
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 //				System.out.println(html);
-				i++;
 			}else{
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.update(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 			}
 		}
 		crut.destory();
-		System.out.println(i);
+		System.out.println("gjcomment over...");
 	
 	
 	}

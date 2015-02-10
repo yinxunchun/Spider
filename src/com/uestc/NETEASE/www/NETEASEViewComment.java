@@ -82,18 +82,17 @@ public class NETEASEViewComment implements NETEASECOMMENT{
 		Pattern newPage = Pattern.compile(newsContentLinksReg);
         
         Matcher themeMatcher = newPage.matcher(focusHtml);
-        int i = 0;
-        if(themeMatcher == null )
+        if(themeMatcher == null ){
+        	crut.destory();
         	return ;
+        }
         while(themeMatcher.find()){
-        	i++;
         	String url = themeMatcher.group();
         	if(!crut.query("Url", url)){
         		if(!visitedLinks.contains(url)){
 
         			String html = findContentHtml(url);
 //        			System.out.println(url);
-        			i++;
         			Queue<String> buf = findNewsComment(url,html,label);
         			crut.add(url, commentUrl, buf,dateTime);
         			commentUrl = null;
@@ -102,7 +101,6 @@ public class NETEASEViewComment implements NETEASECOMMENT{
         	}else{
         		String html = findContentHtml(url);
 //    			System.out.println(url);
-    			i++;
     			Queue<String> buf = findNewsComment(url,html,label);
     			crut.update(url, commentUrl, buf,dateTime);
     			commentUrl = null;

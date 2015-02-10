@@ -119,8 +119,10 @@ public class CDSB implements NEWSPAPER{
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
-		if(cdsbContentQueue == null )
+		if(cdsbContentQueue == null ){
+			crut.destory();
 			return ;
+		}
 		while(!cdsbContentQueue.isEmpty()){
 			String url = cdsbContentQueue.poll();
 			if(!crut.query("Url", url)){

@@ -90,11 +90,11 @@ public class NETEASEView implements NETEASE{
   			downloadTime += "0" + date;
   		else 
   			downloadTime += date ;
-        int i = 0;
-        if(themeMatcher == null)
+        if(themeMatcher == null){
+        	crut.destory();
         	return ;
+        }
         while(themeMatcher.find()){
-        	i++;
         	String url = themeMatcher.group();
         	if(!crut.query("Url", url)){
         		if(!visitedLinks.contains(url)){

@@ -46,6 +46,7 @@ public class IFENGOpinionComment implements IFENGCOMMENT{
 	private int date = today.get(Calendar.DATE);	
 	
 	public void getIFENGOpinionComment(){
+		System.out.println("opinioncomment start...");
 		DBName = "IFENGCOMMENT";
 		DBTable = "OPINION";
 		ENCODE = "utf-8";
@@ -80,32 +81,32 @@ public class IFENGOpinionComment implements IFENGCOMMENT{
 		Queue<String>opinionNewsContent = new LinkedList<String>();
 		opinionNewsContent = findContentLinks(OpinionNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
-		if(opinionNewsContent == null )
+		if(opinionNewsContent == null ){
+			crut.destory();
 			return ;
+		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		downloadTime = yearBuf+monthBuf+dateBuf;
-		int i = 0;
 		while(!opinionNewsContent.isEmpty()){
 			String url = opinionNewsContent.poll();
 //			System.out.println(url);
 			if(!crut.query("Url", url)){
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.add(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 //				System.out.println(html);
-				i++;
 			}else{
 				String commentUrl = handleCommentUrl(url);
-				System.out.println(commentUrl);
+//				System.out.println(commentUrl);
 				String commentHtml = findCommentHtml(commentUrl);
 				handleComment(commentHtml,label);
 				crut.update(url, commentUrl, handleComment(commentHtml,label),dateBufDate);
 			}
 		}
-		System.out.println(i);
+		System.out.println("opinioncomment over...");
 	}
 	@Override
 	public Queue<String> findThemeLinks(String themeLink, String themeLinkReg) {

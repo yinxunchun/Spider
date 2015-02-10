@@ -91,20 +91,20 @@ public class NETEASEWar implements NETEASE{
 		newsContentLinksReg = "http://war.163.com/[0-9]{2}/[0-9]{4}/[0-9]{2}/(.*?).html";
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
-		if(warNewsContentLinks == null)
-			return ;
-		while(!warNewsContentLinks.isEmpty()){
-			String url = warNewsContentLinks.poll();
-			if(!crut.query("Url", url)){
-				Date date = new Date();
-				String html = findContentHtml(url);  //获取新闻的html
+		if(warNewsContentLinks != null){
+			while(!warNewsContentLinks.isEmpty()){
+				String url = warNewsContentLinks.poll();
+				if(!crut.query("Url", url)){
+					Date date = new Date();
+					String html = findContentHtml(url);  //获取新闻的html
 //				System.out.println(url);
 //				System.out.println("download:"+downloadTime);
 //				System.out.println(findNewsTime(html,newsTimeLabel));
-				if(html!=null)
-					crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
+					if(html!=null)
+						crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 				
+				}
 			}
 		}
 		
@@ -116,21 +116,21 @@ public class NETEASEWar implements NETEASE{
 		warNewsThemeLinks.offer(theme);
 		warNewsContentLinks = findContentLinks(warNewsThemeLinks,newsContentLinksReg);
 //		int k = 1;
-		if(warNewsContentLinks == null)
-			return ;
-		while(!warNewsContentLinks.isEmpty()){
-			String url = warNewsContentLinks.poll();
-			if(!crut.query("Url", url)){
-				Date date = new Date();
-				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
-//				System.out.println("download:"+downloadTime);
-//				System.out.println(findNewsTime(html,newsTimeLabel));
-//			System.out.println(findNewsComment(url,html,newsCategroyLabel));
+		if(warNewsContentLinks != null){
+			while(!warNewsContentLinks.isEmpty()){
+				String url = warNewsContentLinks.poll();
+				if(!crut.query("Url", url)){
+					Date date = new Date();
+					String html = findContentHtml(url);  //获取新闻的html
+//					System.out.println(url);
+//					System.out.println("download:"+downloadTime);
+//					System.out.println(findNewsTime(html,newsTimeLabel));
+//					System.out.println(findNewsComment(url,html,newsCategroyLabel));
 				
 					crut.add(findNewsTitle(html,newsTitleLabel,"_网易军事"), findNewsOriginalTitle(html,newsTitleLabel,"_网易军事"),findNewsOriginalTitle(html,newsTitleLabel,"_网易军事"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 				
+				}
 			}
 		}
 //		System.out.println(k);

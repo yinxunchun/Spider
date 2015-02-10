@@ -119,8 +119,10 @@ public class CDWB implements NEWSPAPER{
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
-		if(cdwbContentQueue == null )
+		if(cdwbContentQueue == null ){
+			crut.destory();
 			return ;
+		}
 		while(!cdwbContentQueue.isEmpty()){
 			String url = cdwbContentQueue.poll();
 			if(!crut.query("Url", url)){
@@ -479,7 +481,7 @@ public class CDWB implements NEWSPAPER{
 		}else{
 			timeBuf = getHtml(html , label[0],label[1]);
 		}
-		System.out.println(timeBuf);
+//		System.out.println(timeBuf);
 	    if(timeBuf!=null){
 	    	if(timeBuf.contains("年"))
 	    		timeString = timeBuf.substring(0, timeBuf.indexOf("年"));

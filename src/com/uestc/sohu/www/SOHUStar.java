@@ -93,8 +93,10 @@ public class SOHUStar implements SOHU{
 		starNewsContent = findContentLinks(starNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
 		//获取每个新闻网页的html
-		if(starNewsContent==null)
+		if(starNewsContent==null){
+			crut.destory();
 			return ;
+		}
 		while(!starNewsContent.isEmpty()){
 			String url = starNewsContent.poll();
 			if(!crut.query("Url", url)){
