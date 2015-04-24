@@ -84,29 +84,29 @@ public class BJWB implements NEWSPAPER{
 		//内容连接 赋值
 		contentLinksReg = "http://bjwb.bjd.com.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/content_[0-9]{6}.htm";
 		
-		IOException bufException = null ;
-		int state = 0 ;
-		try{
-			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(themeUrl).openConnection(); //创建连接
-			state = httpUrlConnection.getResponseCode();
-			httpUrlConnection.disconnect();
-		}catch (MalformedURLException e) {
-//          e.printStackTrace();
-			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
-			bufException = e ;
-		} catch (IOException e) {
-          // TODO Auto-generated catch block
-//          e.printStackTrace();
-			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
-			bufException = e ;
-		}finally{
-			if(bufException!= null)
-				return ;
-		}
-		if(state != 200 && state != 201){
-			return;
-		}
-		
+//		IOException bufException = null ;
+//		int state = 0 ;
+//		try{
+//			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(themeUrl).openConnection(); //创建连接
+//			state = httpUrlConnection.getResponseCode();
+//			httpUrlConnection.disconnect();
+//		}catch (MalformedURLException e) {
+////          e.printStackTrace();
+//			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
+//			bufException = e ;
+//		} catch (IOException e) {
+//          // TODO Auto-generated catch block
+////          e.printStackTrace();
+//			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
+//			bufException = e ;
+//		}finally{
+//			if(bufException!= null)
+//				return ;
+//		}
+//		if(state != 200 && state != 201){
+//			return;
+//		}
+//		
 		//保存成都商报新闻主题
 		Queue<String> cdsbThemeQueue = new LinkedList<String>();
 		cdsbThemeQueue = getThemeLinks(themeUrl, themeLinksReg);
@@ -115,24 +115,31 @@ public class BJWB implements NEWSPAPER{
 		Queue<String> cdsbContentQueue = new LinkedList<String>();
 		cdsbContentQueue = getContentLinks(cdsbThemeQueue, contentLinksReg);
 //		System.out.println(cdsbContentQueue);
-		if(cdsbContentQueue==null){
+		System.out.println("bjwb: test 1...");
+		if(cdsbContentQueue == null){
 			crut.destory();
 			return ;
 		}
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
+		System.out.println("bjwb: test 2...");
 		while(!cdsbContentQueue.isEmpty()){
+			System.out.println("bjwb: test 3...");
 			String url = cdsbContentQueue.poll();
 			if(!crut.query("Url", url)){
+				System.out.println("bjwb: test 4...");
 				Date date = new Date();
 				String html = getContentHtml(url);
+				System.out.println("bjwb: test 5...");
 				if(html!=null)
 					crut.add(getNewsTitle(html,titleLabel,"-北京晚报"), getNewsOriginalTitle(html,titleLabel,"-北京晚报"),getNewsOriginalTitle(html,titleLabel,"-北京晚报"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
 							getNewsOriginalSource(html,sourceLabel), getNewsCategroy(html,categroyLabel), getNewsOriginalCategroy(html,categroyLabel), url, getNewsImages(html,timeLabel),downloadTime,date);
+				System.out.println("bjwb: test 6...");
 			}
+			
 		}
 		crut.destory();
-		System.out.println("bjwb start...");
+		System.out.println("bjwb over...");
 	}
 	@Override
 	public Queue<String> getThemeLinks(String themeLink, String themeLinkReg) {
@@ -181,6 +188,8 @@ public class BJWB implements NEWSPAPER{
 
 	@Override
 	public Queue<String> getContentLinks(Queue<String> themeLink , String ContentLinkReg) {
+		if(themeLink == null )
+			return null;
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);

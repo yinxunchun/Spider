@@ -91,28 +91,38 @@ public class IFENGGuoNei implements IFENG{
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme.offer(theme1);
 		guoNeiNewsTheme.offer(theme2);
+		guoNeiNewsTheme.offer("http://news.ifeng.com/mainland/");
 //		System.out.println(guoNeiNewsTheme);
-		
+		System.out.println("ifeng guonei: test 1...");
 		//获取社会新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
-//		System.out.println(guoNeiNewsContent);
+		System.out.println("ifeng guonei: test 2...");
+	//	System.out.println(guoNeiNewsContent);
 		if(guoNeiNewsContent==null){
 			crut.destory();
 			return ;
 		}
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
+		System.out.println("ifeng guonei: test 3...");
 		downloadTime = yearBuf+monthBuf+dateBuf;
 		while(!guoNeiNewsContent.isEmpty()){
+			System.out.println("ifeng guonei: test 4...");
 			String url = guoNeiNewsContent.poll();
+			if(url.contains("comment"))
+				continue;
 				if(!crut.query("Url", url)){
 					Date date = new Date();
 					String html = findContentHtml(url);  //获取新闻的html
-					
-					if(html!=null)
+					System.out.println("ifeng guonei: test 5...");
+					if(html!=null){
+						System.out.println("ifeng guonei: test 6...");
 					   crut.add(findNewsTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"),findNewsOriginalTitle(html,newsTitleLabel,"_凤凰资讯"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
-							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+			
+							   findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
+					}
+					System.out.println("ifeng guonei: test 7...");
 			}
 		}
 		crut.destory();

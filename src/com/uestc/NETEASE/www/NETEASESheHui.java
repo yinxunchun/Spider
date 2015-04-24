@@ -102,7 +102,8 @@ public class NETEASESheHui implements NETEASE{
 		//获取社会新闻内容links
 		Queue<String>sheHuiNewsContent = new LinkedList<String>();
 		sheHuiNewsContent = findContentLinks(sheHuiNewsTheme,newsContentLinksReg);
-//		System.out.println(guoNeiNewsContent);
+		//System.out.println(guoNeiNewsContent);
+//		sheHuiNewsContent.add("http://news.163.com/15/0313/10/AKJ2PDQR00014AEE.html#f=slist");
 		//获取每个新闻网页的html
 		//计算获取新闻的时间
 		if( month < 10)
@@ -123,16 +124,16 @@ public class NETEASESheHui implements NETEASE{
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
-//				System.out.println(url);
+				System.out.println(url);
 				i++;
 //				System.out.println("download:"+downloadTime);
 //				System.out.println(findNewsTime(html,newsTimeLabel));
-				if(findNewsTime(html,newsTimeLabel)!= null &&findNewsTime(html,newsTimeLabel).equals(downloadTime)){
+				System.out.println(html);
 					if(html!=null)
 						crut.add(findNewsTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"),findNewsOriginalTitle(html,newsTitleLabel,"_网易新闻中心"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
 		
-				}
+				
 			}
 //			System.out.println(i);
 		}
@@ -242,7 +243,7 @@ public class NETEASESheHui implements NETEASE{
 		// TODO Auto-generated method stub
 		String html = null;                 //网页html
 		
-		HttpURLConnection httpUrlConnection;
+		HttpURLConnection httpUrlConnection = null;
 	    InputStream inputStream;
 	    BufferedReader bufferedReader;
 	    IOException bufException =null ;
@@ -278,7 +279,7 @@ public class NETEASESheHui implements NETEASE{
             httpUrlConnection.connect();           //建立连接  链接超时处理
         } catch (IOException e) {
         	System.out.println("该链接访问超时...");
-        	return null;
+        	//return null;
         }
   
         try {
@@ -429,14 +430,14 @@ public class NETEASESheHui implements NETEASE{
 		   	//保存图片文件的位置信息
 		   	Queue<String> imageLocation = new LinkedList<String>();
 		   	//图片正则表达式
-			String imageReg = "(http://img[0-9]{1}.cache.netease.com/cnews/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/(.*?).((jpg)|(png)|(jpeg)|(gif)))|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)|(gif)))";
+			String imageReg = "http://img[0-9]{1}.cache.netease.com/(.*?).((jpg)|(png)|(jpeg)|(gif))" ;//|(http://img[0-9]{1}.cache.netease.com/catchpic/(.*?)/(.*?)/(.*?).((jpg)|(png)|(jpeg)|(gif)))";
 			Pattern newsImage = Pattern.compile(imageReg);
 			Matcher imageMatcher = newsImage.matcher(bufHtml);
 			//处理图片
 			int i = 1 ;      //本条新闻图片的个数
 			while(imageMatcher.find()){
 				String bufUrl = imageMatcher.group();
-//				System.out.println(bufUrl);
+				System.out.println(bufUrl);
 				File fileBuf;
 //				imageMatcher.group();
 				String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名

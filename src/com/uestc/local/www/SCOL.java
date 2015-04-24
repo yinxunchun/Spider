@@ -87,32 +87,36 @@ public class SCOL {
 
 		
 		//新闻内容links的正则表达式 http://sichuan.scol.com.cn/
-		newsContentLinksReg = "/dwzw/"+year+monthBuf+"/[0-9]{7}.html";
+		newsContentLinksReg = "/dwzw/"+year+monthBuf+"/[0-9]{8}.html";
 		//保存国内新闻主题links
 		Queue<String> guoNeiNewsTheme = new LinkedList<String>();
 		guoNeiNewsTheme.offer(theme);
 		guoNeiNewsTheme.offer(theme1);
 
-		
+		System.out.println("scol: test 1...");
 		//获取国内新闻内容links
 		Queue<String>guoNeiNewsContent = new LinkedList<String>();
 		guoNeiNewsContent = findContentLinks(guoNeiNewsTheme,newsContentLinksReg);
 //		System.out.println(guoNeiNewsContent);
+		System.out.println("scol: test 2...");
 		//获取每个新闻网页的html
 		int i = 0;
 		if(guoNeiNewsContent == null || guoNeiNewsContent.isEmpty() ){
 			crut.destory();
 			return ;
 		}
+		System.out.println("scol: test 3...");
 		while(!guoNeiNewsContent.isEmpty()){
+			System.out.println("scol: test 4...");
 			String url = guoNeiNewsContent.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html
+				System.out.println("scol: test 5...");
 				if(html!=null)
 					crut.add(findNewsTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"),findNewsOriginalTitle(html,newsTitleLabel,"_四川新闻_天府要闻_四川在线"), findNewsTime(html,newsTimeLabel),findNewsContent(html,newsContentLabel), findNewsSource(html,newsSourceLabel),
 							findNewsOriginalSource(html,newsSourceLabel), findNewsCategroy(html,newsCategroyLabel), findNewsOriginalCategroy(html,newsCategroyLabel), url, findNewsImages(html,newsTimeLabel),downloadTime,date);
-	
+				System.out.println("scol: test 6...");
 			}
 //			System.out.println(i);
 		}

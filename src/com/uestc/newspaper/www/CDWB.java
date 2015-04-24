@@ -85,28 +85,28 @@ public class CDWB implements NEWSPAPER{
 		//内容连接 赋值
 		contentLinksReg = "http://www.cdwb.com.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/content_[0-9]{7,8}.htm";
 		
-		IOException bufException = null ;
-		int state = 0 ;
-		try{
-			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(themeUrl).openConnection(); //创建连接
-			state = httpUrlConnection.getResponseCode();
-			httpUrlConnection.disconnect();
-		}catch (MalformedURLException e) {
-//          e.printStackTrace();
-			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
-			bufException = e ;
-		} catch (IOException e) {
-          // TODO Auto-generated catch block
-//          e.printStackTrace();
-			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
-			bufException = e ;
-		}finally{
-			if(bufException!= null)
-				return ;
-		}
-		if(state != 200 && state != 201){
-			return;
-		}
+//		IOException bufException = null ;
+//		int state = 0 ;
+//		try{
+//			HttpURLConnection httpUrlConnection = (HttpURLConnection) new URL(themeUrl).openConnection(); //创建连接
+//			state = httpUrlConnection.getResponseCode();
+//			httpUrlConnection.disconnect();
+//		}catch (MalformedURLException e) {
+////          e.printStackTrace();
+//			System.out.println("网络慢，已经无法正常链接，无法获取新闻");
+//			bufException = e ;
+//		} catch (IOException e) {
+//          // TODO Auto-generated catch block
+////          e.printStackTrace();
+//			System.out.println("网络超级慢，已经无法正常链接，无法获取新闻");
+//			bufException = e ;
+//		}finally{
+//			if(bufException!= null)
+//				return ;
+//		}
+//		if(state != 200 && state != 201){
+//			return;
+//		}
 		
 		//保存成都商报新闻主题
 		Queue<String> cdwbThemeQueue = new LinkedList<String>();

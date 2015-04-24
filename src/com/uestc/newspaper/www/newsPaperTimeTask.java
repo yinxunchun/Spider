@@ -40,6 +40,6 @@ public class newsPaperTimeTask extends TimerTask{
 	}
 	public static void main(String[] args){
 		Timer timer = new Timer();
-		timer.schedule(new newsPaperTimeTask(), 0,5*60*1000);
+		timer.schedule(new newsPaperTimeTask(), 0,60*1000);
 	}
 }

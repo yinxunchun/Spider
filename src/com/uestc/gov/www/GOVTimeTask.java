@@ -29,8 +29,8 @@ public class GOVTimeTask extends TimerTask{
 		test8.getJSGOVNews();
 		SCGOV test9 = new SCGOV();
 		test9.getSCGOVNews();
-		XZGOV test10 = new XZGOV();
-		test10.getXZGOVNews();
+//		XZGOV test10 = new XZGOV();
+//		test10.getXZGOVNews();
 		ZJGOV test11 = new ZJGOV();
 		test11.getZJGOVNews();
 		SHGOV test12 = new SHGOV();

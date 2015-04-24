@@ -91,6 +91,7 @@ public class IFENGGuoJi implements IFENG{
 		Queue<String> guoJiNewsTheme = new LinkedList<String>();
 		guoJiNewsTheme.offer(theme1);
 		guoJiNewsTheme.offer(theme2);
+		guoJiNewsTheme.offer("http://news.ifeng.com/world/");
 //		System.out.println(guoNeiNewsTheme);
 		
 		//获取社会新闻内容links
@@ -107,6 +108,8 @@ public class IFENGGuoJi implements IFENG{
 		int i = 0;
 		while(!guoJiNewsContent.isEmpty()){
 			String url = guoJiNewsContent.poll();
+			if(url.contains("comment"))
+				continue;
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = findContentHtml(url);  //获取新闻的html

@@ -1,4 +1,4 @@
-package com.uestc.newspaper.www;
+package com.uestc.zaobao.www;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +25,10 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import com.uestc.newspaper.www.CDSB;
 import com.uestc.spider.www.CRUT;
-//南方都市报
-public class NANDU implements NEWSPAPER{	
+
+public class ZAOBAOGuoNei implements ZAOBAO{
 
 	private String DBName ;
 	private String DBTable ;
@@ -47,22 +49,22 @@ public class NANDU implements NEWSPAPER{
 	//图片个数
 	private int imageNumber = 1;
 	
-	public void getNANDU(){
-		System.out.println("nandu start...");
-		DBName = "NEWSPAPER";
-		DBTable ="NANDU";
+	public void getZAOBAOGuoNei(){
+		System.out.println("ZAOBAOguonei start...");
+		DBName = "ZAOBAO";
+		DBTable ="guonei";
 		ENCODE = "utf-8";
 		
 		String[] titleLabel = new String[]{"title",""};     
-		String[] contentLabel = new String[]{"class","content BSHARE_POP"};  
-		String[] timeLabel = new String[]{"id","pubtime_baidu"};   
-		String[] sourceLabel =new String[]{"南方都市报","南方都市报: http://epaper.nandu.com/"}; 
-		String[] categroyLabel = new String[]{"class","info"} ; 
+		String[] contentLabel = new String[]{"class","a_body"};  
+		String[] timeLabel = new String[]{"class","time"};   
+		String[] sourceLabel =new String[]{"联合早报-中国新闻","联合早报-中国新闻：http://www.zaobao.com/news/china"}; 
+		String[] categroyLabel = new String[]{"中国新闻","联合早报-中国新闻"} ; 
 		
 		CRUT crut = new CRUT(DBName ,DBTable);
 		
 		String bufMonthString;
-		String bufDateString;	
+		String bufDateString;
 		if(month < 10){
 			bufMonthString = "0"+month;
 		}else {
@@ -76,13 +78,13 @@ public class NANDU implements NEWSPAPER{
 		}
 		
 		//新闻入口赋值
-		themeUrl = "http://epaper.oeeee.com/epaper/A/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_2731.htm";
+		themeUrl = "http://www.zaobao.com/news/china";
 
 		//主题连接 赋值
-		themeLinksReg = "http://epaper.oeeee.com/epaper/A/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_[0-9]{4}.htm";
+	//	themeLinksReg = "http://e.chengdu.cn/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/node_[0-9]{1,3}.htm";
 		
 		//内容连接 赋值
-		contentLinksReg = "http://epaper.oeeee.com/epaper/A/html/"+year+"-"+bufMonthString+"/"+bufDateString+"/content_[0-9]{7,8}.htm\\?div=((0)|(-1)|(1))";
+		contentLinksReg = "http://www.zaobao.com/news/china/story"+year+bufMonthString+bufDateString+"-[0-9]{6}";
 		
 		IOException bufException = null ;
 		int state = 0 ;
@@ -108,32 +110,33 @@ public class NANDU implements NEWSPAPER{
 		}
 		
 		//保存成都商报新闻主题
-		Queue<String> nanduThemeQueue = new LinkedList<String>();
-		nanduThemeQueue = getThemeLinks(themeUrl, themeLinksReg);
-//		System.out.println(nanduThemeQueue);
+		Queue<String> cdsbThemeQueue = new LinkedList<String>();
+		cdsbThemeQueue.add(themeUrl);
+	//	cdsbThemeQueue = getThemeLinks(themeUrl, themeLinksReg);
+//		System.out.println(cdsbThemeQueue);
 		//保存成都商报新闻url
-		Queue<String> nanduContentQueue = new LinkedList<String>();
-		nanduContentQueue = getContentLinks(nanduThemeQueue, contentLinksReg);
-//		System.out.println(nanduContentQueue);
+		Queue<String> cdsbContentQueue = new LinkedList<String>();
+		cdsbContentQueue = getContentLinks(cdsbThemeQueue, contentLinksReg);
+	//	System.out.println(cdsbContentQueue);
 		//下载时间
 		downloadTime = ""+year+bufMonthString+bufDateString;
 		
-		if(nanduContentQueue == null ){
+		if(cdsbContentQueue == null ){
 			crut.destory();
 			return ;
 		}
-		while(!nanduContentQueue.isEmpty()){
-			String url = nanduContentQueue.poll();
+		while(!cdsbContentQueue.isEmpty()){
+			String url = cdsbContentQueue.poll();
 			if(!crut.query("Url", url)){
 				Date date = new Date();
 				String html = getContentHtml(url);
 				if(html!=null)
-					crut.add(getNewsTitle(html,titleLabel,"_南方都市报数字报"), getNewsOriginalTitle(html,titleLabel,"_南方都市报数字报"),getNewsOriginalTitle(html,titleLabel,"_南方都市报数字报"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
+					crut.add(getNewsTitle(html,titleLabel," | www.zaobao.com"), getNewsOriginalTitle(html,titleLabel," | www.zaobao.com"),getNewsOriginalTitle(html,titleLabel," | www.zaobao.com"), getNewsTime(html,timeLabel),getNewsContent(html,contentLabel), getNewsSource(html,sourceLabel),
 							getNewsOriginalSource(html,sourceLabel), getNewsCategroy(html,categroyLabel), getNewsOriginalCategroy(html,categroyLabel), url, getNewsImages(html,timeLabel),downloadTime,date);
 			}
 		}
 		crut.destory();
-		System.out.println("nandu over...");
+		System.out.println("zaobaoguonei over..");
 	}
 	@Override
 	public Queue<String> getThemeLinks(String themeLink, String themeLinkReg) {
@@ -158,8 +161,8 @@ public class NANDU implements NEWSPAPER{
 				{
 				
 					LinkTag n = (LinkTag) nodeList.elementAt(i);
-//		        	System.out.print(n.getStringText() + "==>> ");
-//		       	 	System.out.println(n.extractLink());
+		        	System.out.print(n.getStringText() + "==>> ");
+		       	 	System.out.println(n.extractLink());
 					//新闻主题
 					Matcher themeMatcher = newsThemeLink.matcher(n.extractLink());
 					if(themeMatcher.find()){
@@ -223,7 +226,6 @@ public class NANDU implements NEWSPAPER{
 				bufException = e ;
 			}finally{
 				if(bufException != null ){
-					System.out.println("我错了");
 					return null;
 				}
 			}		
@@ -382,6 +384,7 @@ public class NANDU implements NEWSPAPER{
 		}
 		if(contentBuf!=null){
 			contentBuf = contentBuf.replaceFirst("\\s+", "");
+			contentBuf = contentBuf.replaceAll("[buy English translation]\t\t\t\t\t\t\t\n\t\t\t\t\t\t\",", "");
 		}
 		return contentBuf;
 	}
@@ -390,21 +393,16 @@ public class NANDU implements NEWSPAPER{
 	public String getNewsImages(String html, String[] label) {
 		if(html == null)
 			return null;
-		String bufHtml ;
-		if(html.contains("class=\"content BSHARE_POP\"")&&html.contains("<div class=\"content-page\">")){
-			bufHtml = html.substring(html.indexOf("class=\"content BSHARE_POP\""), html.indexOf("<div class=\"content-page\">"));
-		}else {
-			bufHtml = html ;
-		}
-		        //辅助
+		String bufHtml = html ;        //辅助
 		String imageNameTime  = "";
 
 		//获取图片时间，为命名服务
 		imageNameTime = getNewsTime(html,label) ;
+//		System.out.println(imageNameTime);
 		if(imageNameTime == null || imageNameTime.equals(""))
 			return null;
 		//处理存放条图片的文件夹
-    	File f = new File("NANDU");
+    	File f = new File("ZAOBAOCHINA");
     	if(!f.exists()){
     		f.mkdir();
     	}
@@ -416,18 +414,23 @@ public class NANDU implements NEWSPAPER{
     	//保存图片文件的位置信息
     	Queue<String> imageLocation = new LinkedList<String>();
     	//图片正则表达式
-		String imageReg = "../../../res/"+imageNameTime.substring(0,4)+"-"+imageNameTime.substring(4, 6)+"/"+imageNameTime.substring(6, 8)+"/(.*?)/res[0-9]{2}_attpic_brief.jpg";
+		String imageReg = "http://www.zaobao.com/sites/default/files/styles/large/public/images/"+imageNameTime.substring(0, 6)+"/"+imageNameTime+"/(.*?).jpg";
 //		System.out.println(imageReg);
 		Pattern newsImage = Pattern.compile(imageReg);
 		Matcher imageMatcher = newsImage.matcher(bufHtml);
 		//处理图片
 		int i = 1 ;      //本条新闻图片的个数
+		Vector<String> imageUrlStrings = new Vector<String>();
 		while(imageMatcher.find()){
 			String bufUrl = imageMatcher.group();
-			
-			bufUrl =bufUrl.replace("../../../", "");
+			if(imageUrlStrings.contains(bufUrl))
+				continue;
+			else {
+				imageUrlStrings.add(bufUrl);
+			}
+//			bufUrl =bufUrl.replace("../../../", "");
 //			System.out.println(bufUrl);
-			bufUrl =  "http://epaper.nandu.com/epaper/A/" + bufUrl;
+//			bufUrl =  "http://e.chengdu.cn/" + bufUrl;
 			File fileBuf;
 //			imageMatcher.group();
 			String imageNameSuffix = bufUrl.substring(bufUrl.lastIndexOf("."), bufUrl.length());  //图片后缀名
@@ -437,21 +440,21 @@ public class NANDU implements NEWSPAPER{
 				InputStream in = uri.openStream();
 				FileOutputStream fo;
 				if(imageNumber < 10){
-					fileBuf = new File("NANDU",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZAOBAOCHINA",imageNameTime+photohour+photominute+photosecond+"000"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf); 
 					imageLocation.offer(fileBuf.getPath());
 				}else if(imageNumber < 100){
-					fileBuf = new File("NANDU",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZAOBAOCHINA",imageNameTime+photohour+photominute+photosecond+"00"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
             
 				}else if(imageNumber < 1000){
-					fileBuf = new File("NANDU",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZAOBAOCHINA",imageNameTime+photohour+photominute+photosecond+"0"+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
   
 				}else{
-					fileBuf = new File("NANDU",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
+					fileBuf = new File("ZAOBAOCHINA",imageNameTime+photohour+photominute+photosecond+imageNumber+"000"+i+imageNameSuffix);
 					fo = new FileOutputStream(fileBuf);
 					imageLocation.offer(fileBuf.getPath());
 				}
@@ -532,38 +535,37 @@ public class NANDU implements NEWSPAPER{
 
 	@Override
 	public String getNewsCategroy(String html, String[] label) {
-		String categroyBuf ="";
-		if(label[1].equals("")){
-			categroyBuf = getHtml(html , label[0]);
-		}else{
-			categroyBuf = getHtml(html , label[0],label[1]);
-		}
-		if(categroyBuf!=null){
-			if(categroyBuf.contains("版名：")&&categroyBuf.contains("字号："))
-			 categroyBuf = categroyBuf.substring(categroyBuf.indexOf("版名：")+3, categroyBuf.indexOf("字号："));
-			 categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		}
-		return categroyBuf;
+//		String categroyBuf ="";
+//		if(label[1].equals("")){
+//			categroyBuf = getHtml(html , label[0]);
+//		}else{
+//			categroyBuf = getHtml(html , label[0],label[1]);
+//		}
+//		if(categroyBuf!=null){
+//			if(categroyBuf.contains("：")&&categroyBuf.contains("»"))
+//			 categroyBuf = categroyBuf.substring(categroyBuf.indexOf("：")+1, categroyBuf.indexOf("»")-1);
+//			 categroyBuf = categroyBuf.replaceAll("\\s+", "");
+//		}
+		return label[0];
 	}
 
 	@Override
 	public String getNewsOriginalCategroy(String html, String[] label) {
-		String categroyBuf ="";
-		if(label[1].equals("")){
-			categroyBuf = getHtml(html , label[0]);
-		}else{
-			categroyBuf = getHtml(html , label[0],label[1]);
-		}
-		if(categroyBuf!=null){
-			if(categroyBuf.contains("版名：")&&categroyBuf.contains("字号："))
-			 categroyBuf = categroyBuf.substring(categroyBuf.indexOf("版名："), categroyBuf.indexOf("字号："));
-			 categroyBuf = categroyBuf.replaceAll("\\s+", "");
-		}
-		return categroyBuf;
+//		String categroyBuf ="";
+//		if(label[1].equals("")){
+//			categroyBuf = getHtml(html , label[0]);
+//		}else{
+//			categroyBuf = getHtml(html , label[0],label[1]);
+//		}
+//		if(categroyBuf!=null){
+//			if(categroyBuf.contains("第")&&categroyBuf.contains("»")){
+//				categroyBuf = categroyBuf.substring(categroyBuf.indexOf("第"), categroyBuf.indexOf("»")-1);
+//			}
+//		}
+		return label[1];
 	}
-	
 	public static void main(String[] args){
-		NANDU test = new NANDU();
-		test.getNANDU();
+		ZAOBAOGuoNei test = new ZAOBAOGuoNei();
+		test.getZAOBAOGuoNei();
 	}
 }
