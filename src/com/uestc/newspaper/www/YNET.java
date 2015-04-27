@@ -193,6 +193,8 @@ public class YNET implements NEWSPAPER{
 
 	@Override
 	public Queue<String> getContentLinks(Queue<String> themeLink , String ContentLinkReg) {
+		if(themeLink == null )
+			return null;
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Exception bufException = null ;
 		String bufMonthString;

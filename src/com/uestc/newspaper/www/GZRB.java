@@ -184,6 +184,8 @@ public class GZRB implements NEWSPAPER{
 
 	@Override
 	public Queue<String> getContentLinks(Queue<String> themeLink , String ContentLinkReg) {
+		if(themeLink == null )
+			return null;
 		Queue<String> contentlinks = new LinkedList<String>(); // 临时征用
 		Exception bufException = null ;
 		Pattern newsContent = Pattern.compile(ContentLinkReg);
