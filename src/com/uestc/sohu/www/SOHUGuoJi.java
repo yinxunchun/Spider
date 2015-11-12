@@ -59,6 +59,7 @@ public class SOHUGuoJi implements SOHU{
 	
 	public void getSOHUGuoJiNews(){
 		System.out.println("guoji start...");
+		System.out.println("打印中文~！~~");
 		DBName = "SOHU";
 		DBTable = "GJ";
 		ENCODE = "gb2312";
@@ -539,7 +540,9 @@ public class SOHUGuoJi implements SOHU{
 		return categroyBuf;
 	}
 	public static void main(String[] args){
+		System.out.println("中文测试");
 		SOHUGuoJi test = new SOHUGuoJi();
 		test.getSOHUGuoJiNews();
+		System.out.println("中文测试");
 	}
 }

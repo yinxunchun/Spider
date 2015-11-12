@@ -8,7 +8,7 @@ public class IfengTimeTask extends TimerTask{
 
 	@Override
 	public void run() {
-		System.out.println("凤凰新闻运行");
+		System.out.println("我去你大爷！！！！");
 		IFENGGuoJi gj = new IFENGGuoJi();
 		gj.getIFENGGuoJiNews();
 		IFENGGuoNei gn = new IFENGGuoNei();
